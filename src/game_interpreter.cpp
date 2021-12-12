@@ -60,6 +60,7 @@
 #include "baseui.h"
 #include "algo.h"
 #include "rand.h"
+#include "game_multiplayer.h"
 
 enum BranchSubcommand {
 	eOptionBranchElse = 1
@@ -1030,11 +1031,15 @@ bool Game_Interpreter::CommandControlSwitches(lcf::rpg::EventCommand const& com)
 			} else {
 				Main_Data::game_switches->Flip(start);
 			}
+			Game_Multiplayer::SwitchSync(start, Main_Data::game_switches->Get(start));
 		} else {
 			if (val < 2) {
 				Main_Data::game_switches->SetRange(start, end, val == 0);
 			} else {
 				Main_Data::game_switches->FlipRange(start, end);
+			}
+			for(int i = start; i < end; i++) {
+				Game_Multiplayer::SwitchSync(start + i, Main_Data::game_switches->Get(start + i));
 			}
 		}
 
@@ -1347,6 +1352,7 @@ bool Game_Interpreter::CommandControlVariables(lcf::rpg::EventCommand const& com
 					Main_Data::game_variables->Mod(start, value);
 					break;
 			}
+			Game_Multiplayer::VariableSync(start, Main_Data::game_variables->Get(start));
 		} else if (com.parameters[4] == 1) {
 			// Multiple variables - Direct variable lookup
 			int var_id = com.parameters[5];
@@ -1440,7 +1446,6 @@ bool Game_Interpreter::CommandControlVariables(lcf::rpg::EventCommand const& com
 					break;
 			}
 		}
-
 		Game_Map::SetNeedRefresh(true);
 	}
 
@@ -1989,6 +1994,7 @@ bool Game_Interpreter::CommandPlaySound(lcf::rpg::EventCommand const& com) { // 
 	sound.tempo = com.parameters[1];
 	sound.balance = com.parameters[2];
 	Main_Data::game_system->SePlay(sound, true);
+	Game_Multiplayer::SePlaySync(sound);
 	return true;
 }
 
@@ -2541,6 +2547,7 @@ bool Game_Interpreter::CommandWeatherEffects(lcf::rpg::EventCommand const& com) 
 	int str = com.parameters[1];
 	// Few games use a greater strength value to achieve more intense but glichty weather
 	int strength = std::min(str, 2);
+	Game_Multiplayer::WeatherEffectSync(type, strength);
 	screen->SetWeatherEffect(type, strength);
 	return true;
 }

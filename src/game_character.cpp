@@ -415,8 +415,8 @@ void Game_Character::UpdateMoveRoute(int32_t& current_index, const lcf::rpg::Mov
 						sound.volume = move_command.parameter_a;
 						sound.tempo = move_command.parameter_b;
 						sound.balance = move_command.parameter_c;
-
 						Main_Data::game_system->SePlay(sound);
+						Game_Multiplayer::SePlaySync(sound);
 					}
 					break;
 				case Code::walk_everywhere_on:
