@@ -4,8 +4,7 @@ Adds multiplayer functionality.
 
 Builds for the emscripten target only.
 
-
-Server: https://github.com/twig33/orbs
+Server: https://gitlab.com/CataractJustice/YNOnline
 
 ## Documentation
 
