@@ -99,6 +99,16 @@ Input::ButtonMappingArray Input::GetDefaultButtonMappings() {
 		{RESET, Keys::F12},
 		{FAST_FORWARD, Keys::F},
 		{FAST_FORWARD_PLUS, Keys::G},
+		{CHAT_FOCUS, Keys::TAB}, // chat inputs
+		{CHAT_UNFOCUS, Keys::TAB}, // chat inputs
+		{CHAT_UP, Keys::UP}, // chat inputs
+		{CHAT_DOWN, Keys::DOWN}, // chat inputs
+		{CHAT_LEFT, Keys::LEFT}, // chat inputs
+		{CHAT_RIGHT, Keys::RIGHT}, // chat inputs
+		{CHAT_DEL_BACKWARD, Keys::BACKSPACE}, // chat inputs
+		{CHAT_DEL_FORWARD, Keys::DEL}, // chat inputs
+		{CHAT_SEND, Keys::RETURN}, // chat inputs
+		{CHAT_TOGGLE_GLOBAL, Keys::F8}, // chat inputs
 
 #if defined(USE_MOUSE) && defined(SUPPORT_MOUSE)
 		{DECISION, Keys::MOUSE_LEFT},
