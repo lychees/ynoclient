@@ -47,6 +47,10 @@ public:
 		//literally just do nothing
 	}
 
+	void UpdateAnimation() override {
+		
+	}
+
 	void Update() {
 		Game_Character::Update();
 	}

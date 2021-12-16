@@ -3,6 +3,7 @@
 
 #include <string>
 #include "game_system.h"
+#include <lcf/rpg/eventpage.h>
 
 namespace Game_Multiplayer {
 	void Connect(int map_id);
@@ -15,6 +16,9 @@ namespace Game_Multiplayer {
 	void WeatherEffectSync(int type, int sthrength);
 	void VariableSync(int32_t id, int32_t val);
 	void SwitchSync(int32_t id, int32_t val);
+	void AnimTypeSync(lcf::rpg::EventPage::AnimType animtype);
+	void AnimFrameSync(uint16_t frame);
+	void FacingSync(uint16_t facing);
 }
 
 #endif

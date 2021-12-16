@@ -103,6 +103,9 @@ namespace {
 		const uint16_t movementAnimationSpeed = 6;
 		const uint16_t variable = 7;
 		const uint16_t switchsync = 8;
+		const uint16_t animtype = 9;
+		const uint16_t animframe = 10;
+		const uint16_t facing = 11;
 	};
 
 	namespace MultiplayerSettings {
@@ -342,6 +345,9 @@ namespace {
 			const nx_json* mAnimSpd = nx_json_get(json, "movementAnimationSpeed");
 			const nx_json* variable = nx_json_get(json, "varialbe");
 			const nx_json* switchsync = nx_json_get(json, "switchsync");
+			const nx_json* animtype = nx_json_get(json, "animtype");
+			const nx_json* animframe = nx_json_get(json, "animframe");
+			const nx_json* facing = nx_json_get(json, "facing");
 			
 			if(uid->type == nx_json_type::NX_JSON_STRING) {
 				std::string uids = std::string(uid->text_value);
@@ -367,6 +373,7 @@ namespace {
 					const nx_json* sheet = nx_json_get(sprite, "sheet");
 					const nx_json* id = nx_json_get(sprite, "id");
 					players[uids].ch->SetSpriteGraphic(std::string(sheet->text_value), id->num.u_value);
+					players[uids].ch->ResetAnimation();
 				}
 
 				if(sound->type == nx_json_type::NX_JSON_OBJECT) {
@@ -429,6 +436,19 @@ namespace {
 					EM_ASM({
 						console.log("switch " + UTF8ToString($0));
 					}, setswtstr.c_str());
+				}
+
+				if(animtype->type == nx_json_type::NX_JSON_INTEGER) {
+					players[uids].ch->SetAnimationType((lcf::rpg::EventPage::AnimType)animtype->num.u_value);
+				}
+
+				if(animframe->type == nx_json_type::NX_JSON_INTEGER) {
+					players[uids].ch->SetAnimFrame(animframe->num.u_value);
+				}
+
+				if(facing->type == nx_json_type::NX_JSON_INTEGER) {
+					if(facing->num.u_value <= 4)
+					players[uids].ch->SetFacing(facing->num.u_value);
 				}
 			}
 		}
@@ -577,6 +597,21 @@ void Game_Multiplayer::SwitchSync(int32_t id, int32_t val) {
 	int32_t m[2] = {id, val};
 	memcpy(sendBuffer + sizeof(uint16_t), m, sizeof(int32_t) * 2);
 	TrySend(&sendBuffer, sizeof(uint16_t) * 5);
+}
+
+void Game_Multiplayer::AnimTypeSync(lcf::rpg::EventPage::AnimType animtype) {
+	uint16_t m[] = {PacketTypes::animtype, (uint16_t)animtype};
+	TrySend(m, sizeof(uint16_t) * 2);
+}
+
+void Game_Multiplayer::AnimFrameSync(uint16_t frame) {
+	uint16_t m[] = {PacketTypes::animframe, (uint16_t)frame};
+	TrySend(m, sizeof(uint16_t) * 2);
+}
+
+void Game_Multiplayer::FacingSync(uint16_t facing) {
+	uint16_t m[] = {PacketTypes::facing, (uint16_t)facing};
+	TrySend(m, sizeof(uint16_t) * 2);
 }
 
 void Game_Multiplayer::Update() {

@@ -172,7 +172,7 @@ void Game_Character::UpdateMovement(int amount) {
 
 void Game_Character::UpdateAnimation() {
 	const auto speed = Utils::Clamp(GetMoveSpeed(), 1, 6);
-
+	int oldframe = data()->anim_frame;
 	if (IsSpinning()) {
 		const auto limit = GetSpinAnimFrames(speed);
 
@@ -209,6 +209,8 @@ void Game_Character::UpdateAnimation() {
 		IncAnimFrame();
 		return;
 	}
+	if(GetType() == Player && oldframe - data()->anim_frame)
+		Game_Multiplayer::AnimFrameSync(data()->anim_frame);
 }
 
 void Game_Character::UpdateFlash() {

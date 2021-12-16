@@ -968,6 +968,8 @@ inline int Game_Character::GetFacing() const {
 }
 
 inline void Game_Character::SetFacing(int new_direction) {
+	if(new_direction - data()->sprite_direction && GetType() == Player)
+		Game_Multiplayer::FacingSync(new_direction);
 	data()->sprite_direction = new_direction;
 }
 
@@ -1111,6 +1113,7 @@ inline Game_Character::AnimType Game_Character::GetAnimationType() const {
 }
 
 inline void Game_Character::SetAnimationType(Game_Character::AnimType anim_type) {
+	if (GetType() == Player) Game_Multiplayer::AnimTypeSync(anim_type);
 	data()->animation_type = int(anim_type);
 	SetFacingLocked(IsDirectionFixedAnimationType(anim_type));
 }
@@ -1149,6 +1152,8 @@ inline void Game_Character::IncAnimCount() {
 
 inline void Game_Character::IncAnimFrame() {
 	data()->anim_frame = (data()->anim_frame + 1) % 4;
+	if(GetType() == Player && IsAnimated())
+		Game_Multiplayer::AnimFrameSync(data()->anim_frame);
 	SetAnimCount(0);
 }
 
