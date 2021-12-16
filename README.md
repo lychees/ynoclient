@@ -1,6 +1,15 @@
 # EasyRPG Player online fork
 
 Adds multiplayer functionality. 
+-Syncs other players sprites and movement.
+-Syncs other players SFX with volume depending on distance to the player.
+-Syncs other players weather graphics.
+-Syncs other players animation frames.
+-Syncs other players facing direction.
+-Adds posibility of switch sync (custom switch whitelist needed for each game)
+-Displays players nicknames over player sprites.
+-Adds API for main player sprite change.
+-Adds chat API and in-game chat.
 
 Builds for the emscripten target only.
 
