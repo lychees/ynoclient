@@ -6,6 +6,7 @@
 #include <emscripten/websocket.h>
 
 #include "game_multiplayer.h"
+#include "chat_multiplayer.h"
 #include "output.h"
 #include "game_player.h"
 #include "sprite_character.h"
@@ -92,6 +93,8 @@ struct MPPlayer {
 	std::unique_ptr<MultiplayerText> nickname;
 };
 
+std::string multiplayer__my_name = "";
+
 namespace {
 
 	namespace PacketTypes {
@@ -131,7 +134,6 @@ namespace {
 	bool connected = false;
 	std::string myuuid = "";
 	int room_id = -1;
-	std::string my_name = "";
 	std::map<std::string,MPPlayer> players;
 	const std::string delimchar = "\uffff";
 
@@ -222,11 +224,11 @@ namespace {
 	}
 
 	void SendMainPlayerName() {
-		if(my_name.length() == 0) 
+		if(multiplayer__my_name.length() == 0) 
 			return;
-		int s = my_name.length() + sizeof(uint16_t);
+		int s = multiplayer__my_name.length() + sizeof(uint16_t);
 		memcpy(sendBuffer, &PacketTypes::name, sizeof(uint16_t));
-		memcpy(sendBuffer + sizeof(uint16_t), my_name.c_str(), my_name.length());
+		memcpy(sendBuffer + sizeof(uint16_t), multiplayer__my_name.c_str(), multiplayer__my_name.length());
 		TrySend(sendBuffer, s);
 	}
 
@@ -458,15 +460,26 @@ namespace {
 //this will only be called from outside
 extern "C" {
 
-void SendChatMessageToServer(const char* msg) {
-	if (my_name == "") return;
-	std::string s = "say" + delimchar;
-	s += msg;
-	TrySend(s);
+void gotMessage(const char* name, const char* trip, const char* msg, const char* src) {
+	#if defined(INGAME_CHAT)
+		Chat_Multiplayer::gotMessage(name, trip, msg, src);
+	#endif
+}
+
+void gotChatInfo(const char* source, const char* text) {
+	#if defined(INGAME_CHAT)
+		Chat_Multiplayer::gotInfo(text);
+	#endif
+}
+
+void SendChatMessage(const char* msg) {
+	EM_ASM({
+		SendMessageString(UTF8ToString($0));
+	}, msg);
 }
 
 void ChangeName(const char* name) {
-	my_name = name;
+	multiplayer__my_name = name;
 	SendMainPlayerName();
 }
 
@@ -475,11 +488,6 @@ void SlashCommandSetSprite(const char* sheet, int id) {
 	MultiplayerSettings::spriteid = id;
 	if(MultiplayerSettings::spritesheet.length())
 		Main_Data::game_player->SetSpriteGraphic(sheet, id);
-}
-
-void SetPlayerName(std::string name) {
-	my_name = name;
-	SendMainPlayerName();
 }
 
 void SetPlayersVolume(int volume) {
@@ -531,6 +539,12 @@ void Game_Multiplayer::Connect(int map_id) {
 		}
 	}
 	SetConnStatusWindowText("Disconnected");
+
+	#if defined(INGAME_CHAT)
+		//set up chat window if needed
+		Chat_Multiplayer::tryCreateChatWindow();
+	#endif
+
 	std::string room_url = server_url + std::to_string(map_id);
 	Output::Debug(room_url);
 	EmscriptenWebSocketCreateAttributes ws_attrs = {
