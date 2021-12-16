@@ -452,6 +452,12 @@ void gotChatInfo(const char* source, const char* text) {
 	#endif
 }
 
+void loadProfileSavedPreferences(const char* name, const char* trip) {
+	#if defined(INGAME_CHAT)
+		Chat_Multiplayer::loadPreferences(name, trip);
+	#endif
+}
+
 void SendChatMessage(const char* msg) {
 	EM_ASM({
 		SendMessageString(UTF8ToString($0));
