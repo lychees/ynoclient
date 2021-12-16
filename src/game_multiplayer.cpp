@@ -47,7 +47,7 @@ class MultiplayerText : Drawable {
 		if(text == "")
 			return;
 
-		Rect textrect = Font::Default()->GetSize(text);
+		/*Rect textrect = Font::Default()->GetSize(text);
 		Rect scaledrect = textrect;
 
 		if(scaledrect.width > maxWidth) {
@@ -58,7 +58,13 @@ class MultiplayerText : Drawable {
 		scaledbitmap = Bitmap::Create(scaledrect.width + 1, scaledrect.height + 1);
 		Color color = Color(255, 255, 255, 255);
 		Text::Draw(*textbitmap, 0, 0, *Font::Default(), color, text);
-		scaledbitmap->StretchBlit(*textbitmap, textbitmap->GetRect(), Opacity::Opaque());
+		scaledbitmap->StretchBlit(*textbitmap, textbitmap->GetRect(), Opacity::Opaque());*/
+
+		Rect textrect = Font::Tiny()->GetSize(text);
+		scaledbitmap = Bitmap::Create(textrect.width+1, textrect.height+1);
+		Color shadowColor = Color(0, 0, 0, 255); // shadow color
+		Text::Draw(*scaledbitmap, 1, 1, *Font::Tiny(), shadowColor, text); // draw black fallback shadow
+		Text::Draw(*scaledbitmap, 0, 0, *Font::Tiny(), *Cache::SystemOrBlack(), 0, text);
 	}
 
 	void SetMaxWidth(int width) {
@@ -71,13 +77,13 @@ class MultiplayerText : Drawable {
 
 		Rect rect = scaledbitmap->GetRect();
 
-		dst.Blit(anchor->GetScreenX() - rect.width / 2, anchor->GetScreenY() - rect.height - TILE_SIZE * 2, *scaledbitmap, rect, Opacity::Opaque());
+		dst.Blit(anchor->GetScreenX() - rect.width / 2, anchor->GetScreenY() - rect.height - TILE_SIZE * 1.75, *scaledbitmap, rect, Opacity::Opaque());
 	}
 
 	private:
 	std::shared_ptr<Game_Character> anchor;
 	std::string text;
-	BitmapRef textbitmap;
+	//BitmapRef textbitmap;
 	BitmapRef scaledbitmap;
 	int maxWidth;
 	int ttl;
