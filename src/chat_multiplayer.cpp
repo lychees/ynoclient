@@ -382,6 +382,8 @@ static std::unique_ptr<ChatBox> chatBox; //chat renderer
 static std::u32string typeText;
 static unsigned int typeCaretIndex = 0;
 static unsigned int maxChars = MAXCHARSINPUT_NAME;
+static std::u32string preloadName; // name and trip preferences to auto-populate typebox,
+static std::u32string preloadTrip; // saved from last time user entered them.
 
 // TODO: have name and tripcode be on the same step (one typebox under another)
 static std::string cacheName = ""; // name and tripcode are input in separate steps. Save it to send them together.
@@ -406,6 +408,12 @@ static void createChatWindow(std::shared_ptr<Scene>& scene_map) {
 	chatBox->appendMessage("• Alphanumeric only.", "", "", false);
 	//restore previous list
 	DrawableMgr::SetLocalList(old_list);
+
+	// load name preferences
+	typeText = preloadName;
+	typeCaretIndex = preloadName.size();
+	chatBox->updateTypeText(typeText);
+	chatBox->seekCaret(typeCaretIndex);
 }
 
 void Chat_Multiplayer::tryCreateChatWindow() { // initialize if haven't already. Invoked by game_multiplayer.cpp
@@ -434,6 +442,17 @@ void Chat_Multiplayer::gotInfo(std::string msg) {
 	auto trim = msg.substr(leadingSpaces != std::string::npos ? leadingSpaces : 0);
 	//
 	chatBox->appendMessage("", trim, "", false);
+}
+
+void Chat_Multiplayer::loadPreferences(std::string name, std::string trip) {
+	assert(chatBox.get() == nullptr); // This check should never fail.
+	// If this fails, it means config loading took longer than booting the EasyRPG player, 
+	// loading into a save and entering a game map (which then loads the in-game chatbox).
+	//
+	// In that case, player can input name and tripcode before they're loaded from save config,
+	// so hold off chatbox creation until config is loaded?
+	preloadName = Utils::DecodeUTF32(name);
+	preloadTrip = Utils::DecodeUTF32(trip);
 }
 
 void Chat_Multiplayer::focus() {
@@ -513,9 +532,9 @@ void Chat_Multiplayer::processInputs() {
 						std::regex_match(utf8text, reg)	) {
 						// name valid
 						cacheName = utf8text;
-						// reset typebox
-						typeText.clear();
-						typeCaretIndex = 0;
+						// load trip preferences
+						typeText = preloadTrip;
+						typeCaretIndex = preloadTrip.size();
 						chatBox->updateTypeText(typeText);
 						chatBox->seekCaret(typeCaretIndex);
 						//unfocus();
