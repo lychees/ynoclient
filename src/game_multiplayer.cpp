@@ -24,6 +24,8 @@
 #include "game_map.h"
 #include "player.h"
 
+void ConnectToGame();
+
 class MultiplayerText : Drawable {
 	public:
 
@@ -115,6 +117,8 @@ namespace {
 		const uint16_t animtype = 9;
 		const uint16_t animframe = 10;
 		const uint16_t facing = 11;
+		const uint16_t typingstatus = 12;
+		const uint16_t syncme = 13;
 	};
 
 	namespace MultiplayerSettings {
@@ -131,6 +135,11 @@ namespace {
 
 		std::string spritesheet = "";
 		int spriteid = 0;
+
+		bool shouldsync = false;
+
+		time_t lastConnect = 0;
+		time_t reconnectInterval = 5; //5 seconds
 	}
 
 	std::unique_ptr<Window_Base> conn_status_window;
@@ -155,6 +164,8 @@ namespace {
 		if (ready == 1) { //1 means OPEN
 			emscripten_websocket_send_binary(socket, (void*)msg.c_str(), msg.length());
 		}
+
+		MultiplayerSettings::shouldsync = true;
 	}
 
 	void TrySend(const void* buffer, size_t size) {
@@ -164,6 +175,8 @@ namespace {
 		if (ready == 1) { //1 means OPEN
 			emscripten_websocket_send_binary(socket, (void*)buffer, size);
 		}
+
+		MultiplayerSettings::shouldsync = true;	
 	}
 
 	void SetConnStatusWindowText(std::string s) {
@@ -186,7 +199,7 @@ namespace {
 		players[uid].nickname = std::make_unique<MultiplayerText>();
 		players[uid].nickname->SetAnchorCharacter(nplayer);
 		players[uid].nickname->SetMaxWidth(TILE_SIZE * 2.2);
-		players[uid].nickname->SetText("Madosussy");
+		players[uid].nickname->SetText("");
 
 		auto scene_map = Scene::Find(Scene::SceneType::Map);
 		if (scene_map == nullptr) {
@@ -263,7 +276,8 @@ namespace {
 		std::string msg = "Connected to room " + std::to_string(room_id);
 		std::string source = "Client";
 		EM_ASM({
-			PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
+			if(shouldPrintRoomConnetionMessages)
+				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
 		}, msg.c_str(), source.c_str());
 
 		EM_ASM({
@@ -292,6 +306,7 @@ namespace {
 		SetConnStatusWindowText("Disconnected");
 		//puts("onclose");
 		connected = false;
+		ConnectToGame();
 
 		return EM_TRUE;
 	}
@@ -531,6 +546,21 @@ void LogSwitchSyncWhiteList() {
 	EM_ASM({console.log(UTF8ToString($0));}, liststr.c_str());
 }
 }
+
+void ConnectToGame() {
+	EmscriptenWebSocketCreateAttributes ws_attrs = {
+		server_url.c_str(),
+		"binary",
+		EM_TRUE
+	};
+
+	socket = emscripten_websocket_new(&ws_attrs);
+	emscripten_websocket_set_onopen_callback(socket, NULL, onopen);
+	emscripten_websocket_set_onclose_callback(socket, NULL, onclose);
+	emscripten_websocket_set_onmessage_callback(socket, NULL, onmessage);
+	SetConnStatusWindowText("Disconnected");
+}
+
 void Game_Multiplayer::Connect(int map_id) {
 	room_id = map_id;
 	Game_Multiplayer::Quit();
@@ -550,30 +580,29 @@ void Game_Multiplayer::Connect(int map_id) {
 			DrawableMgr::SetLocalList(old_list);
 		}
 	}
-	SetConnStatusWindowText("Disconnected");
+
+	if(!connected) 
+		ConnectToGame();
+	else {
+		uint16_t room_id16[] = {(uint16_t)room_id};
+		TrySend((void*)room_id16, sizeof(uint16_t));
+	}
+
+	auto& player = Main_Data::game_player;
+	SendMainPlayerPos();
+	if(MultiplayerSettings::spritesheet != "")
+		SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
+	SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
+	SendMainPlayerName();
+	SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
 
 	#if defined(INGAME_CHAT)
 		//set up chat window if needed
 		Chat_Multiplayer::tryCreateChatWindow();
 	#endif
-
-	std::string room_url = server_url + std::to_string(map_id);
-	Output::Debug(room_url);
-	EmscriptenWebSocketCreateAttributes ws_attrs = {
-		server_url.c_str(),
-		"binary",
-		EM_TRUE
-	};
-
-	socket = emscripten_websocket_new(&ws_attrs);
-	emscripten_websocket_set_onopen_callback(socket, NULL, onopen);
-	//emscripten_websocket_set_onerror_callback(socket, NULL, onerror);
-	emscripten_websocket_set_onclose_callback(socket, NULL, onclose);
-	emscripten_websocket_set_onmessage_callback(socket, NULL, onmessage);
 }
 
 void Game_Multiplayer::Quit() {
-	emscripten_websocket_deinitialize(); //kills every socket for this thread
 	for(auto& p : players) {
 		p.second.nickname->RemoveAnchorCharacter();
 	}
@@ -640,6 +669,11 @@ void Game_Multiplayer::FacingSync(uint16_t facing) {
 	TrySend(m, sizeof(uint16_t) * 2);
 }
 
+void SyncMe() {
+	uint16_t m[] = {PacketTypes::syncme, (uint16_t)0};
+	TrySend(m, sizeof(uint16_t) * 2);
+}
+
 void Game_Multiplayer::Update() {
 	if(MultiplayerSettings::nextWeatherType != -1) {
 		MultiplayerSettings::weatherT++;
@@ -672,5 +706,21 @@ void Game_Multiplayer::Update() {
 	if (Input::IsReleased(Input::InputButton::N3)) {
 		conn_status_window->SetVisible(!conn_status_window->IsVisible());
 	}
+
+	if(MultiplayerSettings::shouldsync) {
+		SyncMe();
+		MultiplayerSettings::shouldsync = false;
+	}
+
+	if(!connected) {
+		time_t currentTime;
+		time(&currentTime);
+		
+		if(currentTime - MultiplayerSettings::lastConnect < MultiplayerSettings::reconnectInterval) {
+			ConnectToGame();
+		}
+	}
 }
+
+
 
