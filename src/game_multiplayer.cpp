@@ -273,20 +273,6 @@ namespace {
 	void SlashCommandSetSprite(const char* sheet, int id);
 	}
 	EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
-		std::string msg = "Connected to room " + std::to_string(room_id);
-		std::string source = "Client";
-		EM_ASM({
-			if(shouldPrintRoomConnetionMessages)
-				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
-		}, msg.c_str(), source.c_str());
-
-		EM_ASM({
-			ConnectToLocalChat($0);
-		}, room_id);
-
-		EM_ASM({
-			SetRoomID($0)
-		}, room_id);
 		SetConnStatusWindowText("Connected");
 		//puts("onopen");
 		connected = true;
@@ -580,21 +566,38 @@ void Game_Multiplayer::Connect(int map_id) {
 			DrawableMgr::SetLocalList(old_list);
 		}
 	}
+	
+	SetConnStatusWindowText("Disconnected");
 
-	if(!connected) 
+	if(!connected) {
 		ConnectToGame();
+	}
 	else {
 		uint16_t room_id16[] = {(uint16_t)room_id};
 		TrySend((void*)room_id16, sizeof(uint16_t));
+		auto& player = Main_Data::game_player;
+		SendMainPlayerPos();
+		if(MultiplayerSettings::spritesheet != "")
+			SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
+		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
+		SendMainPlayerName();
+		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+		SetConnStatusWindowText("Connected");
 	}
 
-	auto& player = Main_Data::game_player;
-	SendMainPlayerPos();
-	if(MultiplayerSettings::spritesheet != "")
-		SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
-	SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
-	SendMainPlayerName();
-	SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+	
+
+	EM_ASM({
+		ConnectToLocalChat($0);
+		SetRoomID($0);
+	}, room_id);
+
+	std::string msg = "Connected to room " + std::to_string(room_id);
+	std::string source = "Client";
+	EM_ASM({
+			if(shouldPrintRoomConnetionMessages)
+				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
+	}, msg.c_str(), source.c_str());
 
 	#if defined(INGAME_CHAT)
 		//set up chat window if needed
