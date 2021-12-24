@@ -140,7 +140,9 @@ namespace {
 
 		time_t lastConnect = 0;
 		time_t reconnectInterval = 5; //5 seconds
+
 	}
+	bool firstRoomUpdate = true;
 
 	std::unique_ptr<Window_Base> conn_status_window;
 	//const std::string server_url = "wss://dry-lowlands-62918.herokuapp.com/";
@@ -548,6 +550,7 @@ void ConnectToGame() {
 }
 
 void Game_Multiplayer::Connect(int map_id) {
+	firstRoomUpdate = true;
 	room_id = map_id;
 	Game_Multiplayer::Quit();
 	//if the window doesn't exist (first map loaded) then create it
@@ -575,13 +578,6 @@ void Game_Multiplayer::Connect(int map_id) {
 	else {
 		uint16_t room_id16[] = {(uint16_t)room_id};
 		TrySend((void*)room_id16, sizeof(uint16_t));
-		auto& player = Main_Data::game_player;
-		SendMainPlayerPos();
-		if(MultiplayerSettings::spritesheet != "")
-			SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
-		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
-		SendMainPlayerName();
-		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
 		SetConnStatusWindowText("Connected");
 	}
 
@@ -722,6 +718,18 @@ void Game_Multiplayer::Update() {
 		if(currentTime - MultiplayerSettings::lastConnect < MultiplayerSettings::reconnectInterval) {
 			ConnectToGame();
 		}
+	}
+
+	if(firstRoomUpdate) {
+		if(MultiplayerSettings::spritesheet != "")
+			SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
+		auto& player = Main_Data::game_player;
+		SendMainPlayerPos();
+		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
+		SendMainPlayerName();
+		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+		
+		firstRoomUpdate = false;
 	}
 }
 
