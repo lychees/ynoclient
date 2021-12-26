@@ -182,6 +182,10 @@ namespace {
 	void SetConnStatusWindowText(std::string s) {
 		conn_status_window->GetContents()->Clear();
 		conn_status_window->GetContents()->TextDraw(0, 0, Font::ColorDefault, s);
+
+		#if defined(INGAME_CHAT)
+			Chat_Multiplayer::setStatusConnection(s=="Connected");
+		#endif
 	}
 
 	void SpawnOtherPlayer(std::string uid) {
@@ -274,6 +278,9 @@ namespace {
 	}
 	EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
 		std::string msg = "Connected to room " + std::to_string(room_id);
+		#if defined(INGAME_CHAT)
+			Chat_Multiplayer::setStatusRoom(room_id);
+		#endif
 		std::string source = "Client";
 		EM_ASM({
 			if(shouldPrintRoomConnetionMessages)
@@ -493,12 +500,6 @@ void gotChatInfo(const char* source, const char* text) {
 	#endif
 }
 
-void loadProfileSavedPreferences(const char* name, const char* trip) {
-	#if defined(INGAME_CHAT)
-		Chat_Multiplayer::loadPreferences(name, trip);
-	#endif
-}
-
 void SendChatMessage(const char* msg) {
 	EM_ASM({
 		SendMessageString(UTF8ToString($0));
@@ -597,8 +598,7 @@ void Game_Multiplayer::Connect(int map_id) {
 	SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
 
 	#if defined(INGAME_CHAT)
-		//set up chat window if needed
-		Chat_Multiplayer::tryCreateChatWindow();
+		Chat_Multiplayer::refresh();
 	#endif
 }
 
