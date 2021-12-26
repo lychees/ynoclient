@@ -370,11 +370,7 @@ void Player::Update(bool update_scene) {
 	Input::Update();
 
 	#if defined(INGAME_CHAT)
-		if(Input::IsTriggered(Input::InputButton::CHAT_FOCUS)) {
-			Input::setGameFocus(false);
-			Chat_Multiplayer::focus();
-		}
-		Chat_Multiplayer::processInputs();
+		Chat_Multiplayer::update();
 	#endif
 
 	// Game events can query full screen status and change their behavior, so this needs to

@@ -4,12 +4,13 @@
 #include <string>
 
 namespace Chat_Multiplayer {
-	void tryCreateChatWindow();
+	void refresh(); // initializes chat or refreshes its theme
+	void update(); // called once per logical frame
+
 	void gotMessage(std::string name, std::string trip, std::string msg, std::string src);
 	void gotInfo(std::string msg);
-	void loadPreferences(std::string name, std::string trip);
-	void focus();
-	void processInputs();
+	void setStatusConnection(bool status);
+	void setStatusRoom(unsigned int roomID);
 }
 
 #endif
