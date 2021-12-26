@@ -140,7 +140,9 @@ namespace {
 
 		time_t lastConnect = 0;
 		time_t reconnectInterval = 5; //5 seconds
+
 	}
+	bool firstRoomUpdate = true;
 
 	std::unique_ptr<Window_Base> conn_status_window;
 	//const std::string server_url = "wss://dry-lowlands-62918.herokuapp.com/";
@@ -277,23 +279,9 @@ namespace {
 	void SlashCommandSetSprite(const char* sheet, int id);
 	}
 	EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
-		std::string msg = "Connected to room " + std::to_string(room_id);
 		#if defined(INGAME_CHAT)
 			Chat_Multiplayer::setStatusRoom(room_id);
 		#endif
-		std::string source = "Client";
-		EM_ASM({
-			if(shouldPrintRoomConnetionMessages)
-				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
-		}, msg.c_str(), source.c_str());
-
-		EM_ASM({
-			ConnectToLocalChat($0);
-		}, room_id);
-
-		EM_ASM({
-			SetRoomID($0)
-		}, room_id);
 		SetConnStatusWindowText("Connected");
 		//puts("onopen");
 		connected = true;
@@ -563,6 +551,7 @@ void ConnectToGame() {
 }
 
 void Game_Multiplayer::Connect(int map_id) {
+	firstRoomUpdate = true;
 	room_id = map_id;
 	Game_Multiplayer::Quit();
 	//if the window doesn't exist (first map loaded) then create it
@@ -581,21 +570,31 @@ void Game_Multiplayer::Connect(int map_id) {
 			DrawableMgr::SetLocalList(old_list);
 		}
 	}
+	
+	SetConnStatusWindowText("Disconnected");
 
-	if(!connected) 
+	if(!connected) {
 		ConnectToGame();
+	}
 	else {
 		uint16_t room_id16[] = {(uint16_t)room_id};
 		TrySend((void*)room_id16, sizeof(uint16_t));
+		SetConnStatusWindowText("Connected");
 	}
 
-	auto& player = Main_Data::game_player;
-	SendMainPlayerPos();
-	if(MultiplayerSettings::spritesheet != "")
-		SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
-	SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
-	SendMainPlayerName();
-	SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+	
+
+	EM_ASM({
+		ConnectToLocalChat($0);
+		SetRoomID($0);
+	}, room_id);
+
+	std::string msg = "Connected to room " + std::to_string(room_id);
+	std::string source = "Client";
+	EM_ASM({
+			if(shouldPrintRoomConnetionMessages)
+				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
+	}, msg.c_str(), source.c_str());
 
 	#if defined(INGAME_CHAT)
 		Chat_Multiplayer::refresh();
@@ -719,6 +718,18 @@ void Game_Multiplayer::Update() {
 		if(currentTime - MultiplayerSettings::lastConnect < MultiplayerSettings::reconnectInterval) {
 			ConnectToGame();
 		}
+	}
+
+	if(firstRoomUpdate) {
+		if(MultiplayerSettings::spritesheet != "")
+			SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
+		auto& player = Main_Data::game_player;
+		SendMainPlayerPos();
+		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
+		SendMainPlayerName();
+		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+		
+		firstRoomUpdate = false;
 	}
 }
 
