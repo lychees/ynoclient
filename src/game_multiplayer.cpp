@@ -279,9 +279,6 @@ namespace {
 	void SlashCommandSetSprite(const char* sheet, int id);
 	}
 	EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
-		#if defined(INGAME_CHAT)
-			Chat_Multiplayer::setStatusRoom(room_id);
-		#endif
 		SetConnStatusWindowText("Connected");
 		//puts("onopen");
 		connected = true;
@@ -567,6 +564,7 @@ void Game_Multiplayer::Connect(int map_id) {
 			conn_status_window = std::make_unique<Window_Base>(0, SCREEN_TARGET_HEIGHT-30, 100, 30);
 			conn_status_window->SetContents(Bitmap::Create(100, 30));
 			conn_status_window->SetZ(2106632960);
+			conn_status_window->SetVisible(false); // TODO: actually remove conn_status_window code.
 			DrawableMgr::SetLocalList(old_list);
 		}
 	}
@@ -595,8 +593,9 @@ void Game_Multiplayer::Connect(int map_id) {
 			if(shouldPrintRoomConnetionMessages)
 				PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
 	}, msg.c_str(), source.c_str());
-
+	
 	#if defined(INGAME_CHAT)
+		Chat_Multiplayer::setStatusRoom(room_id);
 		Chat_Multiplayer::refresh();
 	#endif
 }
@@ -703,7 +702,7 @@ void Game_Multiplayer::Update() {
 		p.second.sprite->Update();
 	}
 	if (Input::IsReleased(Input::InputButton::N3)) {
-		conn_status_window->SetVisible(!conn_status_window->IsVisible());
+		//conn_status_window->SetVisible(!conn_status_window->IsVisible());
 	}
 
 	if(MultiplayerSettings::shouldsync) {
