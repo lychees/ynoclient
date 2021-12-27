@@ -42,8 +42,11 @@ namespace {
 	class DrawableTypeBox : public Drawable {
 		Rect BOUNDS;
 		//design parameters
-		const unsigned int paddingHorz = 8; // padding between type box edges and content (left)
-		const unsigned int paddingVert = 6; // padding between type box edges and content (top)
+		const unsigned int typeBleed = 3; // amount that is visible outside the padded bounds (so text can be seen beyond a left or rightmost placed caret)
+		const unsigned int typePaddingHorz = 9; // padding between type box edges and content (left)
+		const unsigned int typePaddingVert = 6; // padding between type box edges and content (top)
+		const unsigned int labelPaddingHorz = 8; // left margin between label text and bounds
+		const unsigned int labelPaddingVert = 6; // top margin between label text and bounds
 		const unsigned int labelMargin = 40; // left margin for type box to make space for the label
 
 		BitmapRef typeText;
@@ -74,16 +77,16 @@ namespace {
 
 		void Draw(Bitmap& dst) {
 			const unsigned int labelPad = getLabelMargin();
-			const unsigned int typeVisibleWidth = BOUNDS.width-paddingHorz*2-labelPad;
+			const unsigned int typeVisibleWidth = BOUNDS.width-typePaddingHorz*2-labelPad;
 			auto rect = typeText->GetRect();
-			Rect cutoffRect = Rect(scroll, rect.y, std::min<int>(typeVisibleWidth, rect.width-scroll), rect.height); // crop type text to stay within padding
+			Rect cutoffRect = Rect(scroll-typeBleed, rect.y, std::min<int>(typeVisibleWidth, rect.width-scroll)+typeBleed*2, rect.height); // crop type text to stay within padding
 
 			// draw contents
-			dst.Blit(BOUNDS.x+labelPad+paddingHorz, BOUNDS.y+paddingVert, *typeText, cutoffRect, Opacity::Opaque());
+			dst.Blit(BOUNDS.x+labelPad+typePaddingHorz-typeBleed, BOUNDS.y+typePaddingVert, *typeText, cutoffRect, Opacity::Opaque());
 			// draw caret
-			dst.Blit(BOUNDS.x+labelPad+paddingHorz+typeCharOffsets[caretIndex]-scroll, BOUNDS.y+paddingVert, *caret, caret->GetRect(), Opacity::Opaque());
+			dst.Blit(BOUNDS.x+labelPad+typePaddingHorz+typeCharOffsets[caretIndex]-scroll, BOUNDS.y+typePaddingVert, *caret, caret->GetRect(), Opacity::Opaque());
 			// draw label
-			dst.Blit(BOUNDS.x+paddingHorz, BOUNDS.y+paddingVert, *label, label->GetRect(), Opacity::Opaque());
+			dst.Blit(BOUNDS.x+labelPaddingHorz, BOUNDS.y+labelPaddingVert, *label, label->GetRect(), Opacity::Opaque());
 		};
 
 		void refreshTheme() { }
@@ -110,7 +113,7 @@ namespace {
 			caretIndex = seek;
 			// adjust type box horizontal scrolling based on caret position (always keep it in-bounds)
 			const unsigned int labelPad = getLabelMargin();
-			const unsigned int typeVisibleWidth = BOUNDS.width-paddingHorz*2-labelPad;
+			const unsigned int typeVisibleWidth = BOUNDS.width-typePaddingHorz*2-labelPad;
 			const unsigned int caretOffset = typeCharOffsets[caretIndex]; // absolute offset of caret in relation to type text contents
 			const int relativeOffset = caretOffset-scroll; // caret's position relative to viewable portion of type box
 			if(relativeOffset < 0) {
