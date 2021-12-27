@@ -221,10 +221,20 @@ namespace {
 				auto rect = Font::Tiny()->GetSize(currentLine);
 				while(rect.width > maxWidth) {
 					// as long as current line exceeds maximum width,
-					// move one character from this line down to the next one
-					nextLine = currentLine.back()+nextLine;
-					currentLine.pop_back();
-					// recalculate line width with that character having been moved down
+					// move one word from this line down to the next one
+					unsigned int lastSpace = currentLine.find_last_of(' ');
+					if(lastSpace != std::string::npos && lastSpace < currentLine.size()-1) {
+						// there is a word that can be moved down
+						nextLine = currentLine.substr(lastSpace+1, std::string::npos)+nextLine;
+						currentLine = currentLine.substr(0, lastSpace+1);
+					} else {
+						// there is not a whole word that can be moved down, so move individual characters.
+						// this case happens when last character in current line is a space, 
+						// or when there are no spaces in the current line
+						nextLine = currentLine.back()+nextLine;
+						currentLine.pop_back();
+					}
+					// recalculate line width with characters having been moved down
 					rect = Font::Tiny()->GetSize(currentLine);
 				}
 				// once line fits, check for line breaks
@@ -354,6 +364,21 @@ namespace {
 			}
 		}
 
+		void removeChatEntry(ChatEntry* messageData) {
+			unsigned int nMsgs = messages.size();
+			for(int i = 0; i < nMsgs; i++) {
+				DrawableChatEntry& dMsg = messages[i];
+				if(dMsg.messageData == messageData) {
+					if(messageVisible(dMsg, visibilityFlags)) {
+						scrollContentHeight -= dMsg.renderGraphic->GetRect().height;
+						refreshScroll();
+					}
+					messages.erase(messages.begin()+i);
+					break;
+				}
+			}
+		}
+
 		void setScroll(int s) {
 			scrollPosition = s;
 			refreshScroll();
@@ -455,6 +480,10 @@ namespace {
 			dLog.addChatEntry(msg);
 		}
 
+		void removeLogEntry(ChatEntry* msg) {
+			dLog.removeChatEntry(msg);
+		}
+
 		void setStatusConnection(bool conn) {
 			dStatus.setConnectionStatus(conn);
 		}
@@ -512,6 +541,8 @@ namespace {
 	const unsigned int MAXCHARSINPUT_TRIPCODE = 256;
 	const unsigned int MAXCHARSINPUT_MESSAGE = 200;
 
+	const unsigned int MAXMESSAGES = 100;
+
 	std::u32string typeText;
 	unsigned int typeCaretIndex = 0;
 	unsigned int typeMaxChars = MAXCHARSINPUT_NAME;
@@ -524,6 +555,10 @@ namespace {
 	void addLogEntry(std::string a, std::string b, std::string c, VisibilityType v) {
 		chatLog.push_back(std::make_unique<ChatEntry>(a, b, c, v));
 		chatBox->addLogEntry(chatLog.back().get());
+		if(chatLog.size() > MAXMESSAGES) {
+			chatBox->removeLogEntry(chatLog.front().get());
+			chatLog.erase(chatLog.begin());
+		}
 	}
 
 	void initialize() {
@@ -697,7 +732,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	addLogEntry(
 		(src=="G"?"G← ":"")+name,
 		"•"+trip+":\n",
-		"  "+msg,
+		"\u00A0"+msg,
 		src=="G"?CV_GLOBAL:CV_LOCAL
 	);
 }
