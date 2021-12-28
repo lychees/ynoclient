@@ -123,7 +123,6 @@ namespace {
 
 	namespace MultiplayerSettings {
 		uint8_t playersVolume = 50;
-		uint8_t mAnimSpeed = 2;
 		//adding delay before setting weather since i dont fucking understand when it sets weather on entering another room
 		uint8_t weatherSetDelay = 25;
 		uint8_t weatherT = 0;
@@ -287,7 +286,7 @@ namespace {
 			SlashCommandSetSprite(MultiplayerSettings::spritesheet.c_str(), MultiplayerSettings::spriteid);
 		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
 		SendMainPlayerName();
-		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+		SendMainPlayerMoveSpeed((int)(player->GetMoveSpeed()));
 		return EM_TRUE;
 	}
 	EM_BOOL onclose(int eventType, const EmscriptenWebSocketCloseEvent *websocketEvent, void *userData) {
@@ -613,7 +612,6 @@ void Game_Multiplayer::MainPlayerMoved(int dir) {
 }
 
 void Game_Multiplayer::MainPlayerChangedMoveSpeed(int spd) {
-	MultiplayerSettings::mAnimSpeed = spd;
 	SendMainPlayerMoveSpeed(spd);
 }
 
@@ -727,7 +725,7 @@ void Game_Multiplayer::Update() {
 		SendMainPlayerPos();
 		SendMainPlayerSprite(player->GetSpriteName(), player->GetSpriteIndex());
 		SendMainPlayerName();
-		SendMainPlayerMoveSpeed((int)(MultiplayerSettings::mAnimSpeed));
+		SendMainPlayerMoveSpeed((int)(player->GetMoveSpeed()));
 		
 		firstRoomUpdate = false;
 	}
