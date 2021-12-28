@@ -11,7 +11,7 @@
 #include <array>
 #include "bitmapfont_glyph.h"
 
-constexpr const std::array<BitmapFontGlyph,271> BITMAPFONT_TINYUNICODE = {{
+constexpr const std::array<BitmapFontGlyph,272> BITMAPFONT_TINYUNICODE = {{
   { 32, 3, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, true, false },
   { 33, 2, { 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0 }, true, false },
   { 34, 4, { 0, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, true, false },
@@ -107,6 +107,7 @@ constexpr const std::array<BitmapFontGlyph,271> BITMAPFONT_TINYUNICODE = {{
   { 124, 2, { 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 }, true, false },
   { 125, 4, { 0, 3, 2, 2, 4, 2, 2, 3, 0, 0, 0, 0 }, true, false },
   { 126, 6, { 0, 0, 0, 18, 21, 9, 0, 0, 0, 0, 0, 0 }, true, false },
+  { 160, 6, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, true, false },
   { 161, 2, { 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0 }, true, false },
   { 162, 5, { 0, 0, 8, 14, 5, 5, 14, 2, 0, 0, 0, 0 }, true, false },
   { 163, 5, { 0, 0, 12, 2, 6, 2, 15, 0, 0, 0, 0, 0 }, true, false },
