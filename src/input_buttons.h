@@ -85,6 +85,9 @@ namespace Input {
 		CHAT_DEL_FORWARD, // chat inputs
 		CHAT_SEND, // chat inputs
 		CHAT_TOGGLE_GLOBAL, // chat inputs
+		CHAT_COPY, // chat inputs
+		CHAT_PASTE, // chat inputs
+		CHAT_CTRL, // chat inputs
 		BUTTON_COUNT
 	};
 

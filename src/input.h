@@ -361,6 +361,11 @@ namespace Input {
 	 */
 	std::string& getExternalTextInput();
 
+	/**
+	 * Gets clipboard text content.
+	 */
+	std::string getClipboardText();
+
 	bool IsWaitingInput();
 	void WaitInput(bool val);
 }

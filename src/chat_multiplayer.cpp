@@ -669,13 +669,37 @@ namespace {
 			typeText.erase(caretStart, std::max<unsigned int>(1, caretEnd-caretStart));
 			typeCaretIndexTail = typeCaretIndexHead = caretStart;
 		}
+		// copy and paste
+		if(Input::IsExternalTriggered(Input::InputButton::CHAT_COPY) && Input::IsExternalPressed(Input::InputButton::CHAT_CTRL)) {
+			if(typeCaretIndexTail != typeCaretIndexHead) {
+				unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				std::u32string selected = typeText.substr(caretStart, caretEnd-caretStart);
+				Output::setClipboardText(Utils::EncodeUTF(selected));
+			}
+		}
+		if(Input::IsExternalTriggered(Input::InputButton::CHAT_PASTE) && Input::IsExternalPressed(Input::InputButton::CHAT_CTRL)) {
+			std::string paste = Input::getClipboardText();
+			if(paste.size() > 0) {
+				unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				typeText.erase(caretStart, caretEnd-caretStart);
+				std::u32string inputU32 = Utils::DecodeUTF32(paste);
+				std::u32string fits = inputU32.substr(0, typeMaxChars-typeText.size());
+				typeText.insert(caretStart, fits);
+				typeCaretIndexTail = typeCaretIndexHead = caretStart+fits.size();
+			}
+		}
 		// move caret
 		if(Input::IsExternalRepeated(Input::InputButton::CHAT_LEFT)) {
 			if(Input::IsExternalPressed(Input::InputButton::SHIFT)) {
 				if(typeCaretIndexHead > 0) typeCaretIndexHead--;
 			} else {
-				typeCaretIndexHead = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				if(typeCaretIndexTail == typeCaretIndexHead && typeCaretIndexHead > 0) typeCaretIndexHead--;
+				if(typeCaretIndexTail == typeCaretIndexHead) {
+					if(typeCaretIndexHead > 0) typeCaretIndexHead--;
+				} else {
+					typeCaretIndexHead = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				}
 				typeCaretIndexTail = typeCaretIndexHead;
 			}
 		}
@@ -683,8 +707,11 @@ namespace {
 			if(Input::IsExternalPressed(Input::InputButton::SHIFT)) {
 				if(typeCaretIndexHead < typeText.size()) typeCaretIndexHead++;
 			} else {
-				typeCaretIndexHead = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				if(typeCaretIndexTail == typeCaretIndexHead && typeCaretIndexHead < typeText.size()) typeCaretIndexHead++;
+				if(typeCaretIndexTail == typeCaretIndexHead) {
+					if(typeCaretIndexHead < typeText.size()) typeCaretIndexHead++;
+				} else {
+					typeCaretIndexHead = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
+				}
 				typeCaretIndexTail = typeCaretIndexHead;
 			}
 		}
