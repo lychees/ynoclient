@@ -368,6 +368,10 @@ void Output::DebugStr(std::string const& msg) {
 	WriteLog(LogLevel::Debug, msg, Color(128, 128, 128, 255));
 }
 
+void Output::setClipboardText(std::string text) {
+	DisplayUi->setClipboardText(text);
+}
+
 #ifdef GEKKO
 extern const devoptab_t dotab_stdnull;
 

@@ -167,6 +167,11 @@ namespace Output {
 	 */
 	void DebugStr(std::string const& msg);
 
+	/**
+	 * Sets clipboard text content.
+	 */
+	void setClipboardText(std::string text);
+
 #ifdef GEKKO
 	/**
 	 * Helper function to disable the console on Wii

@@ -52,7 +52,8 @@ namespace {
 		BitmapRef typeText;
 		BitmapRef label;
 		BitmapRef caret;
-		unsigned int caretIndex = 0;
+		unsigned int caretIndexTail = 0;
+		unsigned int caretIndexHead = 0;
 		std::vector<unsigned int> typeCharOffsets; // cumulative x offsets for each character in the type box. Used for rendering the caret
 		unsigned int scroll = 0; // horizontal scrolling of type box
 
@@ -84,9 +85,16 @@ namespace {
 			// draw contents
 			dst.Blit(BOUNDS.x+labelPad+typePaddingHorz-typeBleed, BOUNDS.y+typePaddingVert, *typeText, cutoffRect, Opacity::Opaque());
 			// draw caret
-			dst.Blit(BOUNDS.x+labelPad+typePaddingHorz+typeCharOffsets[caretIndex]-scroll, BOUNDS.y+typePaddingVert, *caret, caret->GetRect(), Opacity::Opaque());
+			dst.Blit(BOUNDS.x+labelPad+typePaddingHorz+typeCharOffsets[caretIndexHead]-scroll, BOUNDS.y+typePaddingVert, *caret, caret->GetRect(), Opacity::Opaque());
 			// draw label
 			dst.Blit(BOUNDS.x+labelPaddingHorz, BOUNDS.y+labelPaddingVert, *label, label->GetRect(), Opacity::Opaque());
+			// draw selection
+			const unsigned int caretStart = std::min<unsigned int>(caretIndexTail, caretIndexHead);
+			const unsigned int caretEnd = std::max<unsigned int>(caretIndexTail, caretIndexHead);
+			const unsigned int selectStart = BOUNDS.x+labelPad+typePaddingHorz+std::max<int>(typeCharOffsets[caretStart]-scroll, -typeBleed);
+			const unsigned int selectEnd = BOUNDS.x+labelPad+typePaddingHorz+std::min<int>(typeCharOffsets[caretEnd]-scroll, typeVisibleWidth+typeBleed);
+			Rect selectedRect = Rect(selectStart, BOUNDS.y+typePaddingVert, selectEnd-selectStart, BOUNDS.height-typePaddingVert*2);
+			dst.FillRect(selectedRect, Color(255, 255, 255, 100));
 		};
 
 		void refreshTheme() { }
@@ -109,12 +117,13 @@ namespace {
 			Text::Draw(*typeText, 0, 0, *Font::Default(), *Cache::SystemOrBlack(), 0, Utils::EncodeUTF(text));
 		}
 
-		void seekCaret(unsigned int seek) {
-			caretIndex = seek;
+		void seekCaret(unsigned int seekTail, unsigned int seekHead) {
+			caretIndexTail = seekTail;
+			caretIndexHead = seekHead;
 			// adjust type box horizontal scrolling based on caret position (always keep it in-bounds)
 			const unsigned int labelPad = getLabelMargin();
 			const unsigned int typeVisibleWidth = BOUNDS.width-typePaddingHorz*2-labelPad;
-			const unsigned int caretOffset = typeCharOffsets[caretIndex]; // absolute offset of caret in relation to type text contents
+			const unsigned int caretOffset = typeCharOffsets[caretIndexHead]; // absolute offset of caret in relation to type text contents
 			const int relativeOffset = caretOffset-scroll; // caret's position relative to viewable portion of type box
 			if(relativeOffset < 0) {
 				// caret escapes from left side. adjust
@@ -502,9 +511,9 @@ namespace {
 			dStatus.refreshTheme();
 		}
 
-		void updateTypeBox(std::u32string text, unsigned int caretSeek) {
+		void updateTypeBox(std::u32string text, unsigned int caretSeekTail, unsigned int caretSeekHead) {
 			dType.updateTypeText(text);
-			dType.seekCaret(caretSeek);
+			dType.seekCaret(caretSeekTail, caretSeekHead);
 		}
 
 		void showTypeLabel(std::string label) {
@@ -540,15 +549,14 @@ namespace {
 	////////////////
 	////////////////
 
+	bool chatFocused = false;
+
 	const unsigned int MAXCHARSINPUT_NAME = 8;
 	const unsigned int MAXCHARSINPUT_TRIPCODE = 256;
 	const unsigned int MAXCHARSINPUT_MESSAGE = 200;
 
 	const unsigned int MAXMESSAGES = 100;
 
-	std::u32string typeText;
-	unsigned int typeCaretIndex = 0;
-	unsigned int typeMaxChars = MAXCHARSINPUT_NAME;
 	// TODO: have name and tripcode be on the same step (one typebox under another)
 	std::string cacheName = ""; // name and tripcode are input in separate steps. Save it to send them together.
 	std::u32string preloadTrip; // saved tripcode preference to load into trip type box once name has been sent.
@@ -561,6 +569,53 @@ namespace {
 		if(chatLog.size() > MAXMESSAGES) {
 			chatBox->removeLogEntry(chatLog.front().get());
 			chatLog.erase(chatLog.begin());
+		}
+	}
+
+	void setTypeText(std::u32string text) {
+		EM_ASM({ setTypeText(UTF8ToString($0)); }, Utils::EncodeUTF(text).c_str());
+	}
+
+	void setTypeMaxChars(unsigned int c) {
+		EM_ASM({ setTypeMaxChars($0); }, c);
+	}
+
+	void processAndSendMessage(std::string utf8text) {
+		if(multiplayer__my_name == "") { // name not set, type box should send profile info
+			if(cacheName == "") { //inputting name
+				// validate name. 
+				// TODO: Server also validates name, but client should receive confirmation from it
+				// instead of performing an equal validation
+				std::regex reg("^[A-Za-z0-9]+$");
+				if(	utf8text.size() > 0 &&
+					utf8text.size() <= MAXCHARSINPUT_NAME &&
+					std::regex_match(utf8text, reg)	) {
+					// name valid
+					cacheName = utf8text;
+					// load trip preferences
+					setTypeText(preloadTrip);
+					// change chatbox state to accept trip
+					chatBox->showTypeLabel("Trip");
+					setTypeMaxChars(MAXCHARSINPUT_TRIPCODE);
+					// append tripcode instructions
+					addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
+					addLogEntry("• Leave empty for random.", "", "", CV_LOCAL);
+					addLogEntry("• Use it to authenticate", "", "", CV_LOCAL);
+					addLogEntry("  yourself.", "", "", CV_LOCAL);
+				}
+			} else { //inputting trip
+				// send
+				EM_ASM({ SendProfileInfo(UTF8ToString($0), UTF8ToString($1)); }, cacheName.c_str(), utf8text.c_str());
+				// reset typebox
+				setTypeText(std::u32string());
+				// change chatbox state to allow for chat
+				chatBox->showTypeLabel("");
+				setTypeMaxChars(MAXCHARSINPUT_MESSAGE);
+			}
+		} else { // else it's used for sending messages
+			SendChatMessage(utf8text.c_str());
+			// reset typebox
+			setTypeText(std::u32string());
 		}
 	}
 
@@ -578,9 +633,8 @@ namespace {
 			return wasmStr;
 		});
 		std::string cfgNameStr = configNameStr;
-		typeText = Utils::DecodeUTF32(cfgNameStr);
-		typeCaretIndex = typeText.size();
-		chatBox->updateTypeBox(typeText, typeCaretIndex);
+		setTypeText(Utils::DecodeUTF32(cfgNameStr));
+		setTypeMaxChars(MAXCHARSINPUT_NAME);
 		free(configNameStr);
 		// load saved user profile preferences from JS side (trip)
 		char* configTripStr = (char*)EM_ASM_INT({
@@ -593,6 +647,13 @@ namespace {
 		std::string cfgTripStr = configTripStr;
 		preloadTrip = Utils::DecodeUTF32(cfgTripStr);
 		free(configTripStr);
+
+		addLogEntry("", "!! • IME input now supported!", "", CV_LOCAL);
+		addLogEntry("", "!!   (for Japanese, etc.)", "", CV_LOCAL);
+		addLogEntry("", "!! • You can now copy and", "", CV_LOCAL);
+		addLogEntry("", "!!   paste from type box.", "", CV_LOCAL);
+		addLogEntry("", "!! • SHIFT+[←, →] to select text.", "", CV_LOCAL);
+		addLogEntry("", "", "―――", CV_LOCAL);
 
 		addLogEntry("[TAB]: ", "focus/unfocus.", "", CV_LOCAL);
 		addLogEntry("[↑, ↓]: ", "scroll.", "", CV_LOCAL);
@@ -609,8 +670,11 @@ namespace {
 	}
 
 	void setFocus(bool focused) {
+		chatFocused = focused;
 		Input::setGameFocus(!focused);
 		chatBox->setFocus(focused);
+
+		EM_ASM({ setChatFocus($0); }, focused);
 	}
 
 	void inputsFocusUnfocus() {
@@ -633,84 +697,9 @@ namespace {
 		}
 	}
 
-	void inputsTyping() {
-		// input
-		std::string inputText = Input::getExternalTextInput();
-		if(inputText.size() > 0) {
-			std::u32string inputU32 = Utils::DecodeUTF32(inputText);
-			std::u32string fits = inputU32.substr(0, typeMaxChars-typeText.size());
-			typeText.insert(typeCaretIndex, fits);
-			typeCaretIndex += fits.size();
-		}
-		// erase
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_DEL_BACKWARD)) {
-			if(typeCaretIndex > 0) typeText.erase(--typeCaretIndex, 1);
-		}
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_DEL_FORWARD)) {
-			typeText.erase(typeCaretIndex, 1);
-		}
-		// move caret
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_LEFT)) {
-			if(typeCaretIndex > 0) typeCaretIndex--;
-		}
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_RIGHT)) {
-			if(typeCaretIndex < typeText.size()) typeCaretIndex++;
-		}
-		// update type box
-		// TODO: only update when inputs change type text or caret position
-		chatBox->updateTypeBox(typeText, typeCaretIndex);
-		// send
-		if(Input::IsExternalTriggered(Input::InputButton::CHAT_SEND)) {
-			if(multiplayer__my_name == "") { // name not set, type box should send profile info
-				if(cacheName == "") { //inputting name
-					// validate name. 
-					// TODO: Server also validates name, but client should receive confirmation from it
-					// instead of performing an equal validation
-					std::string utf8text = Utils::EncodeUTF(typeText);
-					std::regex reg("^[A-Za-z0-9]+$");
-					if(	typeText.size() > 0 &&
-						typeText.size() <= MAXCHARSINPUT_NAME &&
-						std::regex_match(utf8text, reg)	) {
-						// name valid
-						cacheName = utf8text;
-						// load trip preferences
-						typeText = preloadTrip;
-						typeCaretIndex = preloadTrip.size();
-						chatBox->updateTypeBox(typeText, typeCaretIndex);
-						// change chatbox state to accept trip
-						chatBox->showTypeLabel("Trip");
-						typeMaxChars = MAXCHARSINPUT_TRIPCODE;
-						// append tripcode instructions
-						addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
-						addLogEntry("• Leave empty for random.", "", "", CV_LOCAL);
-						addLogEntry("• Use it to authenticate", "", "", CV_LOCAL);
-						addLogEntry("  yourself.", "", "", CV_LOCAL);
-					}
-				} else { //inputting trip
-					// send
-					EM_ASM({ SendProfileInfo(UTF8ToString($0), UTF8ToString($1)); }, cacheName.c_str(), Utils::EncodeUTF(typeText).c_str());
-					// reset typebox
-					typeText.clear();
-					typeCaretIndex = 0;
-					chatBox->updateTypeBox(typeText, typeCaretIndex);
-					// change chatbox state to allow for chat
-					chatBox->showTypeLabel("");
-					typeMaxChars = MAXCHARSINPUT_MESSAGE;
-				}
-			} else { // else it's used for sending messages
-				SendChatMessage(Utils::EncodeUTF(typeText).c_str());
-				// reset typebox
-				typeText.clear();
-				typeCaretIndex = 0;
-				chatBox->updateTypeBox(typeText, typeCaretIndex);
-			}
-		}
-	}
-
 	void processInputs() {
 		inputsFocusUnfocus();
 		inputsLog();
-		inputsTyping();
 	}
 }
 
@@ -757,4 +746,21 @@ void Chat_Multiplayer::setStatusConnection(bool status) {
 void Chat_Multiplayer::setStatusRoom(unsigned int roomID) {
 	if(chatBox == nullptr) return;
 	chatBox->setStatusRoom(roomID);
+}
+
+// JS access
+// ---------
+
+extern "C" {
+	int isChatOpen() {
+		return chatFocused;
+	}
+
+	void updateTypeDisplay(char* text, unsigned int caretTail, unsigned int caretHead) {
+		chatBox->updateTypeBox(Utils::DecodeUTF32(std::string(text)), caretTail, caretHead);
+	}
+
+	void trySendChat(char* text) {
+		processAndSendMessage(std::string(text));
+	}
 }
