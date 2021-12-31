@@ -549,16 +549,14 @@ namespace {
 	////////////////
 	////////////////
 
+	bool chatFocused = false;
+
 	const unsigned int MAXCHARSINPUT_NAME = 8;
 	const unsigned int MAXCHARSINPUT_TRIPCODE = 256;
 	const unsigned int MAXCHARSINPUT_MESSAGE = 200;
 
 	const unsigned int MAXMESSAGES = 100;
 
-	std::u32string typeText;
-	unsigned int typeCaretIndexTail = 0; // anchored when SHIFT-selecting text
-	unsigned int typeCaretIndexHead = 0; // moves when SHIFT-selecting text
-	unsigned int typeMaxChars = MAXCHARSINPUT_NAME;
 	// TODO: have name and tripcode be on the same step (one typebox under another)
 	std::string cacheName = ""; // name and tripcode are input in separate steps. Save it to send them together.
 	std::u32string preloadTrip; // saved tripcode preference to load into trip type box once name has been sent.
@@ -571,6 +569,53 @@ namespace {
 		if(chatLog.size() > MAXMESSAGES) {
 			chatBox->removeLogEntry(chatLog.front().get());
 			chatLog.erase(chatLog.begin());
+		}
+	}
+
+	void setTypeText(std::u32string text) {
+		EM_ASM({ setTypeText(UTF8ToString($0)); }, Utils::EncodeUTF(text).c_str());
+	}
+
+	void setTypeMaxChars(unsigned int c) {
+		EM_ASM({ setTypeMaxChars($0); }, c);
+	}
+
+	void processAndSendMessage(std::string utf8text) {
+		if(multiplayer__my_name == "") { // name not set, type box should send profile info
+			if(cacheName == "") { //inputting name
+				// validate name. 
+				// TODO: Server also validates name, but client should receive confirmation from it
+				// instead of performing an equal validation
+				std::regex reg("^[A-Za-z0-9]+$");
+				if(	utf8text.size() > 0 &&
+					utf8text.size() <= MAXCHARSINPUT_NAME &&
+					std::regex_match(utf8text, reg)	) {
+					// name valid
+					cacheName = utf8text;
+					// load trip preferences
+					setTypeText(preloadTrip);
+					// change chatbox state to accept trip
+					chatBox->showTypeLabel("Trip");
+					setTypeMaxChars(MAXCHARSINPUT_TRIPCODE);
+					// append tripcode instructions
+					addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
+					addLogEntry("• Leave empty for random.", "", "", CV_LOCAL);
+					addLogEntry("• Use it to authenticate", "", "", CV_LOCAL);
+					addLogEntry("  yourself.", "", "", CV_LOCAL);
+				}
+			} else { //inputting trip
+				// send
+				EM_ASM({ SendProfileInfo(UTF8ToString($0), UTF8ToString($1)); }, cacheName.c_str(), utf8text.c_str());
+				// reset typebox
+				setTypeText(std::u32string());
+				// change chatbox state to allow for chat
+				chatBox->showTypeLabel("");
+				setTypeMaxChars(MAXCHARSINPUT_MESSAGE);
+			}
+		} else { // else it's used for sending messages
+			SendChatMessage(utf8text.c_str());
+			// reset typebox
+			setTypeText(std::u32string());
 		}
 	}
 
@@ -588,9 +633,8 @@ namespace {
 			return wasmStr;
 		});
 		std::string cfgNameStr = configNameStr;
-		typeText = Utils::DecodeUTF32(cfgNameStr);
-		typeCaretIndexTail = typeCaretIndexHead = typeText.size();
-		chatBox->updateTypeBox(typeText, typeCaretIndexTail, typeCaretIndexHead);
+		setTypeText(Utils::DecodeUTF32(cfgNameStr));
+		setTypeMaxChars(MAXCHARSINPUT_NAME);
 		free(configNameStr);
 		// load saved user profile preferences from JS side (trip)
 		char* configTripStr = (char*)EM_ASM_INT({
@@ -619,8 +663,11 @@ namespace {
 	}
 
 	void setFocus(bool focused) {
+		chatFocused = focused;
 		Input::setGameFocus(!focused);
 		chatBox->setFocus(focused);
+
+		EM_ASM({ setChatFocus($0); }, focused);
 	}
 
 	void inputsFocusUnfocus() {
@@ -643,133 +690,9 @@ namespace {
 		}
 	}
 
-	void inputsTyping() {
-		// input
-		std::string inputText = Input::getExternalTextInput();
-		if(inputText.size() > 0) {
-			unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			typeText.erase(caretStart, caretEnd-caretStart);
-			std::u32string inputU32 = Utils::DecodeUTF32(inputText);
-			std::u32string fits = inputU32.substr(0, typeMaxChars-typeText.size());
-			typeText.insert(caretStart, fits);
-			typeCaretIndexTail = typeCaretIndexHead = caretStart+fits.size();
-		}
-		// erase
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_DEL_BACKWARD)) {
-			unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			unsigned int effectiveStart = std::max<int>(0, caretEnd-std::max<unsigned int>(1, caretEnd-caretStart));
-			typeText.erase(effectiveStart, caretEnd-effectiveStart);
-			typeCaretIndexTail = typeCaretIndexHead = effectiveStart;
-		}
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_DEL_FORWARD)) {
-			unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-			typeText.erase(caretStart, std::max<unsigned int>(1, caretEnd-caretStart));
-			typeCaretIndexTail = typeCaretIndexHead = caretStart;
-		}
-		// copy and paste
-		if(Input::IsExternalTriggered(Input::InputButton::CHAT_COPY) && Input::IsExternalPressed(Input::InputButton::CHAT_CTRL)) {
-			if(typeCaretIndexTail != typeCaretIndexHead) {
-				unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				std::u32string selected = typeText.substr(caretStart, caretEnd-caretStart);
-				Output::setClipboardText(Utils::EncodeUTF(selected));
-			}
-		}
-		if(Input::IsExternalTriggered(Input::InputButton::CHAT_PASTE) && Input::IsExternalPressed(Input::InputButton::CHAT_CTRL)) {
-			std::string paste = Input::getClipboardText();
-			if(paste.size() > 0) {
-				unsigned int caretStart = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				unsigned int caretEnd = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				typeText.erase(caretStart, caretEnd-caretStart);
-				std::u32string inputU32 = Utils::DecodeUTF32(paste);
-				std::u32string fits = inputU32.substr(0, typeMaxChars-typeText.size());
-				typeText.insert(caretStart, fits);
-				typeCaretIndexTail = typeCaretIndexHead = caretStart+fits.size();
-			}
-		}
-		// move caret
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_LEFT)) {
-			if(Input::IsExternalPressed(Input::InputButton::SHIFT)) {
-				if(typeCaretIndexHead > 0) typeCaretIndexHead--;
-			} else {
-				if(typeCaretIndexTail == typeCaretIndexHead) {
-					if(typeCaretIndexHead > 0) typeCaretIndexHead--;
-				} else {
-					typeCaretIndexHead = std::min<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				}
-				typeCaretIndexTail = typeCaretIndexHead;
-			}
-		}
-		if(Input::IsExternalRepeated(Input::InputButton::CHAT_RIGHT)) {
-			if(Input::IsExternalPressed(Input::InputButton::SHIFT)) {
-				if(typeCaretIndexHead < typeText.size()) typeCaretIndexHead++;
-			} else {
-				if(typeCaretIndexTail == typeCaretIndexHead) {
-					if(typeCaretIndexHead < typeText.size()) typeCaretIndexHead++;
-				} else {
-					typeCaretIndexHead = std::max<unsigned int>(typeCaretIndexTail, typeCaretIndexHead);
-				}
-				typeCaretIndexTail = typeCaretIndexHead;
-			}
-		}
-		// update type box
-		// TODO: only update when inputs change type text or caret position
-		chatBox->updateTypeBox(typeText, typeCaretIndexTail, typeCaretIndexHead);
-		// send
-		if(Input::IsExternalTriggered(Input::InputButton::CHAT_SEND)) {
-			if(multiplayer__my_name == "") { // name not set, type box should send profile info
-				if(cacheName == "") { //inputting name
-					// validate name. 
-					// TODO: Server also validates name, but client should receive confirmation from it
-					// instead of performing an equal validation
-					std::string utf8text = Utils::EncodeUTF(typeText);
-					std::regex reg("^[A-Za-z0-9]+$");
-					if(	typeText.size() > 0 &&
-						typeText.size() <= MAXCHARSINPUT_NAME &&
-						std::regex_match(utf8text, reg)	) {
-						// name valid
-						cacheName = utf8text;
-						// load trip preferences
-						typeText = preloadTrip;
-						typeCaretIndexTail = typeCaretIndexHead = typeText.size();
-						chatBox->updateTypeBox(typeText, typeCaretIndexTail, typeCaretIndexHead);
-						// change chatbox state to accept trip
-						chatBox->showTypeLabel("Trip");
-						typeMaxChars = MAXCHARSINPUT_TRIPCODE;
-						// append tripcode instructions
-						addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
-						addLogEntry("• Leave empty for random.", "", "", CV_LOCAL);
-						addLogEntry("• Use it to authenticate", "", "", CV_LOCAL);
-						addLogEntry("  yourself.", "", "", CV_LOCAL);
-					}
-				} else { //inputting trip
-					// send
-					EM_ASM({ SendProfileInfo(UTF8ToString($0), UTF8ToString($1)); }, cacheName.c_str(), Utils::EncodeUTF(typeText).c_str());
-					// reset typebox
-					typeText.clear();
-					typeCaretIndexTail = typeCaretIndexHead = 0;
-					chatBox->updateTypeBox(typeText, typeCaretIndexTail, typeCaretIndexHead);
-					// change chatbox state to allow for chat
-					chatBox->showTypeLabel("");
-					typeMaxChars = MAXCHARSINPUT_MESSAGE;
-				}
-			} else { // else it's used for sending messages
-				SendChatMessage(Utils::EncodeUTF(typeText).c_str());
-				// reset typebox
-				typeText.clear();
-				typeCaretIndexTail = typeCaretIndexHead = 0;
-				chatBox->updateTypeBox(typeText, typeCaretIndexTail, typeCaretIndexHead);
-			}
-		}
-	}
-
 	void processInputs() {
 		inputsFocusUnfocus();
 		inputsLog();
-		inputsTyping();
 	}
 }
 
@@ -816,4 +739,21 @@ void Chat_Multiplayer::setStatusConnection(bool status) {
 void Chat_Multiplayer::setStatusRoom(unsigned int roomID) {
 	if(chatBox == nullptr) return;
 	chatBox->setStatusRoom(roomID);
+}
+
+// JS access
+// ---------
+
+extern "C" {
+	int isChatOpen() {
+		return chatFocused;
+	}
+
+	void updateTypeDisplay(char* text, unsigned int caretTail, unsigned int caretHead) {
+		chatBox->updateTypeBox(Utils::DecodeUTF32(std::string(text)), caretTail, caretHead);
+	}
+
+	void trySendChat(char* text) {
+		processAndSendMessage(std::string(text));
+	}
 }
