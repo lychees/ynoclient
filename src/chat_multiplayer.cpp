@@ -648,6 +648,13 @@ namespace {
 		preloadTrip = Utils::DecodeUTF32(cfgTripStr);
 		free(configTripStr);
 
+		addLogEntry("", "!! • IME input now supported!", "", CV_LOCAL);
+		addLogEntry("", "!!   (for Japanese, etc.)", "", CV_LOCAL);
+		addLogEntry("", "!! • You can now copy and", "", CV_LOCAL);
+		addLogEntry("", "!!   paste from type box.", "", CV_LOCAL);
+		addLogEntry("", "!! • SHIFT+[←, →] to select text.", "", CV_LOCAL);
+		addLogEntry("", "", "―――", CV_LOCAL);
+
 		addLogEntry("[TAB]: ", "focus/unfocus.", "", CV_LOCAL);
 		addLogEntry("[↑, ↓]: ", "scroll.", "", CV_LOCAL);
 		addLogEntry("[F8]: ", "hide/show global chat.", "", CV_LOCAL);
