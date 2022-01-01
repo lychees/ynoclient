@@ -1,8 +1,6 @@
 // Note: The `Module` context is already initialized as an
 // empty object by emscripten even before the pre script
-Module = {
-  EASYRPG_GAME: "",
-
+Object.assign(Module, {
   preRun: [],
   postRun: [],
 
@@ -44,7 +42,7 @@ Module = {
     Module.totalDependencies = Math.max(Module.totalDependencies, left);
     Module.setStatus(left ? `Preparing... (${Module.totalDependencies - left}/${Module.totalDependencies})` : 'Downloading game data...');
   }
-};
+});
 
 /**
  * Parses the current location query to setup a specific game
@@ -57,17 +55,20 @@ function parseArgs () {
   result.push("--save-path");
   result.push("Save");
 
+  // Set argument for game based on EASYRPG_GAME, which is set externally
+  if(Module.EASYRPG_GAME === undefined) Module.EASYRPG_GAME = "";
+  Module.EASYRPG_GAME = Module.EASYRPG_GAME.toLowerCase();
+  if(Module.EASYRPG_GAME !== "") {
+    result.push("--game");
+    result.push(Module.EASYRPG_GAME);
+  }
+
   for (let i = 0; i < items.length; i++) {
     const tmp = items[i].split("=");
 
-    if (tmp[0] === "project-path" || tmp[0] === "save-path") {
+    if (tmp[0] === "project-path" || tmp[0] === "save-path" || tmp[0] === "game") {
       // Filter arguments that are set by us
       continue;
-    }
-
-    // Filesystem is not ready when processing arguments, store path to game
-    if (tmp[0] === "game" && tmp.length > 1) {
-      Module.EASYRPG_GAME = tmp[1].toLowerCase();
     }
 
     result.push("--" + tmp[0]);
