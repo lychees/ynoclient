@@ -24,73 +24,112 @@
 #include "game_map.h"
 #include "player.h"
 
-void ConnectToGame();
+/*
+	================
+	NAMETAG RENDERER
+	================
+*/
 
-class MultiplayerText : Drawable {
-	public:
+// one Drawable is responsible for drawing all name tags,
+// so that it can control how to render when multiple nametags intersect.
+class DrawableNameTags : public Drawable {
+	struct Tag {
+		BitmapRef renderGraphic;
+		Game_Character* anchor;
+		int x = 0;
+		int y = 0;
+	};
+	// Store nametags indexable by UID.
+	// Also store list of nametags per tile, so they're drawn stacked on each other by iterating through occupied tiles.
+	std::map<std::string, std::unique_ptr<Tag>> nameTags; // tags indexed by UID.
+	std::unordered_map<unsigned long, std::vector<Tag*>> nameStacks; // list of tags per tile.
+																	 // key is a hash based on tile coordinates, and value is a list of nametags on that tile.
 
-		MultiplayerText() : Drawable(Priority_Frame) {
+	unsigned long coordHash(int x, int y) { // perfect hash for coordinate pairs
+		// uniquely map integers to whole numbers
+		unsigned long a = 2*x;
+		if(x < 0) { a = -2*x-1; }
+		unsigned long b = 2*y;
+		if(y < 0) { b = -2*y-1; }
+		// Cantor pairing function
+		return ((a+b)*(a+b+1))/2+b;
+	}
+
+	void buildTagGraphic(Tag* tag, std::string name) {
+		Rect rect = Font::Tiny()->GetSize(name);
+		tag->renderGraphic = Bitmap::Create(rect.width+1, rect.height+1);
+		Color shadowColor = Color(0, 0, 0, 255); // shadow color
+		Text::Draw(*tag->renderGraphic, 1, 1, *Font::Tiny(), shadowColor, name); // draw black fallback shadow
+		Text::Draw(*tag->renderGraphic, 0, 0, *Font::Tiny(), *Cache::SystemOrBlack(), 0, name);
+	}
+public:
+	DrawableNameTags() : Drawable(Priority_Frame, Drawable::Flags::Global) {
 		DrawableMgr::Register(this);
 	}
 
-	//sets character that text will be drawn on top
-	void SetAnchorCharacter(std::shared_ptr<Game_Character> anchor) {
-		this->anchor = anchor;
-	}
-
-	void RemoveAnchorCharacter() {
-		this->anchor.reset();
-	}
-
-	//sets text and draws in into bitmap
-	void SetText(std::string text) {
-		this->text = text;
-
-		if(text == "")
-			return;
-
-		/*Rect textrect = Font::Default()->GetSize(text);
-		Rect scaledrect = textrect;
-
-		if(scaledrect.width > maxWidth) {
-			scaledrect = Rect(0, 0, maxWidth, scaledrect.height * maxWidth / scaledrect.width);
+	void Draw(Bitmap& dst) {
+		const unsigned int stackDelta = 8;
+		for(auto& it : nameStacks) {
+			unsigned int nTags = it.second.size();
+			for(int i = 0; i < nTags; i++) {
+				Tag* tag = it.second[i];
+				auto rect = tag->renderGraphic->GetRect();
+				dst.Blit(tag->anchor->GetScreenX()-rect.width/2, tag->anchor->GetScreenY()-rect.height-TILE_SIZE*1.75-stackDelta*i, *tag->renderGraphic, rect, Opacity::Opaque());
+			}
 		}
-
-		textbitmap = Bitmap::Create(textrect.width + 1, textrect.height + 1, true);
-		scaledbitmap = Bitmap::Create(scaledrect.width + 1, scaledrect.height + 1);
-		Color color = Color(255, 255, 255, 255);
-		Text::Draw(*textbitmap, 0, 0, *Font::Default(), color, text);
-		scaledbitmap->StretchBlit(*textbitmap, textbitmap->GetRect(), Opacity::Opaque());*/
-
-		Rect textrect = Font::Tiny()->GetSize(text);
-		scaledbitmap = Bitmap::Create(textrect.width+1, textrect.height+1);
-		Color shadowColor = Color(0, 0, 0, 255); // shadow color
-		Text::Draw(*scaledbitmap, 1, 1, *Font::Tiny(), shadowColor, text); // draw black fallback shadow
-		Text::Draw(*scaledbitmap, 0, 0, *Font::Tiny(), *Cache::SystemOrBlack(), 0, text);
 	}
 
-	void SetMaxWidth(int width) {
-		this->maxWidth = width;
+	void createNameTag(std::string uid, Game_Character* anchor) {
+		assert(!nameTags.count(uid)); // prevent creating nametag for uid that already exists
+
+		std::unique_ptr<Tag> tag = std::make_unique<Tag>();
+		tag->anchor = anchor;
+		buildTagGraphic(tag.get(), "");
+
+		nameStacks[coordHash(tag->x, tag->y)].push_back(tag.get());
+		nameTags[uid] = std::move(tag);
 	}
 
-	void Draw(Bitmap& dst) override {
-		if(text == "")
-			return;
+	void deleteNameTag(std::string uid) {
+		assert(nameTags.count(uid)); // prevent deleting non existent nametag
 
-		Rect rect = scaledbitmap->GetRect();
-
-		dst.Blit(anchor->GetScreenX() - rect.width / 2, anchor->GetScreenY() - rect.height - TILE_SIZE * 1.75, *scaledbitmap, rect, Opacity::Opaque());
+		Tag* tag = nameTags[uid].get();
+		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)];
+		stack.erase(std::remove(stack.begin(), stack.end(), tag), stack.end());
+		nameTags.erase(uid);
 	}
 
-	private:
-	std::shared_ptr<Game_Character> anchor;
-	std::string text;
-	//BitmapRef textbitmap;
-	BitmapRef scaledbitmap;
-	int maxWidth;
-	int ttl;
-	bool ttluse;
+	void clearNameTags() {
+		nameTags.clear();
+		nameStacks.clear();
+	}
+
+	void moveNameTag(std::string uid, int x, int y) {
+		assert(nameTags.count(uid)); // prevent moving non existent nametag
+
+		Tag* tag = nameTags[uid].get();
+		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)];
+		stack.erase(std::remove(stack.begin(), stack.end(), tag), stack.end());
+		tag->x = x;
+		tag->y = y;
+		nameStacks[coordHash(tag->x, tag->y)].push_back(tag);
+	}
+
+	void setTagName(std::string uid, std::string name) {
+		assert(nameTags.count(uid)); // prevent using non existent nametag
+		buildTagGraphic(nameTags[uid].get(), name);
+	}
 };
+
+std::unique_ptr<DrawableNameTags> nameTagRenderer; //global nametag renderer
+
+/*
+	================
+	================
+	================
+*/
+
+void ConnectToGame();
 
 struct MPPlayer {
 	std::queue<std::pair<int,int>> mvq; //queue of move commands
@@ -98,7 +137,6 @@ struct MPPlayer {
 	//this one is used to save player speed before setting it to max speed when move queue is too long
 	int moveSpeed;
 	std::unique_ptr<Sprite_Character> sprite;
-	std::unique_ptr<MultiplayerText> nickname;
 };
 
 std::string multiplayer__my_name = "";
@@ -201,11 +239,8 @@ namespace {
 		nplayer->SetMoveFrequency(player->GetMoveFrequency());
 		nplayer->SetThrough(true);
 		nplayer->SetLayer(player->GetLayer());
-		//to-do: call operator[] once and save reference to use
-		players[uid].nickname = std::make_unique<MultiplayerText>();
-		players[uid].nickname->SetAnchorCharacter(nplayer);
-		players[uid].nickname->SetMaxWidth(TILE_SIZE * 2.2);
-		players[uid].nickname->SetText("");
+
+		nameTagRenderer->createNameTag(uid, nplayer.get());
 
 		auto scene_map = Scene::Find(Scene::SceneType::Map);
 		if (scene_map == nullptr) {
@@ -333,7 +368,9 @@ namespace {
 						const nx_json* uid = nx_json_get(json, "uuid");
 						auto old_list = &DrawableMgr::GetLocalList();
 						DrawableMgr::SetLocalList(&scene_map->GetDrawableList());
-						players[uid->text_value].nickname->RemoveAnchorCharacter();
+
+						nameTagRenderer->deleteNameTag(uid->text_value);
+
 						players.erase(uid->text_value);
 						DrawableMgr::SetLocalList(old_list);
 					}
@@ -414,7 +451,7 @@ namespace {
 				}
 
 				if(name->type == nx_json_type::NX_JSON_STRING) {
-					players[uids].nickname->SetText(name->text_value);
+					nameTagRenderer->setTagName(uids, name->text_value);
 				}
 
 				if(weather->type == nx_json_type::NX_JSON_OBJECT) {
@@ -598,13 +635,16 @@ void Game_Multiplayer::Connect(int map_id) {
 		Chat_Multiplayer::setStatusRoom(room_id);
 		Chat_Multiplayer::refresh();
 	#endif
+
+	// initialize nametag renderer	
+	if(nameTagRenderer == nullptr) {
+		nameTagRenderer = std::make_unique<DrawableNameTags>();
+	}
 }
 
 void Game_Multiplayer::Quit() {
-	for(auto& p : players) {
-		p.second.nickname->RemoveAnchorCharacter();
-	}
 	players.clear();
+	nameTagRenderer->clearNameTags();
 }
 
 void Game_Multiplayer::MainPlayerMoved(int dir) {
@@ -687,7 +727,10 @@ void Game_Multiplayer::Update() {
 	for (auto& p : players) {
 		auto& q = p.second.mvq;
 		if (!q.empty() && p.second.ch->IsStopping()) {
-			MovePlayerToPos(p.second.ch, q.front().first, q.front().second);
+			auto posX = q.front().first;
+			auto posY = q.front().second;
+			MovePlayerToPos(p.second.ch, posX, posY);
+			nameTagRenderer->moveNameTag(p.first, posX, posY);
 			if(q.size() > 8) {
 				p.second.ch->SetMoveSpeed(6);
 				while(q.size() > 16)
