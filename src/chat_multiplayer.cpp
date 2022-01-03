@@ -216,6 +216,7 @@ namespace {
 		int scrollPosition = 0;
 		unsigned int scrollContentHeight = 0; // total height of scrollable message log
 		unsigned short visibilityFlags = CV_LOCAL | CV_GLOBAL;
+		BitmapRef currentTheme; // system graphic for the current theme
 
 		void buildMessageGraphic(DrawableChatEntry& msg) {
 			// manual text wrapping
@@ -280,9 +281,9 @@ namespace {
 				colorACharacters -= aChars;
 				colorBCharacters -= bChars;
 				// draw the three colored text regions
-				unsigned int bStart = Text::Draw(*text_img, 0, line.second, *Font::Tiny(), *Cache::SystemOrBlack(), 1, line.first.substr(0, aChars)).width;
-				unsigned int cStart = Text::Draw(*text_img, bStart, line.second, *Font::Tiny(), *Cache::SystemOrBlack(), 2, line.first.substr(aChars, bChars)).width;
-				Text::Draw(*text_img, bStart+cStart, line.second, *Font::Tiny(), *Cache::SystemOrBlack(), 0, line.first.substr(aChars+bChars, std::string::npos));
+				unsigned int bStart = Text::Draw(*text_img, 0, line.second, *Font::Tiny(), *currentTheme, 1, line.first.substr(0, aChars)).width;
+				unsigned int cStart = Text::Draw(*text_img, bStart, line.second, *Font::Tiny(), *currentTheme, 2, line.first.substr(aChars, bChars)).width;
+				Text::Draw(*text_img, bStart+cStart, line.second, *Font::Tiny(), *currentTheme, 0, line.first.substr(aChars+bChars, std::string::npos));
 			}
 			msg.renderGraphic = text_img;
 			msg.dirty = false;
@@ -326,6 +327,8 @@ namespace {
 
 			scrollBox.SetZ(2106632960);
 			scrollBox.SetVisible(false);
+
+			currentTheme = Cache::SystemOrBlack();
 		}
 
 		void setHeight(unsigned int h) {
@@ -359,7 +362,11 @@ namespace {
 		};
 
 		void refreshTheme() {
-			scrollBox.SetWindowskin(Cache::SystemOrBlack());
+			auto newTheme = Cache::SystemOrBlack();
+			if(newTheme == currentTheme) return; // do nothing if theme hasn't changed
+
+			currentTheme = newTheme;
+			scrollBox.SetWindowskin(currentTheme);
 			for(int i = 0; i < messages.size(); i++) {
 				messages[i].dirty = true; // all messages now need to be redrawn with different UI skin
 			}
