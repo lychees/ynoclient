@@ -407,6 +407,10 @@ std::string& Input::getExternalTextInput() {
 	return textInput;
 }
 
+std::string Input::getClipboardText() {
+	return DisplayUi->getClipboardText();
+}
+
 Point Input::GetMousePosition() {
 	return source->GetMousePosition();
 }

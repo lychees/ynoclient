@@ -67,6 +67,14 @@ BitmapRef BaseUi::CaptureScreen() {
 	return Bitmap::Create(*main_surface, main_surface->GetRect());
 }
 
+std::string BaseUi::getClipboardText() {
+	return "";
+}
+
+void BaseUi::setClipboardText(std::string text) {
+	//
+}
+
 void BaseUi::CleanDisplay() {
 	main_surface->Clear();
 }

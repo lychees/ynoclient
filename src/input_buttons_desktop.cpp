@@ -109,6 +109,10 @@ Input::ButtonMappingArray Input::GetDefaultButtonMappings() {
 		{CHAT_DEL_FORWARD, Keys::DEL}, // chat inputs
 		{CHAT_SEND, Keys::RETURN}, // chat inputs
 		{CHAT_TOGGLE_GLOBAL, Keys::F8}, // chat inputs
+		{CHAT_COPY, Keys::C}, // chat inputs (check for CTRL modifier done separately)
+		{CHAT_PASTE, Keys::V}, // chat inputs (check for CTRL modifier done separately)
+		{CHAT_CTRL, Keys::LCTRL}, // chat inputs
+		{CHAT_CTRL, Keys::RCTRL}, // chat inputs
 
 #if defined(USE_MOUSE) && defined(SUPPORT_MOUSE)
 		{DECISION, Keys::MOUSE_LEFT},
