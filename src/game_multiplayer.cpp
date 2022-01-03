@@ -39,10 +39,14 @@ class DrawableNameTags : public Drawable {
 		int x = 0;
 		int y = 0;
 	};
+	struct TagStack {
+		std::vector<Tag*> stack;
+		float swayAnim = 0;
+	};
 	// Store nametags indexable by UID.
 	// Also store list of nametags per tile, so they're drawn stacked on each other by iterating through occupied tiles.
 	std::map<std::string, std::unique_ptr<Tag>> nameTags; // tags indexed by UID.
-	std::unordered_map<unsigned long, std::vector<Tag*>> nameStacks; // list of tags per tile.
+	std::unordered_map<unsigned long, TagStack> nameStacks; // list of tags per tile.
 																	 // key is a hash based on tile coordinates, and value is a list of nametags on that tile.
 
 	unsigned long coordHash(int x, int y) { // perfect hash for coordinate pairs
@@ -63,18 +67,38 @@ class DrawableNameTags : public Drawable {
 		Text::Draw(*tag->renderGraphic, 0, 0, *Font::Tiny(), *Cache::SystemOrBlack(), 0, name);
 	}
 public:
-	DrawableNameTags() : Drawable(Priority_Frame, Drawable::Flags::Global) {
+	DrawableNameTags() : Drawable(Priority_Window, Drawable::Flags::Global) {
 		DrawableMgr::Register(this);
 	}
 
 	void Draw(Bitmap& dst) {
 		const unsigned int stackDelta = 8;
 		for(auto& it : nameStacks) {
-			unsigned int nTags = it.second.size();
+			unsigned int nTags = it.second.stack.size();
+			if(nTags >= 10) {
+				// swaying
+				it.second.swayAnim += 0.01;
+			} else {
+				it.second.swayAnim = 0;
+			}
 			for(int i = 0; i < nTags; i++) {
-				Tag* tag = it.second[i];
+				Tag* tag = it.second.stack[i];
 				auto rect = tag->renderGraphic->GetRect();
-				dst.Blit(tag->anchor->GetScreenX()-rect.width/2, tag->anchor->GetScreenY()-rect.height-TILE_SIZE*1.75-stackDelta*i, *tag->renderGraphic, rect, Opacity::Opaque());
+				if(it.second.swayAnim == 0) {
+					// steady stack
+					dst.Blit(tag->anchor->GetScreenX()-rect.width/2, tag->anchor->GetScreenY()-rect.height-TILE_SIZE*1.75-stackDelta*i, *tag->renderGraphic, rect, Opacity::Opaque());
+				} else {
+					// jenga tower be like
+					float sway = sin(it.second.swayAnim);
+					float swayRadius = 192/sway;
+					float angleStep = stackDelta/swayRadius;
+					int rx = tag->anchor->GetScreenX();
+					int ry = tag->anchor->GetScreenY()-TILE_SIZE*1.75;
+					rx = rx+(cos(i*angleStep)-1)*swayRadius;
+					ry = ry-sin(i*angleStep)*swayRadius;
+					float angle = -angleStep*i;
+					dst.RotateZoomOpacityBlit(rx, ry, rect.width/2, rect.height, *tag->renderGraphic, rect, angle, 1, 1, Opacity::Opaque());
+				}
 			}
 		}
 	}
@@ -86,7 +110,7 @@ public:
 		tag->anchor = anchor;
 		buildTagGraphic(tag.get(), "");
 
-		nameStacks[coordHash(tag->x, tag->y)].push_back(tag.get());
+		nameStacks[coordHash(tag->x, tag->y)].stack.push_back(tag.get());
 		nameTags[uid] = std::move(tag);
 	}
 
@@ -94,7 +118,7 @@ public:
 		assert(nameTags.count(uid)); // prevent deleting non existent nametag
 
 		Tag* tag = nameTags[uid].get();
-		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)];
+		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)].stack;
 		stack.erase(std::remove(stack.begin(), stack.end(), tag), stack.end());
 		nameTags.erase(uid);
 	}
@@ -108,11 +132,11 @@ public:
 		assert(nameTags.count(uid)); // prevent moving non existent nametag
 
 		Tag* tag = nameTags[uid].get();
-		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)];
+		std::vector<Tag*>& stack = nameStacks[coordHash(tag->x, tag->y)].stack;
 		stack.erase(std::remove(stack.begin(), stack.end(), tag), stack.end());
 		tag->x = x;
 		tag->y = y;
-		nameStacks[coordHash(tag->x, tag->y)].push_back(tag);
+		nameStacks[coordHash(tag->x, tag->y)].stack.push_back(tag);
 	}
 
 	void setTagName(std::string uid, std::string name) {
