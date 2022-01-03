@@ -518,8 +518,9 @@ namespace {
 			dStatus.refreshTheme();
 		}
 
-		void updateTypeText(std::u32string text) {
+		void updateTypeText(std::u32string text, unsigned int caretSeekTail, unsigned int caretSeekHead) {
 			dType.updateTypeText(text);
+			dType.seekCaret(caretSeekTail, caretSeekHead);
 		}
 
 		void updateTypeCaret(unsigned int caretSeekTail, unsigned int caretSeekHead) {
@@ -766,8 +767,8 @@ extern "C" {
 		return chatFocused;
 	}
 
-	void updateTypeDisplayText(char* text) {
-		chatBox->updateTypeText(Utils::DecodeUTF32(std::string(text)));
+	void updateTypeDisplayText(char* text, unsigned int caretTail, unsigned int caretHead) {
+		chatBox->updateTypeText(Utils::DecodeUTF32(std::string(text)), caretTail, caretHead);
 	}
 
 	void updateTypeDisplayCaret(unsigned int caretTail, unsigned int caretHead) {
