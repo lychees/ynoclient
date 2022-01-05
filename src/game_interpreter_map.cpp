@@ -588,6 +588,7 @@ bool Game_Interpreter_Map::CommandFlashSprite(lcf::rpg::EventCommand const& com)
 
 	if (event != NULL) {
 		event->Flash(r, g, b, p, tenths * DEFAULT_FPS / 10);
+		Game_Multiplayer::FlashAll(r, g, b, p, tenths * DEFAULT_FPS / 10);
 
 		if (wait) {
 			SetupWait(tenths);

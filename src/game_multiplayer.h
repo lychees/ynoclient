@@ -19,6 +19,10 @@ namespace Game_Multiplayer {
 	void AnimTypeSync(lcf::rpg::EventPage::AnimType animtype);
 	void AnimFrameSync(uint16_t frame);
 	void FacingSync(uint16_t facing);
+	void SetTypingStatus(uint16_t status);
+
+	void FlashAll(int r, int g, int b, int p, int t);
+	void TintAll();
 }
 
 #endif

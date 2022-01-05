@@ -2478,6 +2478,8 @@ bool Game_Interpreter::CommandTintScreen(lcf::rpg::EventCommand const& com) { //
 	if (wait)
 		SetupWait(tenths);
 
+	Game_Multiplayer::TintAll();
+
 	return true;
 }
 
@@ -2509,7 +2511,6 @@ bool Game_Interpreter::CommandFlashScreen(lcf::rpg::EventCommand const& com) { /
 			break;
 		}
 	}
-
 	return true;
 }
 

@@ -114,6 +114,8 @@ void Game_Screen::FlashOnce(int r, int g, int b, int s, int frames) {
 	data.flash_time_left = frames;
 	data.flash_continuous = false;
 	flash_period = 0;
+
+	Game_Multiplayer::FlashAll(r, g, b, s, frames);
 }
 
 void Game_Screen::FlashBegin(int r, int g, int b, int s, int frames) {

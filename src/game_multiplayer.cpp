@@ -158,6 +158,7 @@ void ConnectToGame();
 struct MPPlayer {
 	std::queue<std::pair<int,int>> mvq; //queue of move commands
 	std::shared_ptr<Game_PlayerOther> ch; //character
+	uint16_t typingstatus;
 	//this one is used to save player speed before setting it to max speed when move queue is too long
 	int moveSpeed;
 	std::unique_ptr<Sprite_Character> sprite;
@@ -191,8 +192,9 @@ namespace {
 		int nextWeatherType = -1;
 		int nextWeatherStrength = -1;
 	
-		int switchsync;
+		int switchsync = 0;
 		std::set<int> syncedswitches = std::set<int>();
+		std::set<int> switchlogblacklist = std::set<int>(); //set of switch ids that souldn't be logged
 
 		std::string spritesheet = "";
 		int spriteid = 0;
@@ -356,6 +358,7 @@ namespace {
 		SetConnStatusWindowText("Disconnected");
 		//puts("onclose");
 		connected = false;
+		emscripten_websocket_deinitialize();
 		ConnectToGame();
 
 		return EM_TRUE;
@@ -423,23 +426,29 @@ namespace {
 			const nx_json* animtype = nx_json_get(json, "animtype");
 			const nx_json* animframe = nx_json_get(json, "animframe");
 			const nx_json* facing = nx_json_get(json, "facing");
+			//const nx_json* typingstatus = nx_json_get(json, "typingstatus");
 			
 			if(uid->type == nx_json_type::NX_JSON_STRING) {
+
+
 				std::string uids = std::string(uid->text_value);
 				auto player = players.find(uids);
 				if(player == players.cend()) {
 					SpawnOtherPlayer(std::string(uid->text_value));
+					player = players.find(uids);
 				}
-					
+
+				MPPlayer& mpplayer = player->second;
+
 
 				if(pos->type == nx_json_type::NX_JSON_OBJECT) {
-					players[uids].mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
+					mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
 				}
 				else if(path->type == nx_json_type::NX_JSON_ARRAY) {
 					for(int i = 0; i < path->children.length; i++) {
 						pos = nx_json_item(path, i);
 						if(pos->type == nx_json_type::NX_JSON_OBJECT) {
-							players[uids].mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
+							mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
 						}
 					}
 				}
@@ -447,8 +456,8 @@ namespace {
 				if(sprite->type == nx_json_type::NX_JSON_OBJECT) {
 					const nx_json* sheet = nx_json_get(sprite, "sheet");
 					const nx_json* id = nx_json_get(sprite, "id");
-					players[uids].ch->SetSpriteGraphic(std::string(sheet->text_value), id->num.u_value);
-					players[uids].ch->ResetAnimation();
+					mpplayer.ch->SetSpriteGraphic(std::string(sheet->text_value), id->num.u_value);
+					mpplayer.ch->ResetAnimation();
 				}
 
 				if(sound->type == nx_json_type::NX_JSON_OBJECT) {
@@ -458,7 +467,7 @@ namespace {
 					const nx_json* name = nx_json_get(sound, "name");
 
 					lcf::rpg::Sound soundStruct;
-					auto& p = players[uids];
+					auto& p = mpplayer;
 					int dx = p.ch->GetX() - Main_Data::game_player->GetX();
 					int dy = p.ch->GetY() - Main_Data::game_player->GetY();
 					int distance = std::sqrt(dx * dx + dy * dy);
@@ -484,7 +493,7 @@ namespace {
 				}
 
 				if(mAnimSpd->type == nx_json_type::NX_JSON_INTEGER) {
-					players[uids].moveSpeed = mAnimSpd->num.u_value;
+					mpplayer.moveSpeed = mAnimSpd->num.u_value;
 				}
 
 				if(variable->type == nx_json_type::NX_JSON_OBJECT && false) {
@@ -508,23 +517,29 @@ namespace {
 						Game_Map::SetNeedRefresh(true);
 					}
 					std::string setswtstr = std::to_string(id->num.u_value) + " " + std::to_string(value->num.s_value);
-					EM_ASM({
-						console.log("switch " + UTF8ToString($0));
-					}, setswtstr.c_str());
+					if(MultiplayerSettings::switchlogblacklist.find(id->num.u_value) == MultiplayerSettings::switchlogblacklist.cend()) {
+						EM_ASM({
+							console.log("switch " + UTF8ToString($0));
+						}, setswtstr.c_str());
+					}
 				}
 
 				if(animtype->type == nx_json_type::NX_JSON_INTEGER) {
-					players[uids].ch->SetAnimationType((lcf::rpg::EventPage::AnimType)animtype->num.u_value);
+					mpplayer.ch->SetAnimationType((lcf::rpg::EventPage::AnimType)animtype->num.u_value);
 				}
 
 				if(animframe->type == nx_json_type::NX_JSON_INTEGER) {
-					players[uids].ch->SetAnimFrame(animframe->num.u_value);
+					mpplayer.ch->SetAnimFrame(animframe->num.u_value);
 				}
 
 				if(facing->type == nx_json_type::NX_JSON_INTEGER) {
 					if(facing->num.u_value <= 4)
-					players[uids].ch->SetFacing(facing->num.u_value);
+						mpplayer.ch->SetFacing(facing->num.u_value);
 				}
+				/*
+				if(typingstatus->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.typingstatus = typingstatus->num.u_value;
+				}*/
 			}
 		}
 	}
@@ -580,6 +595,14 @@ void SetSwitchSyncWhiteList(int id, int val) {
 		MultiplayerSettings::syncedswitches.emplace(id);
 	} else {
 		MultiplayerSettings::syncedswitches.erase(id);
+	}
+}
+
+void SetSwitchSyncLogBlackList(int id, int val) {
+	if(val) {
+		MultiplayerSettings::switchlogblacklist.emplace(id);
+	} else {
+		MultiplayerSettings::switchlogblacklist.erase(id);
 	}
 }
 
@@ -707,11 +730,21 @@ void Game_Multiplayer::VariableSync(int32_t id, int32_t val) {
 }
 
 void Game_Multiplayer::SwitchSync(int32_t id, int32_t val) {
-	uint16_t ptype = PacketTypes::switchsync;
-	memcpy(sendBuffer, &ptype, sizeof(uint16_t));
-	int32_t m[2] = {id, val};
-	memcpy(sendBuffer + sizeof(uint16_t), m, sizeof(int32_t) * 2);
-	TrySend(&sendBuffer, sizeof(uint16_t) * 5);
+	if(MultiplayerSettings::switchsync) {
+		if(MultiplayerSettings::syncedswitches.find(id) != MultiplayerSettings::syncedswitches.cend()) {
+			uint16_t ptype = PacketTypes::switchsync;
+			memcpy(sendBuffer, &ptype, sizeof(uint16_t));
+			int32_t m[2] = {id, val};
+			memcpy(sendBuffer + sizeof(uint16_t), m, sizeof(int32_t) * 2);
+			TrySend(&sendBuffer, sizeof(uint16_t) * 5);
+		}
+		std::string setswtstr = std::to_string(id) + " " + std::to_string(val);
+		if(MultiplayerSettings::switchlogblacklist.find(id) == MultiplayerSettings::switchlogblacklist.cend()) {
+			EM_ASM({
+				console.log("my switch " + UTF8ToString($0));
+			}, setswtstr.c_str());
+		}
+	}
 }
 
 void Game_Multiplayer::AnimTypeSync(lcf::rpg::EventPage::AnimType animtype) {
@@ -729,9 +762,26 @@ void Game_Multiplayer::FacingSync(uint16_t facing) {
 	TrySend(m, sizeof(uint16_t) * 2);
 }
 
+void Game_Multiplayer::SetTypingStatus(uint16_t status) {
+	uint16_t m[] = {PacketTypes::typingstatus, status};
+	TrySend(m, sizeof(uint16_t) * 2);
+}
+
 void SyncMe() {
 	uint16_t m[] = {PacketTypes::syncme, (uint16_t)0};
 	TrySend(m, sizeof(uint16_t) * 2);
+}
+
+void Game_Multiplayer::FlashAll(int r, int g, int b, int p, int t) {
+	for (auto& mpplayer : players) {
+		mpplayer.second.ch->Flash(r, g, b, p, t);
+	}
+}
+
+void Game_Multiplayer::TintAll() {
+	for (auto& mpplayer : players) {
+		mpplayer.second.sprite->SetTone(Main_Data::game_screen->GetTone());
+	}
 }
 
 void Game_Multiplayer::Update() {
@@ -766,9 +816,6 @@ void Game_Multiplayer::Update() {
 		p.second.ch->Update();
 		p.second.sprite->Update();
 	}
-	if (Input::IsReleased(Input::InputButton::N3)) {
-		//conn_status_window->SetVisible(!conn_status_window->IsVisible());
-	}
 
 	if(MultiplayerSettings::shouldsync) {
 		SyncMe();
@@ -781,6 +828,7 @@ void Game_Multiplayer::Update() {
 		
 		if(currentTime - MultiplayerSettings::lastConnect < MultiplayerSettings::reconnectInterval) {
 			ConnectToGame();
+			MultiplayerSettings::lastConnect = currentTime;
 		}
 	}
 
