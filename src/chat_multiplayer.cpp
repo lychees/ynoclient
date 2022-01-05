@@ -13,6 +13,7 @@
 #include "cache.h"
 #include "input.h"
 #include "utils.h"
+#include "compiler.h"
 
 extern "C" void SendChatMessage(const char* msg);
 extern std::string multiplayer__my_name;
@@ -219,71 +220,127 @@ namespace {
 		BitmapRef currentTheme; // system graphic for the current theme
 
 		void buildMessageGraphic(DrawableChatEntry& msg) {
+			struct Glyph {
+				Utils::TextRet data;
+				Rect dims;
+				unsigned short color;
+			};
+			using GlyphLine = std::vector<Glyph>;
+			auto extractGlyphs = [](StringView str, unsigned short color, GlyphLine& line, unsigned int& width) {
+				const auto* iter = str.data();
+				const auto* end = str.data() + str.size();
+				while(iter != end) {
+					auto resp = Utils::TextNext(iter, end, 0);
+					iter = resp.next;
+
+					Rect chRect;
+					if(resp.is_exfont) 	chRect = Font::exfont->GetSize(" ");
+					else 				chRect = Font::Tiny()->GetSize(resp.ch);
+
+					line.push_back({resp, chRect, color});
+					width += chRect.width;
+				}
+			};
+			auto findFirstGlyphOf = [](GlyphLine& line, char32_t ch) -> int {
+				unsigned int nGlyphs = line.size();
+				for(int i = 0; i < nGlyphs; i++) {
+					if(line[i].data.ch == ch) {
+						return i;
+					}
+				}
+				return -1;
+			};
+			auto findLastGlyphOf = [](GlyphLine& line, char32_t ch) -> int {
+				unsigned int nGlyphs = line.size();
+				for(int i = nGlyphs-1; i >= 0; i--) {
+					if(line[i].data.ch == ch) {
+						return i;
+					}
+				}
+				return -1;
+			};
+			auto moveGlyphsToNext = [](GlyphLine& curr, GlyphLine& next, unsigned int& currWidth, unsigned int& nextWidth, unsigned int amount) {
+				for(int i = 0; i < amount; i++) {
+					auto& glyph = curr.back();
+					unsigned int deltaWidth = glyph.dims.width;
+					next.insert(next.begin(), glyph);
+					nextWidth += deltaWidth;
+					curr.pop_back();
+					currWidth -= deltaWidth;
+				}
+			};
+			auto getLineHeight = [](GlyphLine& line) -> unsigned int {
+				unsigned int height = 0;
+				unsigned int nGlyphs = line.size();
+				for(int i = 0; i < nGlyphs; i++) {
+					height = std::max<unsigned int>(height, line[i].dims.height);
+				}
+				return height;
+			};
+
 			// manual text wrapping
 			const unsigned int maxWidth = BOUNDS.width-scrollFrame-messageMargin*2;
-			std::vector<std::pair<std::string, unsigned int>> lines; // individual lines saved so far, along with their y offset
+
+			std::vector<std::pair<GlyphLine, unsigned int>> lines; // individual lines saved so far, along with their y offset
 			unsigned int totalWidth = 0; // maximum width between all lines
 			unsigned int totalHeight = 0; // accumulated height from all lines
 
-			std::string colorA = msg.messageData->colorA;
-			std::string colorB = msg.messageData->colorB;
-			std::string colorC = msg.messageData->colorC;
-			std::string currentLine = colorA+colorB+colorC; // current line being worked on. start with whole message.
-			std::string nextLine = ""; // stores characters moved down to line below
+			GlyphLine glyphsCurrent; // list of glyphs and their dimensions on current line
+			GlyphLine glyphsNext; // stores glyphs moved down to line below
+			unsigned int widthCurrent = 0; // total width of glyphs on current line
+			unsigned int widthNext = 0; // total width of glyphs on next line
+
+			// break down whole message string into glyphs for processing.
+			// glyph lookup is performed only at this stage, and their dimensions are saved for subsequent line width recalculations.
+			extractGlyphs(msg.messageData->colorA, 1, glyphsCurrent, widthCurrent);
+			extractGlyphs(msg.messageData->colorB, 2, glyphsCurrent, widthCurrent);
+			extractGlyphs(msg.messageData->colorC, 0, glyphsCurrent, widthCurrent);
+			
+			// break down message into fitting lines
 			do {
-				auto rect = Font::Tiny()->GetSize(currentLine);
-				while(rect.width > maxWidth) {
+				while(widthCurrent > maxWidth) {
 					// as long as current line exceeds maximum width,
 					// move one word from this line down to the next one
-					unsigned int lastSpace = currentLine.find_last_of(' ');
-					if(lastSpace != std::string::npos && lastSpace < currentLine.size()-1) {
+					int lastSpace = findLastGlyphOf(glyphsCurrent, ' ');
+					if(lastSpace != -1 && lastSpace < glyphsCurrent.size()-1) {
 						// there is a word that can be moved down
-						nextLine = currentLine.substr(lastSpace+1, std::string::npos)+nextLine;
-						currentLine = currentLine.substr(0, lastSpace+1);
+						moveGlyphsToNext(glyphsCurrent, glyphsNext, widthCurrent, widthNext, glyphsCurrent.size()-lastSpace-1);
 					} else {
 						// there is not a whole word that can be moved down, so move individual characters.
 						// this case happens when last character in current line is a space, 
 						// or when there are no spaces in the current line
-						nextLine = currentLine.back()+nextLine;
-						currentLine.pop_back();
+						moveGlyphsToNext(glyphsCurrent, glyphsNext, widthCurrent, widthNext, 1);
 					}
-					// recalculate line width with characters having been moved down
-					rect = Font::Tiny()->GetSize(currentLine);
 				}
 				// once line fits, check for line breaks
-				unsigned int lineBreak = currentLine.find("\n");
-				if(lineBreak != std::string::npos) {
-					nextLine = currentLine.substr(lineBreak+1, std::string::npos)+nextLine;
-					currentLine = currentLine.substr(0, lineBreak)+" ";
+				int lineBreak = findFirstGlyphOf(glyphsCurrent, '\n');
+				if(lineBreak != -1) {
+					moveGlyphsToNext(glyphsCurrent, glyphsNext, widthCurrent, widthNext, glyphsCurrent.size()-lineBreak-1);
 				}
 				// save line
-				lines.push_back(std::make_pair(currentLine, totalHeight));
-				totalWidth = std::max<unsigned int>(totalWidth, rect.width);
-				totalHeight += rect.height;
+				lines.push_back(std::make_pair(glyphsCurrent, totalHeight));
+				totalWidth = std::max<unsigned int>(totalWidth, widthCurrent);
+				totalHeight += getLineHeight(glyphsCurrent);
 				// repeat this work on the exceeding portion moved down to the line below
-				currentLine = nextLine;
-				nextLine = "";
-			} while(currentLine.size() > 0);
+				glyphsCurrent = glyphsNext;
+				glyphsNext.clear();
+				widthCurrent = widthNext;
+				widthNext = 0;
+			} while(glyphsCurrent.size() > 0);
 
 			// once all lines have been saved
 			// render them into a bitmap
 			BitmapRef text_img = Bitmap::Create(totalWidth+1, totalHeight+1, true);
-			unsigned int colorACharacters = colorA.size(); // remaining A colored characters to draw
-			unsigned int colorBCharacters = colorB.size(); // remaining B colored characters to draw
 			int nLines = lines.size();
 			for(int i = 0; i < nLines; i++) {
 				auto& line = lines[i];
-				// calculate number of colored characters to draw on this line
-				unsigned int lineSize = line.first.size();
-				unsigned int aChars = std::min<unsigned int>(colorACharacters, lineSize);
-				unsigned int bChars = std::min<unsigned int>(colorBCharacters, lineSize-aChars);
-				// decrement from total remaining colored characters
-				colorACharacters -= aChars;
-				colorBCharacters -= bChars;
-				// draw the three colored text regions
-				unsigned int bStart = Text::Draw(*text_img, 0, line.second, *Font::Tiny(), *currentTheme, 1, line.first.substr(0, aChars)).width;
-				unsigned int cStart = Text::Draw(*text_img, bStart, line.second, *Font::Tiny(), *currentTheme, 2, line.first.substr(aChars, bChars)).width;
-				Text::Draw(*text_img, bStart+cStart, line.second, *Font::Tiny(), *currentTheme, 0, line.first.substr(aChars+bChars, std::string::npos));
+				int glyphOffset = 0;
+				for(int j = 0; j < line.first.size(); j++) {
+					auto& glyph = line.first[j];
+					auto ret = glyph.data;
+					if(EP_UNLIKELY(!ret)) continue;
+					glyphOffset += Text::Draw(*text_img, glyphOffset, line.second, *Font::Tiny(), *currentTheme, glyph.color, ret.ch, ret.is_exfont).width;
+				}
 			}
 			msg.renderGraphic = text_img;
 			msg.dirty = false;
