@@ -65,7 +65,7 @@ namespace {
 		}
 		else {
 			static BitmapFontGlyph const replacement_glyph = { 65533, true, { 96, 240, 504, 924, 1902, 3967, 4031, 1982, 1020, 440, 240, 96 } };
-			Output::Debug("glyph not found: {:#x}", uint32_t(code));
+			//Output::Debug("glyph not found: {:#x}", uint32_t(code));
 			return &replacement_glyph;
 		}
 	}
