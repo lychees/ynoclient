@@ -182,6 +182,8 @@ namespace {
 		const uint16_t facing = 11;
 		const uint16_t typingstatus = 12;
 		const uint16_t syncme = 13;
+		const uint16_t flash = 14;
+		const uint16_t flashpause = 15;
 	};
 
 	namespace MultiplayerSettings {
@@ -264,7 +266,6 @@ namespace {
 		nplayer->SetMoveFrequency(player->GetMoveFrequency());
 		nplayer->SetThrough(true);
 		nplayer->SetLayer(player->GetLayer());
-
 		nameTagRenderer->createNameTag(uid, nplayer.get());
 
 		auto scene_map = Scene::Find(Scene::SceneType::Map);
@@ -275,6 +276,7 @@ namespace {
 		auto old_list = &DrawableMgr::GetLocalList();
 		DrawableMgr::SetLocalList(&scene_map->GetDrawableList());
 		players[uid].sprite = std::make_unique<Sprite_Character>(nplayer.get());
+		players[uid].sprite->SetTone(Main_Data::game_screen->GetTone());
 		DrawableMgr::SetLocalList(old_list);
 	}
 	void SendMainPlayerPos() {
@@ -426,7 +428,8 @@ namespace {
 			const nx_json* animtype = nx_json_get(json, "animtype");
 			const nx_json* animframe = nx_json_get(json, "animframe");
 			const nx_json* facing = nx_json_get(json, "facing");
-			//const nx_json* typingstatus = nx_json_get(json, "typingstatus");
+			const nx_json* typingstatus = nx_json_get(json, "typingstatus");
+			const nx_json* flash = nx_json_get(json, "flash");
 			
 			if(uid->type == nx_json_type::NX_JSON_STRING) {
 
@@ -536,10 +539,20 @@ namespace {
 					if(facing->num.u_value <= 4)
 						mpplayer.ch->SetFacing(facing->num.u_value);
 				}
-				/*
+				
 				if(typingstatus->type == nx_json_type::NX_JSON_INTEGER) {
 					mpplayer.typingstatus = typingstatus->num.u_value;
-				}*/
+				}
+
+				if(flash->type == nx_json_type::NX_JSON_ARRAY) {
+					mpplayer.ch->Flash(
+						nx_json_item(flash, 0)->num.u_value,
+						nx_json_item(flash, 1)->num.u_value,
+						nx_json_item(flash, 2)->num.u_value,
+						nx_json_item(flash, 3)->num.u_value,
+						nx_json_item(flash, 4)->num.u_value
+					);
+				}
 			}
 		}
 	}
@@ -767,6 +780,16 @@ void Game_Multiplayer::SetTypingStatus(uint16_t status) {
 	TrySend(m, sizeof(uint16_t) * 2);
 }
 
+void Game_Multiplayer::FlashSync(int r, int g, int b, int p, int t) {
+	uint16_t m[] = {PacketTypes::flash, (uint16_t)r, (uint16_t)g, (uint16_t)b, (uint16_t)p, (uint16_t)t};
+	TrySend(m, sizeof(uint16_t) * 6);
+}
+
+void Game_Multiplayer::FlashPauseSync(bool pause) {
+	uint16_t m[] = {PacketTypes::flashpause, (uint16_t)pause};
+	TrySend(m, sizeof(uint16_t) * 6);
+}
+
 void SyncMe() {
 	uint16_t m[] = {PacketTypes::syncme, (uint16_t)0};
 	TrySend(m, sizeof(uint16_t) * 2);
@@ -826,7 +849,7 @@ void Game_Multiplayer::Update() {
 		time_t currentTime;
 		time(&currentTime);
 		
-		if(currentTime - MultiplayerSettings::lastConnect < MultiplayerSettings::reconnectInterval) {
+		if(currentTime - MultiplayerSettings::lastConnect > MultiplayerSettings::reconnectInterval) {
 			ConnectToGame();
 			MultiplayerSettings::lastConnect = currentTime;
 		}

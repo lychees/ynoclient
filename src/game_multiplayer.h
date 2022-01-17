@@ -20,6 +20,7 @@ namespace Game_Multiplayer {
 	void AnimFrameSync(uint16_t frame);
 	void FacingSync(uint16_t facing);
 	void SetTypingStatus(uint16_t status);
+	void FlashSync(int r, int g, int b, int p, int t);
 
 	void FlashAll(int r, int g, int b, int p, int t);
 	void TintAll();

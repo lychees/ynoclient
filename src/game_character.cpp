@@ -847,6 +847,9 @@ void Game_Character::Flash(int r, int g, int b, int power, int frames) {
 	data()->flash_blue = b;
 	data()->flash_current_level = power;
 	data()->flash_time_left = frames;
+	if(GetType() == Player) {
+		Game_Multiplayer::FlashSync(r, g, b, power, frames);
+	}
 }
 
 // Gets Character

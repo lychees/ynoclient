@@ -310,6 +310,7 @@ void Game_Screen::UpdateScreenEffects() {
 		data.tint_current_blue = interpolate(data.tint_time_left, data.tint_current_blue, data.tint_finish_blue);
 		data.tint_current_sat = interpolate(data.tint_time_left, data.tint_current_sat, data.tint_finish_sat);
 		data.tint_time_left = data.tint_time_left - 1;
+		Game_Multiplayer::TintAll();
 	}
 
 	Flash::Update(data.flash_current_level,
