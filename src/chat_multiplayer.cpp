@@ -14,9 +14,11 @@
 #include "input.h"
 #include "utils.h"
 #include "compiler.h"
+#include "game_multiplayer_my_data.h"
+
+using namespace Game_Multiplayer;
 
 extern "C" void SendChatMessage(const char* msg);
-extern std::string multiplayer__my_name;
 
 namespace {
 	enum VisibilityType {
@@ -649,7 +651,7 @@ namespace {
 	}
 
 	void processAndSendMessage(std::string utf8text) {
-		if(multiplayer__my_name == "") { // name not set, type box should send profile info
+		if(Game_Multiplayer::MyData::username == "") { // name not set, type box should send profile info
 			if(cacheName == "") { //inputting name
 				// validate name. 
 				// TODO: Server also validates name, but client should receive confirmation from it

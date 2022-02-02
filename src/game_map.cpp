@@ -50,7 +50,9 @@
 #include <lcf/scope_guard.h>
 #include <lcf/rpg/save.h>
 #include "scene_gameover.h"
-#include "game_multiplayer.h"
+#include "game_multiplayer_connection.h"
+#include "game_multiplayer_main_loop.h"
+#include "game_multiplayer_other_player.h"
 
 namespace {
 	lcf::rpg::SaveMapInfo map_info;
@@ -88,7 +90,7 @@ void Game_Map::OnContinueFromBattle() {
 static Game_Map::Parallax::Params GetParallaxParams();
 
 void Game_Map::Init() {
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	Dispose();
 
 	map_info = {};
@@ -111,7 +113,7 @@ void Game_Map::Init() {
 
 void Game_Map::Dispose() {
 	//we disconnect from the room before loading the map since some stuff might trigger and send packets to previous room
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	events.clear();
 	map.reset();
 	map_info = {};
@@ -119,7 +121,7 @@ void Game_Map::Dispose() {
 }
 
 void Game_Map::Quit() {
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	Dispose();
 	common_events.clear();
 	interpreter.reset();
@@ -134,7 +136,7 @@ int Game_Map::GetMapSaveCount() {
 void Game_Map::Setup(std::unique_ptr<lcf::rpg::Map> map_in) {
 
 	//we disconnect from the room before loading the map since some stuff might trigger and send packets to previous room
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 
 	Dispose();
 
@@ -204,7 +206,7 @@ void Game_Map::Setup(std::unique_ptr<lcf::rpg::Map> map_in) {
 	Main_Data::game_player->UpdateSaveCounts(lcf::Data::system.save_count, GetMapSaveCount());
 
 	//multiplayer setup
-	Game_Multiplayer::Connect(GetMapId());
+	Game_Multiplayer::ConnectToRoom(GetMapId());
 }
 
 void Game_Map::SetupFromSave(
@@ -218,7 +220,7 @@ void Game_Map::SetupFromSave(
 		std::vector<lcf::rpg::SaveCommonEvent> save_ce) {
 
 	//we disconnect from the room before loading the map since some stuff might trigger and send packets to previous room
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	
 	map = std::move(map_in);
 	map_info = std::move(save_map);
@@ -274,12 +276,12 @@ void Game_Map::SetupFromSave(
 	Game_Map::Parallax::ChangeBG(GetParallaxParams());
 
 	//multiplayer setup
-	Game_Multiplayer::Connect(GetMapId());
+	Game_Multiplayer::ConnectToRoom(GetMapId());
 }
 
 std::unique_ptr<lcf::rpg::Map> Game_Map::loadMapFile(int map_id) {
 	std::unique_ptr<lcf::rpg::Map> map;
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	// Try loading EasyRPG map files first, then fallback to normal RPG Maker
 	// FIXME: Assert map was cached for async platforms
 	std::string map_name = Game_Map::ConstructMapName(map_id, true);
@@ -326,7 +328,7 @@ std::unique_ptr<lcf::rpg::Map> Game_Map::loadMapFile(int map_id) {
 }
 
 void Game_Map::SetupCommon() {
-	Game_Multiplayer::Quit();
+	Game_Multiplayer::ClearPlayers();
 	if (!Tr::GetCurrentTranslationId().empty()) {
 		//  Build our map translation id.
 		std::stringstream ss;

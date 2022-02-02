@@ -60,7 +60,7 @@
 #include "baseui.h"
 #include "algo.h"
 #include "rand.h"
-#include "game_multiplayer.h"
+#include "game_multiplayer_senders.h"
 
 enum BranchSubcommand {
 	eOptionBranchElse = 1
