@@ -27,6 +27,43 @@
 #include "scene_map.h"
 
 namespace Game_Multiplayer {
+
+void GetClosestPlayerCoords(int x, int y, int& outx, int& outy) {
+	int w = Game_Map::GetWidth();
+	int h = Game_Map::GetHeight();
+
+	int mpx = Main_Data::game_player->GetX();
+	int mpy = Main_Data::game_player->GetY();
+
+	//calculate distance from main player
+	int mlx = std::min(abs(x - mpx), abs(x - w - mpx));
+	int mly = std::min(abs(y - mpy), abs(y - h - mpy));
+
+	//min distance found
+	int mdst = mlx + mly;
+
+	outx = mpx;
+	outy = mpy;
+
+	//calculate distance to each player and find the closest one
+	for(auto& p : other_players) {
+		int px = p.second.ch->GetX();
+		int py = p.second.ch->GetY();
+
+		int lx = std::min(abs(x - px), abs(x - w - px));
+		int ly = std::min(abs(y - py), abs(y - h - py));
+
+		int distance = lx + ly;
+
+		if(distance < mdst) {
+			mdst = distance;
+			outx = px;
+			outy = py;
+		}
+	}
+}
+
+
 void ErasePlayer(const std::string& uid) {
 	auto scene_map = Scene::Find(Scene::SceneType::Map);
 	auto old_list = &DrawableMgr::GetLocalList();
@@ -45,6 +82,7 @@ MPPlayer& CreatePlayer(std::string uid) {
 	auto& main_player = Main_Data::game_player;
 	//
 	MPPlayer& new_player = other_players[uid];
+	new_player.flashpause = 0;
 
 	auto& new_player_character = new_player.ch;
 	new_player_character = std::make_shared<Game_PlayerOther>();

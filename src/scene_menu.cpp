@@ -33,6 +33,7 @@
 #include "scene_save.h"
 #include "scene_status.h"
 #include "bitmap.h"
+#include "game_multiplayer_settings_scene.h"
 
 Scene_Menu::Scene_Menu(int menu_index) :
 	menu_index(menu_index) {
@@ -80,6 +81,7 @@ void Scene_Menu::CreateCommandWindow() {
 		if (Player::debug_flag) {
 			command_options.push_back(Debug);
 		}
+		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
 	} else {
 		for (std::vector<int16_t>::iterator it = lcf::Data::system.menu_commands.begin();
@@ -89,6 +91,7 @@ void Scene_Menu::CreateCommandWindow() {
 		if (Player::debug_flag) {
 			command_options.push_back(Debug);
 		}
+		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
 	}
 
@@ -123,6 +126,9 @@ void Scene_Menu::CreateCommandWindow() {
 		case Debug:
 			options.push_back("Debug");
 			break;
+		case Multiplayer:
+			options.push_back("Multiplayer");
+			break;
 		default:
 			options.push_back(ToString(lcf::Data::terms.menu_quit));
 			break;
@@ -143,6 +149,7 @@ void Scene_Menu::CreateCommandWindow() {
 		case Wait:
 		case Quit:
 		case Debug:
+		case Multiplayer:
 			break;
 		case Order:
 			if (Main_Data::game_party->GetActors().size() <= 1) {
@@ -216,6 +223,10 @@ void Scene_Menu::UpdateCommand() {
 		case Quit:
 			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
 			Scene::Push(std::make_shared<Scene_End>());
+			break;
+		case Multiplayer:
+			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
+			Scene::Push(std::make_shared<Game_Multiplayer::Scene_MultiplayerSettings>());
 			break;
 		}
 	}

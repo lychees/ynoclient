@@ -34,6 +34,7 @@
 #include "scene_save.h"
 #include "scene_map.h"
 #include "utils.h"
+#include "game_multiplayer.h"
 
 Game_System::Game_System()
 	: dbsys(&lcf::Data::system)
@@ -219,6 +220,7 @@ void Game_System::SetSystemGraphic(const std::string& new_system_name,
 
 	if (changed) {
 		ReloadSystemGraphic();
+		Game_Multiplayer::SendSystem(new_system_name);
 	}
 }
 

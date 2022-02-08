@@ -156,13 +156,43 @@ void SetTypingStatus(uint16_t status) {
 }
 
 void FlashSync(int r, int g, int b, int p, int t) {
-	uint16_t m[] = {PacketTypes::flash, (uint16_t)r, (uint16_t)g, (uint16_t)b, (uint16_t)p, (uint16_t)t};
-	TrySend(m, sizeof(uint16_t) * 6);
+	if(!MyData::flashpause) {
+		uint16_t m[] = {PacketTypes::flash, (uint16_t)r, (uint16_t)g, (uint16_t)b, (uint16_t)p, (uint16_t)t};
+		TrySend(m, sizeof(uint16_t) * 6);
+	}
 }
 
 void FlashPauseSync(bool pause) {
-	uint16_t m[] = {PacketTypes::flashpause, (uint16_t)pause};
-	TrySend(m, sizeof(uint16_t) * 6);
+	if(MyData::flashpause != pause) {
+		uint16_t m[] = {PacketTypes::flashpause, (uint16_t)pause};
+		TrySend(m, sizeof(uint16_t) * 2);
+		MyData::flashpause = pause;
+	}
+}
+
+void NpcMoveSync(int x, int y, int facing, int id) {
+	if(other_players.size()) {
+		//to-do:
+		//actually distribute npcs between players
+		if(rand() % (other_players.size() + 1) == 0) {
+			uint16_t m[] = {PacketTypes::npcmove, (uint16_t)x, (uint16_t)y, (uint16_t)facing, (uint16_t)id};
+			TrySend(m, sizeof(uint16_t) * 5);
+		}
+	} else {
+		Game_Event* ev = Game_Map::GetEvent(id);
+		ev->SetX(x);
+		ev->SetY(y);
+		ev->SetDirection(facing);
+		ev->UpdateFacing();
+		ev->SetRemainingStep(SCREEN_TILE_SIZE);
+	}
+}
+
+void SendSystem(std::string name) {
+	memcpy(sendBuffer, &PacketTypes::system, sizeof(uint16_t));
+	memcpy(sendBuffer + sizeof(uint16_t), name.c_str(), name.length());
+
+	TrySend(sendBuffer, sizeof(uint16_t) + name.length());
 }
 
 void SyncMe() {

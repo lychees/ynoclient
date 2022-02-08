@@ -107,6 +107,7 @@ char receiveBuffer[RECEIVE_BUFFER_SIZE];
 ///////////////////////////web socket callbacks begin
 
 EM_BOOL onopen(int eventType, const EmscriptenWebSocketOpenEvent *websocketEvent, void *userData) {
+	ClearPlayers();
 	SetConnStatusWindowText("Connected");
 	ConnectionData::connected = true;
 	

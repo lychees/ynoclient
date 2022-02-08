@@ -21,4 +21,12 @@ uint8_t MyData::weatherT = 0;
 int MyData::nextWeatherType = -1;
 int MyData::nextWeatherStrength = -1;
 
+bool MyData::syncnpc = false;
+bool MyData::sfxsync = true;
+int MyData::sfxfalloff = 16;
+
+bool MyData::rendernametags = true;
+
+bool MyData::flashpause = false;
+
 }

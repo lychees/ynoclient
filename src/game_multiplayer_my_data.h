@@ -22,5 +22,11 @@ namespace Game_Multiplayer {
 		extern uint8_t weatherT;
 		extern int nextWeatherType;
 		extern int nextWeatherStrength;
+		extern bool syncnpc;
+		extern bool sfxsync;
+		extern int sfxfalloff;
+		extern bool rendernametags;
+
+		extern bool flashpause;
 	}
 }

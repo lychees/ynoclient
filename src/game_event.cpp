@@ -27,6 +27,7 @@
 #include "game_variables.h"
 #include "game_system.h"
 #include "game_interpreter_map.h"
+#include "game_multiplayer_rng.h"
 #include "main_data.h"
 #include "player.h"
 #include "utils.h"
@@ -407,8 +408,9 @@ void Game_Event::CheckCollisonOnMoveFailure() {
 }
 
 bool Game_Event::Move(int dir) {
-	Game_Character::Move(dir);
-	if (IsStopping()) {
+	bool isMoving = Game_Character::Move(dir);
+	
+	if (!isMoving) {
 		CheckCollisonOnMoveFailure();
 		return false;
 	}
@@ -471,7 +473,7 @@ void Game_Event::SetMaxStopCountForRandom() {
 }
 
 void Game_Event::MoveTypeRandom() {
-	int draw = Rand::GetRandomNumber(0, 9);
+	int draw = Game_Multiplayer::GetSyncedRng(0, 9, GetId() + GetDirection() + GetX() + GetY());
 
 	const auto prev_dir = GetDirection();
 
@@ -483,7 +485,7 @@ void Game_Event::MoveTypeRandom() {
 	} else if (draw < 8) {
 		Turn180Degree();
 	} else {
-		SetStopCount(Rand::GetRandomNumber(0, GetMaxStopCount()));
+		SetStopCount(Game_Multiplayer::GetSyncedRng(0, GetMaxStopCount(), prev_dir + draw + GetX() + GetY() + GetDirection()));
 		return;
 	}
 
@@ -555,13 +557,13 @@ void Game_Event::MoveTypeTowardsOrAwayPlayer(bool towards) {
 
 	int dir = 0;
 	if (!in_sight) {
-		dir = Rand::GetRandomNumber(0, 3);
+		dir = Game_Multiplayer::GetSyncedRng(0, 3, GetX() + GetY() + GetId() - GetDirection());
 	} else {
-		int draw = Rand::GetRandomNumber(0, 9);
+		int draw = Game_Multiplayer::GetSyncedRng(0, 9, GetX() + GetY() - GetId() - GetDirection());
 		if (draw == 0) {
 			dir = GetDirection();
 		} else if(draw == 1) {
-			dir = Rand::GetRandomNumber(0, 3);
+			dir = Game_Multiplayer::GetSyncedRng(0, 3, GetX() - GetY() + GetDirection() + GetId());
 		} else {
 			dir = towards
 				? GetDirectionToHero()

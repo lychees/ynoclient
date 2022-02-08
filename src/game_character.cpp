@@ -33,6 +33,8 @@
 #include "rand.h"
 #include <cmath>
 #include <cassert>
+#include "game_multiplayer_other_player.h"
+#include "game_multiplayer_my_data.h"
 
 Game_Character::Game_Character(Type type, lcf::rpg::SaveMapEventBase* d) :
 	_type(type), _data(d)
@@ -214,6 +216,17 @@ void Game_Character::UpdateAnimation() {
 }
 
 void Game_Character::UpdateFlash() {
+	static int prev_t = -1;
+	static Color prev_c = Color(255, 255, 255, 255);
+	static int prev_p = -1;
+	if(GetType() == Player) {
+		Game_Multiplayer::FlashPauseSync(prev_t == data()->flash_time_left && data()->flash_time_left && prev_c == GetFlashColor() && prev_p == GetFlashLevel());
+		prev_t = data()->flash_time_left;
+		if(prev_t == 0) prev_t = -1;
+		prev_c = GetFlashColor();
+		prev_p = GetFlashLevel();
+	}
+
 	Flash::Update(data()->flash_current_level, data()->flash_time_left);
 }
 
@@ -464,9 +477,10 @@ bool Game_Character::Move(int dir) {
 	}
 
 	bool move_success = false;
-
-	SetDirection(dir);
-	UpdateFacing();
+	if(_type != Event || !Game_Multiplayer::MyData::syncnpc) {
+		SetDirection(dir);
+		UpdateFacing();
+	}
 
 	const auto x = GetX();
 	const auto y = GetY();
@@ -490,9 +504,13 @@ bool Game_Character::Move(int dir) {
 	const auto new_x = Game_Map::RoundX(x + dx);
 	const auto new_y = Game_Map::RoundY(y + dy);
 
-	SetX(new_x);
-	SetY(new_y);
-	SetRemainingStep(SCREEN_TILE_SIZE);
+	if(_type == Event && Game_Multiplayer::MyData::syncnpc) {
+		Game_Multiplayer::NpcMoveSync(new_x, new_y, GetDirection(), ((Game_Event*)this)->GetId());
+	} else {
+		SetX(new_x);
+		SetY(new_y);
+		SetRemainingStep(SCREEN_TILE_SIZE);
+	}
 
 	if (_type == Player) {
 		Game_Multiplayer::MainPlayerMoved(dir);
@@ -522,8 +540,12 @@ void Game_Character::Turn90DegreeLeftOrRight() {
 }
 
 int Game_Character::GetDirectionToHero() {
-	int sx = DistanceXfromPlayer();
-	int sy = DistanceYfromPlayer();
+	int px, py;
+
+	Game_Multiplayer::GetClosestPlayerCoords(GetX(), GetY(), px, py);
+
+	int sx = GetX() - px;//DistanceXfromPlayer();
+	int sy = GetY() - py;//DistanceYfromPlayer();
 
 	if ( std::abs(sx) > std::abs(sy) ) {
 		return (sx > 0) ? Left : Right;
@@ -533,8 +555,12 @@ int Game_Character::GetDirectionToHero() {
 }
 
 int Game_Character::GetDirectionAwayHero() {
-	int sx = DistanceXfromPlayer();
-	int sy = DistanceYfromPlayer();
+	int px, py;
+
+	Game_Multiplayer::GetClosestPlayerCoords(GetX(), GetY(), px, py);
+
+	int sx = GetX() - px;//DistanceXfromPlayer();
+	int sy = GetY() - py;//DistanceYfromPlayer();
 
 	if ( std::abs(sx) > std::abs(sy) ) {
 		return (sx > 0) ? Right : Left;

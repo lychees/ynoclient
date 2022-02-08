@@ -44,6 +44,8 @@ public:
 
 namespace Game_Multiplayer {
 
+	void GetClosestPlayerCoords(int x, int y, int& outx, int& outy);
+
 	struct MPPlayer {
 		std::queue<std::pair<int,int>> mvq; //queue of move commands
 		std::shared_ptr<Game_PlayerOther> ch; //character
@@ -51,6 +53,7 @@ namespace Game_Multiplayer {
 		//this one is used to save player speed before setting it to max speed when move queue is too long
 		int moveSpeed;
 		std::unique_ptr<Sprite_Character> sprite;
+		int flashpause;
 	};
 
 	extern std::map<std::string, MPPlayer> other_players;

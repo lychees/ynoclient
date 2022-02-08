@@ -60,7 +60,7 @@ void Update() {
 		MyData::shouldsync = false;
 	}
 
-	
+	//apply weather
 	if(MyData::nextWeatherType != -1) {
 		MyData::weatherT++;
 		if(MyData::weatherT > MyData::weatherSetDelay) {
@@ -72,7 +72,6 @@ void Update() {
 		}
 	}
 
-	
 	for (auto& p : other_players) {
 		auto& q = p.second.mvq;
 		if (!q.empty() && p.second.ch->IsStopping()) {
@@ -90,8 +89,17 @@ void Update() {
 			q.pop();
 		}
 		p.second.ch->SetProcessed(false);
+
+		Color ch_prev_flash_c = p.second.ch->GetFlashColor();
+		int ch_prev_flash_p = p.second.ch->GetFlashLevel();
+		int ch_prev_flash_t = p.second.ch->GetFlashTimeLeft();
+	
 		p.second.ch->Update();
 		p.second.sprite->Update();
+
+		if(p.second.flashpause) {
+			p.second.ch->Flash(ch_prev_flash_c.red, ch_prev_flash_c.green, ch_prev_flash_c.blue, ch_prev_flash_p, ch_prev_flash_t);
+		}
 	}
 
 	
@@ -116,7 +124,6 @@ void Update() {
 		
 		ConnectionData::roomFirstUpdate = false;
 	}
-	
 }
 
 }

@@ -19,4 +19,5 @@ extern "C" {
 
 	void SlashCommandSetSprite(const char* sheet, int id);
 	void SetPlayersVolume(int volume);
+	void SwitchNpcSync();
 };

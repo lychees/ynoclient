@@ -1,5 +1,6 @@
 
 #include "game_multiplayer_nametags.h"
+#include "game_multiplayer_my_data.h"
 #include <map>
 #include <memory>
 #include <queue>
@@ -46,6 +47,8 @@ DrawableNameTags::DrawableNameTags() : Drawable(Priority_Window, Drawable::Flags
 }
 
 void DrawableNameTags::Draw(Bitmap& dst) {
+	if(!Game_Multiplayer::MyData::rendernametags) return;
+
 	const unsigned int stackDelta = 8;
 	for(auto& it : nameStacks) {
 		unsigned int nTags = it.second.stack.size();

@@ -108,6 +108,7 @@ lcf::rpg::SaveSystem::Scene Scene::rpgRtSceneFromSceneType(SceneType t) {
 		case Gameover:
 			return lcf::rpg::SaveSystem::Scene_game_over;
 		case Debug:
+		case Multiplayer:
 			return lcf::rpg::SaveSystem::Scene_debug;
 	}
 	return lcf::rpg::SaveSystem::Scene(-1);

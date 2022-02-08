@@ -72,4 +72,8 @@ extern "C" {
 		}
 		EM_ASM({console.log(UTF8ToString($0));}, liststr.c_str());
 	}
+
+	void SwitchNpcSync() {
+		Game_Multiplayer::MyData::syncnpc = !Game_Multiplayer::MyData::syncnpc;
+	}
 }

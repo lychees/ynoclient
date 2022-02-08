@@ -492,6 +492,19 @@ static int GetPassableMask(int old_x, int old_y, int new_x, int new_y) {
 }
 
 static bool WouldCollide(const Game_Character& self, const Game_Character& other, bool self_conflict) {
+
+	if(self.GetType() == Game_Character::Player && other.GetType() == Game_Character::PlayerOther || other.GetType() == Game_Character::Player && self.GetType() == Game_Character::PlayerOther) {
+		return false;
+	}
+
+	if(self.GetType() == Game_Character::PlayerOther && other.GetType() == Game_Character::PlayerOther) {
+		return false;
+	}
+
+	if(self.GetType() == Game_Character::PlayerOther || other.GetType() == Game_Character::PlayerOther) {
+		return true;
+	}
+
 	if (self.GetThrough() || other.GetThrough()) {
 		return false;
 	}
@@ -582,6 +595,13 @@ bool Game_Map::MakeWay(const Game_Character& self,
 	const auto vehicle_type = GetCollisionVehicleType(&self);
 
 	bool self_conflict = false;
+	
+	for(auto& other : Game_Multiplayer::other_players) {
+		if(MakeWayCollideEvent(to_x, to_y, self, *(other.second.ch.get()), false)) {
+			return false;
+		}
+	}
+
 	if (!self.IsJumping()) {
 		// Check for self conflict.
 		// If this event has a tile graphic and the tile itself has passage blocked in the direction

@@ -7,5 +7,4 @@ namespace Game_Multiplayer {
 	void ResolveObjectSyncPacket(const nx_json* json);
 
 	void HandleDisconnect(const nx_json* json);
-
 }

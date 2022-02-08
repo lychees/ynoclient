@@ -23,6 +23,7 @@
 #include "player.h"
 #include "main_data.h"
 #include "game_system.h"
+#include "game_multiplayer_rng.h"
 
 namespace Game_Multiplayer {
 
@@ -39,6 +40,8 @@ void HandleReceivedPacket(const char* data) {
 			}
 			else if(strcmp(typeNode->text_value, "disconnect") == 0) {
 				HandleDisconnect(json);
+			} else if(strcmp(typeNode->text_value, "rngSeed") == 0) {
+				room_seed = nx_json_get(json, "seed")->num.u_value;
 			}
 		}
 
@@ -73,121 +76,146 @@ void ResolveObjectSyncPacket(const nx_json* json) {
 		const nx_json* facing = nx_json_get(json, "facing");
 		const nx_json* typingstatus = nx_json_get(json, "typingstatus");
 		const nx_json* flash = nx_json_get(json, "flash");
+		const nx_json* flashpause = nx_json_get(json, "flashpause");
+		const nx_json* npcmove = nx_json_get(json, "npcmove");
 		
 		if(uid->type == nx_json_type::NX_JSON_STRING) {
 	
 			std::string uid_string = std::string(uid->text_value);
 
-			MPPlayer& mpplayer = GetPlayerOrCreate(uid_string);
-		
-			if(pos->type == nx_json_type::NX_JSON_OBJECT) {
-				mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
-			}
-			else if(path->type == nx_json_type::NX_JSON_ARRAY) {
-				for(int i = 0; i < path->children.length; i++) {
-					pos = nx_json_item(path, i);
-					if(pos->type == nx_json_type::NX_JSON_OBJECT) {
-						mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
+			if(strcmp(uid->text_value, "room")) {
+				MPPlayer& mpplayer = GetPlayerOrCreate(uid_string);
+
+				if(pos->type == nx_json_type::NX_JSON_OBJECT) {
+					mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
+				}
+				else if(path->type == nx_json_type::NX_JSON_ARRAY) {
+					for(int i = 0; i < path->children.length; i++) {
+						pos = nx_json_item(path, i);
+						if(pos->type == nx_json_type::NX_JSON_OBJECT) {
+							mpplayer.mvq.push(std::make_pair(nx_json_get(pos, "x")->num.u_value, nx_json_get(pos, "y")->num.u_value));
+						}
 					}
 				}
-			}
-	
-			if(sprite->type == nx_json_type::NX_JSON_OBJECT) {
-				const nx_json* sheet = nx_json_get(sprite, "sheet");
-				const nx_json* id = nx_json_get(sprite, "id");
-				mpplayer.ch->SetSpriteGraphic(std::string(sheet->text_value), id->num.u_value);
-				mpplayer.ch->ResetAnimation();
-			}
-		
-			if(sound->type == nx_json_type::NX_JSON_OBJECT) {
-				const nx_json* volume = nx_json_get(sound, "volume");
-				const nx_json* tempo = nx_json_get(sound, "tempo");
-				const nx_json* balance = nx_json_get(sound, "balance");
-				const nx_json* name = nx_json_get(sound, "name");
 
-				lcf::rpg::Sound soundStruct;
-				auto& p = mpplayer;
-				int dx = p.ch->GetX() - Main_Data::game_player->GetX();
-				int dy = p.ch->GetY() - Main_Data::game_player->GetY();
-				int distance = std::sqrt(dx * dx + dy * dy);
-				soundStruct.volume = std::max(0, 
-				(int)
-				((100.0f - ((float)distance) * 10.0f) * (float(MyData::playersVolume) / 100.0f) * (float(volume->num.u_value) / 100.0f))
-				);
-				soundStruct.tempo = tempo->num.u_value;
-				soundStruct.balance = balance->num.u_value;
-				soundStruct.name = std::string(name->text_value);
+				if(sprite->type == nx_json_type::NX_JSON_OBJECT) {
+					const nx_json* sheet = nx_json_get(sprite, "sheet");
+					const nx_json* id = nx_json_get(sprite, "id");
+					mpplayer.ch->SetSpriteGraphic(std::string(sheet->text_value), id->num.u_value);
+					mpplayer.ch->ResetAnimation();
+				}
 
-				Main_Data::game_system->SePlay(soundStruct);
-			}
+				if(sound->type == nx_json_type::NX_JSON_OBJECT && MyData::sfxsync) {
+					const nx_json* volume = nx_json_get(sound, "volume");
+					const nx_json* tempo = nx_json_get(sound, "tempo");
+					const nx_json* balance = nx_json_get(sound, "balance");
+					const nx_json* name = nx_json_get(sound, "name");
 
-			if(name->type == nx_json_type::NX_JSON_STRING) {
-				nameTagRenderer->setTagName(uid_string, name->text_value);
-			}
+					lcf::rpg::Sound soundStruct;
+					auto& p = mpplayer;
+					int w = Game_Map::GetWidth();
+					int h = Game_Map::GetHeight();
+					int dx = std::min(std::abs(p.ch->GetX() - Main_Data::game_player->GetX()), std::abs(p.ch->GetX() - w - Main_Data::game_player->GetX()));
+					int dy = std::min(std::abs(p.ch->GetY() - Main_Data::game_player->GetY()), std::abs(p.ch->GetY() - h - Main_Data::game_player->GetY()));
+					int distance = std::sqrt(dx * dx + dy * dy);
+					float falloffFactor = 100.0f / ((float)MyData::sfxfalloff);
+					soundStruct.volume = std::max(0, 
+					(int)
+					((100.0f - ((float)distance) * falloffFactor) * (float(MyData::playersVolume) / 100.0f) * (float(volume->num.u_value) / 100.0f))
+					);
+					soundStruct.tempo = tempo->num.u_value;
+					soundStruct.balance = balance->num.u_value;
+					soundStruct.name = std::string(name->text_value);
 
-			if(weather->type == nx_json_type::NX_JSON_OBJECT) {
-				const nx_json* type = nx_json_get(weather, "type");
-				const nx_json* strength = nx_json_get(weather, "strength");
-				Main_Data::game_screen.get()->SetWeatherEffect(type->num.u_value, strength->num.u_value);
-			}
+					Main_Data::game_system->SePlay(soundStruct);
+				}
 
-			if(mAnimSpd->type == nx_json_type::NX_JSON_INTEGER) {
-				mpplayer.moveSpeed = mAnimSpd->num.u_value;
-			}
+				if(name->type == nx_json_type::NX_JSON_STRING) {
+					nameTagRenderer->setTagName(uid_string, name->text_value);
+				}
 
-			if(variable->type == nx_json_type::NX_JSON_OBJECT && false) {
-				const nx_json* id = nx_json_get(variable, "id");
-				const nx_json* value = nx_json_get(variable, "value");
-				Main_Data::game_variables->Set(id->num.u_value, value->num.s_value);
-				Game_Map::SetNeedRefresh(true);
-				
-				std::string setvarstr = std::to_string(id->num.u_value) + " " + std::to_string(value->num.s_value);
-				std::string varstr = "var";
-				EM_ASM({
-					PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
-				}, setvarstr.c_str(), varstr.c_str());
-			}
-	
-			if(switchsync->type == nx_json_type::NX_JSON_OBJECT && MyData::switchsync) {
-				const nx_json* id = nx_json_get(switchsync, "id");
-				const nx_json* value = nx_json_get(switchsync, "value");
-				if(MyData::syncedswitches.find(id->num.u_value) != MyData::syncedswitches.cend()) {
-					Main_Data::game_switches->Set(id->num.u_value, value->num.s_value);
+				if(weather->type == nx_json_type::NX_JSON_OBJECT) {
+					const nx_json* type = nx_json_get(weather, "type");
+					const nx_json* strength = nx_json_get(weather, "strength");
+					Main_Data::game_screen.get()->SetWeatherEffect(type->num.u_value, strength->num.u_value);
+				}
+
+				if(mAnimSpd->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.moveSpeed = mAnimSpd->num.u_value;
+				}
+
+				if(variable->type == nx_json_type::NX_JSON_OBJECT && false) {
+					const nx_json* id = nx_json_get(variable, "id");
+					const nx_json* value = nx_json_get(variable, "value");
+					Main_Data::game_variables->Set(id->num.u_value, value->num.s_value);
 					Game_Map::SetNeedRefresh(true);
-				}
-				std::string setswtstr = std::to_string(id->num.u_value) + " " + std::to_string(value->num.s_value);
-				if(MyData::switchlogblacklist.find(id->num.u_value) == MyData::switchlogblacklist.cend()) {
+
+					std::string setvarstr = std::to_string(id->num.u_value) + " " + std::to_string(value->num.s_value);
+					std::string varstr = "var";
 					EM_ASM({
-						console.log("switch " + UTF8ToString($0));
-					}, setswtstr.c_str());
+						PrintChatInfo(UTF8ToString($0), UTF8ToString($1));
+					}, setvarstr.c_str(), varstr.c_str());
+				}
+
+				if(switchsync->type == nx_json_type::NX_JSON_OBJECT && MyData::switchsync) {
+					const nx_json* id = nx_json_get(switchsync, "id");
+					const nx_json* value = nx_json_get(switchsync, "value");
+					if(MyData::syncedswitches.find(id->num.u_value) != MyData::syncedswitches.cend()) {
+						Main_Data::game_switches->Set(id->num.u_value, value->num.s_value);
+						Game_Map::SetNeedRefresh(true);
+					}
+					std::string setswtstr = std::to_string(id->num.u_value) + " " + std::to_string(value->num.s_value);
+					if(MyData::switchlogblacklist.find(id->num.u_value) == MyData::switchlogblacklist.cend()) {
+						EM_ASM({
+							console.log("switch " + UTF8ToString($0));
+						}, setswtstr.c_str());
+					}
+				}
+
+				if(animtype->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.ch->SetAnimationType((lcf::rpg::EventPage::AnimType)animtype->num.u_value);
+				}
+
+				if(animframe->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.ch->SetAnimFrame(animframe->num.u_value);
+				}
+
+				if(facing->type == nx_json_type::NX_JSON_INTEGER) {
+					if(facing->num.u_value <= 4)
+						mpplayer.ch->SetFacing(facing->num.u_value);
+				}
+
+				if(typingstatus->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.typingstatus = typingstatus->num.u_value;
+				}
+
+				if(flash->type == nx_json_type::NX_JSON_ARRAY) {
+					mpplayer.ch->Flash(
+						nx_json_item(flash, 0)->num.u_value,
+						nx_json_item(flash, 1)->num.u_value,
+						nx_json_item(flash, 2)->num.u_value,
+						nx_json_item(flash, 3)->num.u_value,
+						nx_json_item(flash, 4)->num.u_value
+					);
+				}
+
+				if(flashpause->type == nx_json_type::NX_JSON_INTEGER) {
+					mpplayer.flashpause = flashpause->num.u_value;
 				}
 			}
-		
-			if(animtype->type == nx_json_type::NX_JSON_INTEGER) {
-				mpplayer.ch->SetAnimationType((lcf::rpg::EventPage::AnimType)animtype->num.u_value);
-			}
-	
-			if(animframe->type == nx_json_type::NX_JSON_INTEGER) {
-				mpplayer.ch->SetAnimFrame(animframe->num.u_value);
-			}
-	
-			if(facing->type == nx_json_type::NX_JSON_INTEGER) {
-				if(facing->num.u_value <= 4)
-					mpplayer.ch->SetFacing(facing->num.u_value);
-			}
-			
-			if(typingstatus->type == nx_json_type::NX_JSON_INTEGER) {
-				mpplayer.typingstatus = typingstatus->num.u_value;
-			}
-		
-			if(flash->type == nx_json_type::NX_JSON_ARRAY) {
-				mpplayer.ch->Flash(
-					nx_json_item(flash, 0)->num.u_value,
-					nx_json_item(flash, 1)->num.u_value,
-					nx_json_item(flash, 2)->num.u_value,
-					nx_json_item(flash, 3)->num.u_value,
-					nx_json_item(flash, 4)->num.u_value
-				);
+			if(MyData::syncnpc) {
+			if(npcmove->type == nx_json_type::NX_JSON_OBJECT) {
+				Game_Event* character = Game_Map::GetEvent(nx_json_get(npcmove, "id")->num.u_value);
+					if(character) {
+						if(character->GetX() != nx_json_get(npcmove, "x")->num.u_value || character->GetY() != nx_json_get(npcmove, "y")->num.u_value || character->GetDirection() != nx_json_get(npcmove, "facing")->num.u_value) {
+							character->SetX(nx_json_get(npcmove, "x")->num.u_value);
+							character->SetY(nx_json_get(npcmove, "y")->num.u_value);
+							character->SetDirection(nx_json_get(npcmove, "facing")->num.u_value);
+							character->UpdateFacing();
+							character->SetRemainingStep(SCREEN_TILE_SIZE);
+						}
+					}
+				}
 			}
 		}
 	}

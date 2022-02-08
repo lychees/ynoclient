@@ -54,6 +54,7 @@ public:
 		Name,
 		Gameover,
 		Debug,
+		Multiplayer,
 		Logo,
 		Order,
 		GameBrowser,

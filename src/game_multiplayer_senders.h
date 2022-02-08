@@ -25,6 +25,8 @@ namespace Game_Multiplayer {
 		const uint16_t syncme = 13;
 		const uint16_t flash = 14;
 		const uint16_t flashpause = 15;
+		const uint16_t npcmove = 16;
+		const uint16_t system = 17;
 	};
 
 	void SendPlayerData();
@@ -58,6 +60,8 @@ namespace Game_Multiplayer {
 	void SetTypingStatus(uint16_t status);
 	void FlashSync(int r, int g, int b, int p, int t);
 	void FlashPauseSync(bool pause);
+	void NpcMoveSync(int x, int y, int facing, int id);
+	void SendSystem(std::string name);
 
 	void SyncMe();
 }
