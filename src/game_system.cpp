@@ -35,6 +35,7 @@
 #include "scene_map.h"
 #include "utils.h"
 #include "game_multiplayer.h"
+#include "chat_multiplayer.h"
 #include "audio_secache.h"
 
 Game_System::Game_System()
@@ -224,6 +225,7 @@ void Game_System::SetSystemGraphic(const std::string& new_system_name,
 	if (changed) {
 		ReloadSystemGraphic();
 		Game_Multiplayer::SendSystem(new_system_name);
+		Chat_Multiplayer::refresh();
 	}
 }
 

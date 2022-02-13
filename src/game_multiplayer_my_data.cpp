@@ -4,7 +4,7 @@
 namespace Game_Multiplayer {
 
 std::string MyData::username;
-uint8_t MyData::playersVolume = 50;
+int MyData::playersVolume = 50;
 bool MyData::shouldsync = false;
 
 int MyData::switchsync = 0;

@@ -4,7 +4,7 @@
 namespace Game_Multiplayer {
 	namespace MyData {
 		extern std::string username;
-		extern uint8_t playersVolume;
+		extern int playersVolume;
 		extern bool shouldsync;
 
 		extern int switchsync;
