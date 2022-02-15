@@ -78,7 +78,8 @@ void ResolveObjectSyncPacket(const nx_json* json) {
 		const nx_json* flash = nx_json_get(json, "flash");
 		const nx_json* flashpause = nx_json_get(json, "flashpause");
 		const nx_json* npcmove = nx_json_get(json, "npcmove");
-		
+		const nx_json* system = nx_json_get(json, "system");
+
 		if(uid->type == nx_json_type::NX_JSON_STRING) {
 	
 			std::string uid_string = std::string(uid->text_value);
@@ -201,6 +202,10 @@ void ResolveObjectSyncPacket(const nx_json* json) {
 
 				if(flashpause->type == nx_json_type::NX_JSON_INTEGER) {
 					mpplayer.flashpause = flashpause->num.u_value;
+				}
+
+				if(system->type == nx_json_type::NX_JSON_STRING) {
+					nameTagRenderer->setTagSystem(uid_string, system->text_value);
 				}
 			}
 			if(MyData::syncnpc) {

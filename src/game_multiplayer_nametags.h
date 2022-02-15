@@ -4,7 +4,7 @@
 #include "game_character.h"
 #include "drawable.h"
 #include "drawable_mgr.h"
-
+#include "async_handler.h"
 /*
 	================
 	NAMETAG RENDERER
@@ -17,6 +17,8 @@ class DrawableNameTags : public Drawable {
 	struct Tag {
 		BitmapRef renderGraphic;
 		Game_Character* anchor;
+		std::string system;
+		std::string name;
 		int x = 0;
 		int y = 0;
 	};
@@ -32,9 +34,9 @@ class DrawableNameTags : public Drawable {
 	// key is a hash based on tile coordinates, and value is a list of nametags on that tile.
 	// perfect hash for coordinate pairs
 	unsigned long coordHash(int x, int y); 
+	FileRequestBinding systemRequest;
 
-
-	void buildTagGraphic(Tag* tag, std::string name);
+	void buildTagGraphic(Tag* tag);
 public:
 	DrawableNameTags();
 
@@ -48,7 +50,9 @@ public:
 
 	void moveNameTag(std::string uid, int x, int y);
 
-	void setTagName(std::string uid, std::string name);
+	void setTagName(const std::string& uid, const std::string& name);
+
+	void setTagSystem(const std::string& uid, const std::string& system);
 };
 
 extern std::unique_ptr<DrawableNameTags> nameTagRenderer; //global nametag renderer

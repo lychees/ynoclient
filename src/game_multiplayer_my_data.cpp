@@ -23,6 +23,7 @@ int MyData::nextWeatherStrength = -1;
 
 bool MyData::syncnpc = false;
 bool MyData::sfxsync = true;
+bool MyData::systemsync = true;
 int MyData::sfxfalloff = 16;
 
 bool MyData::rendernametags = true;

@@ -24,6 +24,7 @@ namespace Game_Multiplayer {
 		extern int nextWeatherStrength;
 		extern bool syncnpc;
 		extern bool sfxsync;
+		extern bool systemsync;
 		extern int sfxfalloff;
 		extern bool rendernametags;
 

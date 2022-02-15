@@ -34,12 +34,12 @@ unsigned long DrawableNameTags::coordHash(int x, int y) {
 	return ((a+b)*(a+b+1))/2+b;
 }
 
-void DrawableNameTags::buildTagGraphic(Tag* tag, std::string name) {
-	Rect rect = Font::Tiny()->GetSize(name);
+void DrawableNameTags::buildTagGraphic(Tag* tag) {
+	Rect rect = Font::Tiny()->GetSize(tag->name);
 	tag->renderGraphic = Bitmap::Create(rect.width+1, rect.height+1);
 	Color shadowColor = Color(0, 0, 0, 255); // shadow color
-	Text::Draw(*tag->renderGraphic, 1, 1, *Font::Tiny(), shadowColor, name); // draw black fallback shadow
-	Text::Draw(*tag->renderGraphic, 0, 0, *Font::Tiny(), *Cache::SystemOrBlack(), 0, name);
+	Text::Draw(*tag->renderGraphic, 1, 1, *Font::Tiny(), shadowColor, tag->name); // draw black fallback shadow
+	Text::Draw(*tag->renderGraphic, 0, 0, *Font::Tiny(), (tag->system.length() && Game_Multiplayer::MyData::systemsync) ? *Cache::System(tag->system) : *Cache::SystemOrBlack(), 0, tag->name);
 }
 
 DrawableNameTags::DrawableNameTags() : Drawable(Priority_Window, Drawable::Flags::Global) {
@@ -85,7 +85,9 @@ void DrawableNameTags::createNameTag(std::string uid, Game_Character* anchor) {
 
 	std::unique_ptr<Tag> tag = std::make_unique<Tag>();
 	tag->anchor = anchor;
-	buildTagGraphic(tag.get(), "");
+	tag->name = "";
+	tag->system = "";
+	buildTagGraphic(tag.get());
 
 	nameStacks[coordHash(tag->x, tag->y)].stack.push_back(tag.get());
 	nameTags[uid] = std::move(tag);
@@ -116,9 +118,25 @@ void DrawableNameTags::moveNameTag(std::string uid, int x, int y) {
 	nameStacks[coordHash(tag->x, tag->y)].stack.push_back(tag);
 }
 
-void DrawableNameTags::setTagName(std::string uid, std::string name) {
+void DrawableNameTags::setTagName(const std::string& uid, const std::string& name) {
 	assert(nameTags.count(uid)); // prevent using non existent nametag
-	buildTagGraphic(nameTags[uid].get(), name);
+	nameTags[uid]->name = name;
+	buildTagGraphic(nameTags[uid].get());
+}
+
+void DrawableNameTags::setTagSystem(const std::string& uid, const std::string& system) {
+	assert(nameTags.count(uid));
+
+	FileRequestAsync* request = AsyncHandler::RequestFile("System", system);
+	Tag* tag = this->nameTags[uid].get();
+
+	systemRequest = request->Bind([this, tag](FileRequestResult* result) {
+		tag->system = result->file;
+		this->buildTagGraphic(tag);
+	});
+
+	request->SetGraphicFile(true);
+	request->Start();
 }
 
 std::unique_ptr<DrawableNameTags> nameTagRenderer; //global nametag renderer

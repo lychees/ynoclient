@@ -48,8 +48,6 @@ void MovePlayerToPos(std::shared_ptr<Game_PlayerOther> &player, int x, int y) {
 					 {Game_Character::Direction::Left, 0, Game_Character::Direction::Right},
 					 {Game_Character::Direction::DownLeft, Game_Character::Direction::Down, Game_Character::Direction::DownRight}};
 	player->Move(dir[dy+1][dx+1]);
-
-	Output::Debug("Moved to " + std::to_string(x) + " " + std::to_string(y));
 }
 
 void Update() {

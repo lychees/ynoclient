@@ -43,6 +43,7 @@ namespace Game_Multiplayer {
 		items.push_back(std::make_unique<RangeOption>("Players SFX volume", "Volume of the sound effects that other players produce", &MyData::playersVolume, 0, 100, 2));
 		items.push_back(std::make_unique<SwitchOption>("NPC synchironisation", "Lets you and other players see NPC at same positions", &MyData::syncnpc));
 		items.push_back(std::make_unique<SwitchOption>("Nametags", "Lets you see usernames of the players in game", &MyData::rendernametags));
+		items.push_back(std::make_unique<SwitchOption>("Nametags system sync", "Render nametags with system colors that player is using", &MyData::systemsync));
 		items.push_back(std::make_unique<ActionOption>("Global chat", "Toggle global chat visibility", &ToggleGlobalChatVisivility));
 		items.push_back(std::make_unique<ActionOption>("Reconnect", "Disconnect, clear players & connect again", &Reconnect));
 		this->item_max = items.size();
