@@ -13,6 +13,7 @@
 #include "cache.h"
 #include "input.h"
 #include "utils.h"
+#include "player.h"
 #include "compiler.h"
 #include "game_multiplayer_my_data.h"
 
@@ -179,14 +180,25 @@ namespace {
 		void refreshTheme() { }
 
 		void setConnectionStatus(bool status) {
-			std::string connLabel = (status)?"Connected":"Disconnected";
+			std::string connLabel = "";
+			if (Player::IsCP936()) {
+				connLabel = (status)?"已连接":"未连接";
+			} else {
+				connLabel = (status)?"Connected":"Disconnected";
+			}
+				
 			auto cRect = Font::Default()->GetSize(connLabel);
 			connStatus = Bitmap::Create(cRect.width+1, cRect.height+1, true);
 			Text::Draw(*connStatus, 0, 0, *Font::Default(), *Cache::SystemOrBlack(), 2, connLabel);
 		}
 
 		void setRoomStatus(unsigned int roomID) {
-			std::string roomLabel = "Room #"+std::to_string(roomID);
+			std::string roomLabel = "";
+			if (Player::IsCP936()) {
+				roomLabel = "房间 #"+std::to_string(roomID);
+			} else {
+				roomLabel = "Room #"+std::to_string(roomID);
+			}
 			auto rRect = Font::Default()->GetSize(roomLabel);
 			roomStatus = Bitmap::Create(rRect.width+1, rRect.height+1, true);
 			Text::Draw(*roomStatus, 0, 0, *Font::Default(), *Cache::SystemOrBlack(), 2, roomLabel);
@@ -691,8 +703,11 @@ namespace {
 
 	void initialize() {
 		chatBox = std::make_unique<DrawableChat>();
-
-		chatBox->showTypeLabel("Name");
+		if (Player::IsCP936()) {
+			chatBox->showTypeLabel("昵称");
+		} else {
+			chatBox->showTypeLabel("Name");
+		}
 
 		// load saved user profile preferences from JS side (name)
 		char* configNameStr = (char*)EM_ASM_INT({
@@ -718,25 +733,63 @@ namespace {
 		preloadTrip = Utils::DecodeUTF32(cfgTripStr);
 		free(configTripStr);
 
-		addLogEntry("", "!! • IME input now supported!", "", CV_LOCAL);
-		addLogEntry("", "!!   (for Japanese, etc.)", "", CV_LOCAL);
-		addLogEntry("", "!! • You can now copy and", "", CV_LOCAL);
-		addLogEntry("", "!!   paste from type box.", "", CV_LOCAL);
-		addLogEntry("", "!! • SHIFT+[←, →] to select text.", "", CV_LOCAL);
-		addLogEntry("", "", "―――", CV_LOCAL);
+		if (Player::IsCP936()) {
+			addLogEntry("", "!! • 输入法现已支持！", "", CV_LOCAL);
+			addLogEntry("", "!! • 你可以在输入框", "", CV_LOCAL);
+			addLogEntry("", "!!   复制和粘贴了。", "", CV_LOCAL);
+			addLogEntry("", "!! • 使用 SHIFT+[←, →] 选中文本。", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
 
-		addLogEntry("[TAB]: ", "focus/unfocus.", "", CV_LOCAL);
-		addLogEntry("[↑, ↓]: ", "scroll.", "", CV_LOCAL);
-		addLogEntry("[F8]: ", "hide/show global chat.", "", CV_LOCAL);
-		addLogEntry("", "", "―――", CV_LOCAL);
-		addLogEntry("• Type /help to list commands.", "", "", CV_LOCAL);
-		addLogEntry("• Use '!' at the beginning of", "", "", CV_LOCAL);
-		addLogEntry("  message for global chat.", "", "", CV_LOCAL);
-		addLogEntry("", "", "―――", CV_LOCAL);
-		addLogEntry("• Set a nickname", "", "", CV_LOCAL);
-		addLogEntry("  for chat.", "", "", CV_LOCAL);
-		addLogEntry("• Max 8 characters.", "", "", CV_LOCAL);
-		addLogEntry("• Alphanumeric only.", "", "", CV_LOCAL);
+			addLogEntry("[TAB]: ", "打开/关闭对话模式。", "", CV_LOCAL);
+			addLogEntry("[↑, ↓]: ", "滚动聊天框", "", CV_LOCAL);
+			addLogEntry("[F8]: ", "隐藏/显示全局聊天框。", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• 输入 /help 获取指令列表。", "", "", CV_LOCAL);
+			addLogEntry("• 在消息开头输入 '!' ", "", "", CV_LOCAL);
+			addLogEntry("  来发送全局消息。", "", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• 选择一个昵称", "", "", CV_LOCAL);
+			addLogEntry("• 最多 8 个字符。", "", "", CV_LOCAL);
+			addLogEntry("• 仅允许字母与数字。", "", "", CV_LOCAL);
+		} else if (Player::IsBig5()) {
+			addLogEntry("", "!! • 輸入法現已支持！", "", CV_LOCAL);
+			addLogEntry("", "!! • 你可以在輸入框", "", CV_LOCAL);
+			addLogEntry("", "!!   復製和粘貼了。", "", CV_LOCAL);
+			addLogEntry("", "!! • 使用 SHIFT+[←, →] 選中文本。", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+
+			addLogEntry("[TAB]: ", "打開/關閉對話模式。", "", CV_LOCAL);
+			addLogEntry("[↑, ↓]: ", "滾動聊天框", "", CV_LOCAL);
+			addLogEntry("[F8]: ", "隱藏/顯示全局聊天框。", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• 輸入 /help 獲取指令列表。", "", "", CV_LOCAL);
+			addLogEntry("• 在消息開頭輸入 '!' ", "", "", CV_LOCAL);
+			addLogEntry("  來發送全局消息。", "", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• 選擇一個昵稱", "", "", CV_LOCAL);
+			addLogEntry("• 最多 8 個字符。", "", "", CV_LOCAL);
+			addLogEntry("• 僅允許字母與數字。", "", "", CV_LOCAL);
+		} else {
+			addLogEntry("", "!! • IME input now supported!", "", CV_LOCAL);
+			addLogEntry("", "!!   (for Japanese, etc.)", "", CV_LOCAL);
+			addLogEntry("", "!! • You can now copy and", "", CV_LOCAL);
+			addLogEntry("", "!!   paste from type box.", "", CV_LOCAL);
+			addLogEntry("", "!! • SHIFT+[←, →] to select text.", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+
+			addLogEntry("[TAB]: ", "focus/unfocus.", "", CV_LOCAL);
+			addLogEntry("[↑, ↓]: ", "scroll.", "", CV_LOCAL);
+			addLogEntry("[F8]: ", "hide/show global chat.", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• Type /help to list commands.", "", "", CV_LOCAL);
+			addLogEntry("• Use '!' at the beginning of", "", "", CV_LOCAL);
+			addLogEntry("  message for global chat.", "", "", CV_LOCAL);
+			addLogEntry("", "", "―――", CV_LOCAL);
+			addLogEntry("• Set a nickname", "", "", CV_LOCAL);
+			addLogEntry("  for chat.", "", "", CV_LOCAL);
+			addLogEntry("• Max 8 characters.", "", "", CV_LOCAL);
+			addLogEntry("• Alphanumeric only.", "", "", CV_LOCAL);
+		}
 	}
 
 	void setFocus(bool focused) {

@@ -8,6 +8,7 @@
 #include "bitmap.h"
 #include "output.h"
 #include "font.h"
+#include "player.h"
 #include <algorithm>
 #include <cmath>
 #include <math.h>
@@ -38,14 +39,36 @@ namespace Game_Multiplayer {
 				win.SetText("");
 			}
 		};
-		items.push_back(std::make_unique<SwitchOption>("SFX sync", "Lets you hear sound effects that other players produce", &MyData::sfxsync));
-		items.push_back(std::make_unique<RangeOption>("SFX falloff", "Maximum distance at which you can hear players", &MyData::sfxfalloff, 4, 32, 1));
-		items.push_back(std::make_unique<RangeOption>("Players SFX volume", "Volume of the sound effects that other players produce", &MyData::playersVolume, 0, 100, 2));
-		items.push_back(std::make_unique<SwitchOption>("NPC synchironisation", "Lets you and other players see NPC at same positions", &MyData::syncnpc));
-		items.push_back(std::make_unique<SwitchOption>("Nametags", "Lets you see usernames of the players in game", &MyData::rendernametags));
-		items.push_back(std::make_unique<SwitchOption>("Nametags system sync", "Render nametags with system colors that player is using", &MyData::systemsync));
-		items.push_back(std::make_unique<ActionOption>("Global chat", "Toggle global chat visibility", &ToggleGlobalChatVisivility));
-		items.push_back(std::make_unique<ActionOption>("Reconnect", "Disconnect, clear players & connect again", &Reconnect));
+
+		if (Player::IsCP936()) {
+			items.push_back(std::make_unique<SwitchOption>("音效同步", "可以听见其他玩家的音效", &MyData::sfxsync));
+			items.push_back(std::make_unique<RangeOption>("音效距离", "可以听见其他玩家的音效的最大距离", &MyData::sfxfalloff, 4, 32, 1));
+			items.push_back(std::make_unique<RangeOption>("音效音量", "其他玩家产生音效的音量", &MyData::playersVolume, 0, 100, 2));
+			items.push_back(std::make_unique<SwitchOption>("NPC 同步", "你和其他玩家看见的 NPC 的位置相同", &MyData::syncnpc));
+			items.push_back(std::make_unique<SwitchOption>("显示昵称", "可以看见玩家们的昵称", &MyData::rendernametags));
+			items.push_back(std::make_unique<SwitchOption>("多彩名片", "将玩家的昵称染上其正在使用的系统颜色", &MyData::systemsync));
+			items.push_back(std::make_unique<ActionOption>("全局聊天", "是否开启全局聊天", &ToggleGlobalChatVisivility));
+			items.push_back(std::make_unique<ActionOption>("断线重连", "断开连接，清除玩家并重新连接", &Reconnect));
+		} else if (Player::IsBig5()) {
+			items.push_back(std::make_unique<SwitchOption>("音效同步", "可以聽見其他玩家的音效", &MyData::sfxsync));
+			items.push_back(std::make_unique<RangeOption>("音效距離", "可以聽見其他玩家的音效的最大距離", &MyData::sfxfalloff, 4, 32, 1));
+			items.push_back(std::make_unique<RangeOption>("音效音量", "其他玩家產生音效的音量", &MyData::playersVolume, 0, 100, 2));
+			items.push_back(std::make_unique<SwitchOption>("NPC 同步", "你和其他玩家看見的 NPC 的位置相同", &MyData::syncnpc));
+			items.push_back(std::make_unique<SwitchOption>("顯示昵稱", "可以看見玩家們的昵稱", &MyData::rendernametags));
+			items.push_back(std::make_unique<SwitchOption>("多彩名片", "將玩家的昵稱染上其正在使用的系統顏色", &MyData::systemsync));
+			items.push_back(std::make_unique<ActionOption>("全局聊天", "是否開啟全局聊天", &ToggleGlobalChatVisivility));
+			items.push_back(std::make_unique<ActionOption>("斷線重連", "斷開連接，清除玩家並重新連接", &Reconnect));
+		} else {
+			items.push_back(std::make_unique<SwitchOption>("SFX sync", "Lets you hear sound effects that other players produce", &MyData::sfxsync));
+			items.push_back(std::make_unique<RangeOption>("SFX falloff", "Maximum distance at which you can hear players", &MyData::sfxfalloff, 4, 32, 1));
+			items.push_back(std::make_unique<RangeOption>("Players SFX volume", "Volume of the sound effects that other players produce", &MyData::playersVolume, 0, 100, 2));
+			items.push_back(std::make_unique<SwitchOption>("NPC synchronisation", "Lets you and other players see NPC at same positions", &MyData::syncnpc));
+			items.push_back(std::make_unique<SwitchOption>("Nametags", "Lets you see usernames of the players in game", &MyData::rendernametags));
+			items.push_back(std::make_unique<SwitchOption>("Nametags system sync", "Render nametags with system colors that player is using", &MyData::systemsync));
+			items.push_back(std::make_unique<ActionOption>("Global chat", "Toggle global chat visibility", &ToggleGlobalChatVisivility));
+			items.push_back(std::make_unique<ActionOption>("Reconnect", "Disconnect, clear players & connect again", &Reconnect));
+		}
+
 		this->item_max = items.size();
 		CreateContents();
 		SetEndlessScrolling(false);
