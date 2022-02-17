@@ -782,7 +782,7 @@ namespace {
 			addLogEntry("[F8]: ", "hide/show global chat.", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 			addLogEntry("• Type /help to list commands.", "", "", CV_LOCAL);
-			addLogEntry("• Use '!' at the begining of", "", "", CV_LOCAL);
+			addLogEntry("• Use '!' at the beginning of", "", "", CV_LOCAL);
 			addLogEntry("  message for global chat.", "", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 			addLogEntry("• Set a nickname", "", "", CV_LOCAL);
