@@ -675,7 +675,7 @@ namespace {
 				std::regex reg("^[A-Za-z0-9]+$");
 				if(	utf8text.size() > 0 &&
 					utf8text.size() <= MAXCHARSINPUT_NAME &&
-					std::regex_match(utf8text, reg)	) {
+					(!Player::isCJK() && std::regex_match(utf8text, reg)) ) {
 					// name valid
 					cacheName = utf8text;
 					// load trip preferences
@@ -685,14 +685,14 @@ namespace {
 					setTypeMaxChars(MAXCHARSINPUT_TRIPCODE);
 					// append tripcode instructions
 					if (Player::IsCP936()) {
-						addLogEntry("• 设置行程码。", "", "", CV_LOCAL);
+						addLogEntry("• 设置 Tripcode。", "", "", CV_LOCAL);
 						addLogEntry("• 若不设置，将由系统", "", "", CV_LOCAL);
-						addLogEntry("• 分配随机行程码。", "", "", CV_LOCAL);
+						addLogEntry("• 分配随机 Tripcode。", "", "", CV_LOCAL);
 						addLogEntry("• 用于身份验证。", "", "", CV_LOCAL);
 					} else if (Player::IsBig5()) {
-						addLogEntry("• 設置行程碼。", "", "", CV_LOCAL);
+						addLogEntry("• 設置 Tripcode。", "", "", CV_LOCAL);
 						addLogEntry("• 若不設置，將由系統", "", "", CV_LOCAL);
-						addLogEntry("• 分配隨機行程碼。", "", "", CV_LOCAL);
+						addLogEntry("• 分配隨機 Tripcode。", "", "", CV_LOCAL);
 						addLogEntry("• 用於身份驗證。", "", "", CV_LOCAL);
 					} else {
 						addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
