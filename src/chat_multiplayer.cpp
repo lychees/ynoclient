@@ -678,8 +678,9 @@ namespace {
 				// instead of performing an equal validation
 				std::regex reg("^[A-Za-z0-9]+$");
 				if(	utf8text.size() > 0 &&
-					utf8text.size() <= MAXCHARSINPUT_NAME &&
-					(!Player::isCJK() && std::regex_match(utf8text, reg)) ) {
+					( Player::IsCJK() || 
+						( utf8text.size() <= MAXCHARSINPUT_NAME && std::regex_match(utf8text, reg) ) 
+					) ) {
 					// name valid
 					cacheName = utf8text;
 					// load trip preferences
@@ -689,20 +690,20 @@ namespace {
 					setTypeMaxChars(MAXCHARSINPUT_TRIPCODE);
 					// append tripcode instructions
 					if (Player::IsCP936()) {
-						addLogEntry("• 设置 Tripcode。", "", "", CV_LOCAL);
-						addLogEntry("• 若不设置，将由系统", "", "", CV_LOCAL);
-						addLogEntry("• 分配随机 Tripcode。", "", "", CV_LOCAL);
-						addLogEntry("• 用于身份验证。", "", "", CV_LOCAL);
+						addLogEntry("设置 Tripcode。", "", "", CV_LOCAL);
+						addLogEntry("若不设置，将由系统", "", "", CV_LOCAL);
+						addLogEntry("分配随机 Tripcode。", "", "", CV_LOCAL);
+						addLogEntry("用于身份验证。", "", "", CV_LOCAL);
 					} else if (Player::IsBig5()) {
-						addLogEntry("• 設置 Tripcode。", "", "", CV_LOCAL);
-						addLogEntry("• 若不設置，將由系統", "", "", CV_LOCAL);
-						addLogEntry("• 分配隨機 Tripcode。", "", "", CV_LOCAL);
-						addLogEntry("• 用於身份驗證。", "", "", CV_LOCAL);
+						addLogEntry("設置 Tripcode。", "", "", CV_LOCAL);
+						addLogEntry("若不設置，將由系統", "", "", CV_LOCAL);
+						addLogEntry("分配隨機 Tripcode。", "", "", CV_LOCAL);
+						addLogEntry("用於身份驗證。", "", "", CV_LOCAL);
 					} else if (Player::IsCP932()) {
-						addLogEntry("• 旅程コードを設定します。", "", "", CV_LOCAL);
-						addLogEntry("• 設定されていない場合、", "", "", CV_LOCAL);
-						addLogEntry("• システムはランダムな実行コードを割り当てます。", "", "", CV_LOCAL);
-						addLogEntry("• 認証用。", "", "", CV_LOCAL);
+						addLogEntry("旅程コードを設定します。", "", "", CV_LOCAL);
+						addLogEntry("設定されていない場合、", "", "", CV_LOCAL);
+						addLogEntry("システムはランダムな実行コードを割り当てます。", "", "", CV_LOCAL);
+						addLogEntry("認証用。", "", "", CV_LOCAL);
 					} else {
 						addLogEntry("• Set a tripcode.", "", "", CV_LOCAL);
 						addLogEntry("• Leave empty for random.", "", "", CV_LOCAL);
@@ -759,59 +760,51 @@ namespace {
 		free(configTripStr);
 
 		if (Player::IsCP936()) {
-			addLogEntry("", "!! • 输入法现已支持！", "", CV_LOCAL);
-			addLogEntry("", "!! • 你可以在输入框", "", CV_LOCAL);
-			addLogEntry("", "!!   复制和粘贴了。", "", CV_LOCAL);
-			addLogEntry("", "!! • 使用 SHIFT+[←, →] 选中文本。", "", CV_LOCAL);
+			addLogEntry("", "输入法现已支持！", "", CV_LOCAL);
+			addLogEntry("", "你可以在输入框复制和粘贴了。", "", CV_LOCAL);			
+			addLogEntry("", "使用 SHIFT+[←, →] 选中文本。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 
 			addLogEntry("[TAB]: ", "打开/关闭对话模式。", "", CV_LOCAL);
 			addLogEntry("[↑, ↓]: ", "滚动聊天框", "", CV_LOCAL);
 			addLogEntry("[F8]: ", "隐藏/显示全局聊天框。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• 输入 /help 获取指令列表。", "", "", CV_LOCAL);
-			addLogEntry("• 在消息开头输入 '!' ", "", "", CV_LOCAL);
+			addLogEntry("输入 /help 获取指令列表。", "", "", CV_LOCAL);
+			addLogEntry("在消息开头输入 '!' ", "", "", CV_LOCAL);
 			addLogEntry("  来发送全局消息。", "", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• 选择一个昵称", "", "", CV_LOCAL);
-			addLogEntry("• 最多 8 个字符。", "", "", CV_LOCAL);
-			addLogEntry("• 仅允许字母与数字。", "", "", CV_LOCAL);
+			addLogEntry("选择一个昵称", "", "", CV_LOCAL);
 		} else if (Player::IsBig5()) {
-			addLogEntry("", "!! • 輸入法現已支持！", "", CV_LOCAL);
-			addLogEntry("", "!! • 你可以在輸入框", "", CV_LOCAL);
-			addLogEntry("", "!!   復製和粘貼了。", "", CV_LOCAL);
-			addLogEntry("", "!! • 使用 SHIFT+[←, →] 選中文本。", "", CV_LOCAL);
+			addLogEntry("", "輸入法現已支持！", "", CV_LOCAL);
+			addLogEntry("", "你可以在輸入框復製和粘貼了。", "", CV_LOCAL);
+			addLogEntry("", "使用 SHIFT+[←, →] 選中文本。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 
 			addLogEntry("[TAB]: ", "打開/關閉對話模式。", "", CV_LOCAL);
 			addLogEntry("[↑, ↓]: ", "滾動聊天框", "", CV_LOCAL);
 			addLogEntry("[F8]: ", "隱藏/顯示全局聊天框。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• 輸入 /help 獲取指令列表。", "", "", CV_LOCAL);
-			addLogEntry("• 在消息開頭輸入 '!' ", "", "", CV_LOCAL);
-			addLogEntry("  來發送全局消息。", "", "", CV_LOCAL);
+			addLogEntry("輸入 /help 獲取指令列表。", "", "", CV_LOCAL);
+			addLogEntry("在消息開頭輸入 '!' ", "", "", CV_LOCAL);
+			addLogEntry("來發送全局消息。", "", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• 選擇一個昵稱", "", "", CV_LOCAL);
-			addLogEntry("• 最多 8 個字符。", "", "", CV_LOCAL);
-			addLogEntry("• 僅允許字母與數字。", "", "", CV_LOCAL);
+			addLogEntry("選擇一個昵稱", "", "", CV_LOCAL);
 		}  else if (Player::IsCP932()) {
-			addLogEntry("", "!! • 入力方式がサポートされるようになりました！", "", CV_LOCAL);
-			addLogEntry("", "!! • 入力ボックスでもコピ", "", CV_LOCAL);
-			addLogEntry("", "!!   ーアンドペーストを使用できます。", "", CV_LOCAL);
-			addLogEntry("", "!! • SHIFT + [←、→]を使用してテキストを選択します。", "", CV_LOCAL);
+			addLogEntry("", "入力方式がサポートされるようになりました！", "", CV_LOCAL);
+			addLogEntry("", "入力ボックスでもコピ", "", CV_LOCAL);
+			addLogEntry("", "ーアンドペーストを使用できます。", "", CV_LOCAL);
+			addLogEntry("", "SHIFT + [←、→]を使用してテキストを選択します。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 
 			addLogEntry("[TAB]: ", "会話モードのオン/オフを切り替えます。", "", CV_LOCAL);
 			addLogEntry("[↑, ↓]: ", "チャットボックスをスクロール", "", CV_LOCAL);
 			addLogEntry("[F8]: ", "グローバルチャットボックスを表示/非表示にします。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• コマンドのリストについては、/ helpと入力してください。", "", "", CV_LOCAL);
-			addLogEntry("• メッセージの先頭に「!」と入力して、", "", "", CV_LOCAL);
-			addLogEntry("  グローバルメッセージを送信します。", "", "", CV_LOCAL);
+			addLogEntry("コマンドのリストについては、/ helpと入力してください。", "", "", CV_LOCAL);
+			addLogEntry("メッセージの先頭に「!」と入力して、", "", "", CV_LOCAL);
+			addLogEntry("グローバルメッセージを送信します。", "", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
-			addLogEntry("• ニックネームを選択", "", "", CV_LOCAL);
-			addLogEntry("• 最大8文字。", "", "", CV_LOCAL);
-			addLogEntry("• 文字と数字のみが許可されます。", "", "", CV_LOCAL);
+			addLogEntry("ニックネームを選択", "", "", CV_LOCAL);
 		} else {
 			addLogEntry("", "!! • IME input now supported!", "", CV_LOCAL);
 			addLogEntry("", "!!   (for Japanese, etc.)", "", CV_LOCAL);
