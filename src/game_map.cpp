@@ -850,7 +850,7 @@ void Game_Map::Randomize() {
 		Output::Debug("info: {} {}", i, map->lower_layer[i]);
 	}
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
-		map->lower_layer[i] = (std::rand() & 1) ? 0 : 6;
+		map->lower_layer[i] = (std::rand() & 1) ? 4000 : 4000;
 	}
 }
 
