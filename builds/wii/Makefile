@@ -46,7 +46,7 @@ CFLAGS		= 	-g -O2 -Wall -Wextra -fno-math-errno \
 				-DWANT_FMMIDI -DWANT_DRWAV \
 				$(MACHDEP) $(INCLUDE)
 
-CXXFLAGS	= 	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++14
+CXXFLAGS	= 	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 
 LDFLAGS	=		-g $(MACHDEP) -Wl,-Map,easyrpg-player-wii.map,--gc-sections
 
