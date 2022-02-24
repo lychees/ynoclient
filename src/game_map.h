@@ -81,6 +81,8 @@ namespace Game_Map {
 	 */
 	void Init();
 
+	void Randomize();
+
 	/**
 	 * Quits (frees) Game_Map.
 	 */
@@ -106,7 +108,7 @@ namespace Game_Map {
 
 	/**
 	 * Setups a map from a savegame.
-	 * 
+	 *
 	 * @param map - The map data
 	 * @param save_map - The map state
 	 * @param save_boat - The boat state

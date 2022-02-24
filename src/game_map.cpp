@@ -221,7 +221,7 @@ void Game_Map::SetupFromSave(
 
 	//we disconnect from the room before loading the map since some stuff might trigger and send packets to previous room
 	Game_Multiplayer::ClearPlayers();
-	
+
 	map = std::move(map_in);
 	map_info = std::move(save_map);
 	panorama = std::move(save_pan);
@@ -595,7 +595,7 @@ bool Game_Map::MakeWay(const Game_Character& self,
 	const auto vehicle_type = GetCollisionVehicleType(&self);
 
 	bool self_conflict = false;
-	
+
 	for(auto& other : Game_Multiplayer::other_players) {
 		if(MakeWayCollideEvent(to_x, to_y, self, *(other.second.ch.get()), false)) {
 			return false;
@@ -844,6 +844,13 @@ int Game_Map::GetBushDepth(int x, int y) {
 	return terrain->bush_depth;
 }
 
+void Game_Map::Randomize() {
+	for (size_t i = 0; i < map_info.lower_tiles.size(); i++) {
+		map_info.lower_tiles[i] = (std::rand() & 1) ? 0 : 6;
+	}
+}
+
+
 bool Game_Map::IsCounter(int x, int y) {
 	if (!Game_Map::IsValid(x, y)) return false;
 
@@ -1002,7 +1009,7 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 		//If not resuming from async op ...
 		Main_Data::game_player->Update();
 		Game_Multiplayer::Update();
-		
+
 		for (auto& vehicle: vehicles) {
 			if (vehicle.GetMapId() == GetMapId()) {
 				vehicle.Update();

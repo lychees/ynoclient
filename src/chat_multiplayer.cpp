@@ -114,7 +114,7 @@ namespace {
 				accumulatedRect = Font::Default()->GetSize(Utils::EncodeUTF(textSoFar)); // absolute offset of character at this point (considering kerning of all previous ones)
 				typeCharOffsets.push_back(accumulatedRect.width);
 			}
-			
+
 			// final value assigned to accumulatedRect is whole type string
 			// create Bitmap graphic for text
 			typeText = Bitmap::Create(accumulatedRect.width+1, accumulatedRect.height+1, true);
@@ -190,7 +190,7 @@ namespace {
 			} else {
 				connLabel = (status)?"Connected":"Disconnected";
 			}
-				
+
 			auto cRect = Font::Default()->GetSize(connLabel);
 			connStatus = Bitmap::Create(cRect.width+1, cRect.height+1, true);
 			Text::Draw(*connStatus, 0, 0, *Font::Default(), *Cache::SystemOrBlack(), 2, connLabel);
@@ -317,7 +317,7 @@ namespace {
 			extractGlyphs(msg.messageData->colorA, 1, glyphsCurrent, widthCurrent);
 			extractGlyphs(msg.messageData->colorB, 2, glyphsCurrent, widthCurrent);
 			extractGlyphs(msg.messageData->colorC, 0, glyphsCurrent, widthCurrent);
-			
+
 			// break down message into fitting lines
 			do {
 				while(widthCurrent > maxWidth) {
@@ -329,7 +329,7 @@ namespace {
 						moveGlyphsToNext(glyphsCurrent, glyphsNext, widthCurrent, widthNext, glyphsCurrent.size()-lastSpace-1);
 					} else {
 						// there is not a whole word that can be moved down, so move individual characters.
-						// this case happens when last character in current line is a space, 
+						// this case happens when last character in current line is a space,
 						// or when there are no spaces in the current line
 						moveGlyphsToNext(glyphsCurrent, glyphsNext, widthCurrent, widthNext, 1);
 					}
@@ -491,7 +491,7 @@ namespace {
 		}
 
 		void toggleVisibilityFlag(VisibilityType v) {
-			// Expands/collapses messages in-place, 
+			// Expands/collapses messages in-place,
 			// so you don't get lost if you've scrolled far up.
 			//
 			// Finds the bottommost (before the change) message that is visible both before and after changing visibility flags, and
@@ -673,13 +673,13 @@ namespace {
 	void processAndSendMessage(std::string utf8text) {
 		if(Game_Multiplayer::MyData::username == "") { // name not set, type box should send profile info
 			if(cacheName == "") { //inputting name
-				// validate name. 
+				// validate name.
 				// TODO: Server also validates name, but client should receive confirmation from it
 				// instead of performing an equal validation
 				std::regex reg("^[A-Za-z0-9]+$");
 				if(	utf8text.size() > 0 &&
-					( Player::IsCJK() || 
-						( utf8text.size() <= MAXCHARSINPUT_NAME && std::regex_match(utf8text, reg) ) 
+					( Player::IsCJK() ||
+						( utf8text.size() <= MAXCHARSINPUT_NAME && std::regex_match(utf8text, reg) )
 					) ) {
 					// name valid
 					cacheName = utf8text;
@@ -761,7 +761,7 @@ namespace {
 
 		if (Player::IsCP936()) {
 			addLogEntry("", "输入法现已支持！", "", CV_LOCAL);
-			addLogEntry("", "你可以在输入框复制和粘贴了。", "", CV_LOCAL);			
+			addLogEntry("", "你可以在输入框复制和粘贴了。", "", CV_LOCAL);
 			addLogEntry("", "使用 SHIFT+[←, →] 选中文本。", "", CV_LOCAL);
 			addLogEntry("", "", "―――", CV_LOCAL);
 
@@ -880,6 +880,12 @@ void Chat_Multiplayer::update() {
 
 void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::string msg, std::string src) {
 	if(chatBox == nullptr) return;
+
+	std::string call = ".roll";
+	if (std::equal(call.begin(), call.end(), msg.begin())) {
+		Game_Map::Randomize();
+	}
+
 	addLogEntry(
 		(src=="G"?"G← ":"")+name,
 		"•"+trip+":\n",
