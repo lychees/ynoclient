@@ -845,12 +845,12 @@ int Game_Map::GetBushDepth(int x, int y) {
 }
 
 void Game_Map::Randomize() {
-	Output::Debug("size: {}", map_info.lower_tiles.size());
-	for (size_t i = 0; i < map_info.lower_tiles.size(); i++) {
-		Output::Debug("info: {} {}", i, lower_layer[i]);
+	Output::Debug("size: {}", map->lower_layer.size());
+	for (size_t i = 0; i < map->lower_layer.size(); i++) {
+		Output::Debug("info: {} {}", i, map->lower_layer[i]);
 	}
-	for (size_t i = 0; i < map_info.lower_tiles.size(); i++) {
-		lower_layer[i] = (std::rand() & 1) ? 0 : 6;
+	for (size_t i = 0; i < map->lower_layer.size(); i++) {
+		map->lower_layer[i] = (std::rand() & 1) ? 0 : 6;
 	}
 }
 
