@@ -653,6 +653,9 @@ target_link_libraries(${PROJECT_NAME} PIXMAN::PIXMAN)
 find_package(fmt REQUIRED)
 target_link_libraries(${PROJECT_NAME} fmt::fmt)
 
+find_package(libtcod CONFIG REQUIRED)
+# target_link_libraries(${PROJECT_NAME} libtcod::libtcod)
+
 # Always enable Wine registry support on non-Windows, but not for console ports
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows" AND NOT ${PLAYER_TARGET_PLATFORM} MATCHES "^(psvita|3ds|switch)$")
 	target_compile_definitions(${PROJECT_NAME} PUBLIC HAVE_WINE=1)
