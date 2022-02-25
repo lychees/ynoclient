@@ -864,7 +864,7 @@ void Game_Map::Randomize() {
 	//map->upper_layer.Draw();
 	// map->Draw();
 	SetNeedRefresh(true);
-	Player::Draw();
+	GetInterpreter().CommandRefreshTileset();
 }
 
 

@@ -406,9 +406,6 @@ void Player::Update(bool update_scene) {
 }
 
 void Player::Draw() {
-
-	Output::Debug("Draw??");
-
 	Graphics::Update();
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
 	DisplayUi->UpdateDisplay();
