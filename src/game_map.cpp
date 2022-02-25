@@ -853,8 +853,8 @@ void Game_Map::Randomize() {
 		Output::Debug("content: {} {}", i, map->lower_layer[i]);
 	}
 	//for (size_t i = 0; i < map->lower_layer.size(); i++) {
-	int n = map->GetHeight();
-	int m = map->GetWidth();
+	int n = GetHeight();
+	int m = GetWidth();
 	auto z = Roguelike::Gen(n, m);
 	for (int i=0;i<n;++i) {
 		for (int j=0;j<m;++j) {
