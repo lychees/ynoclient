@@ -856,11 +856,18 @@ void Game_Map::Randomize() {
 	int n = GetHeight();
 	int m = GetWidth();
 	auto z = Roguelike::Gen(n, m);
+	int x = 0, y = 0;
 	for (int i=0;i<n;++i) {
 		for (int j=0;j<m;++j) {
-			map->lower_layer[i*m+j]	= (z[i][j] & 1) ? 5014 : 4000;
+			map->lower_layer[i*m+j]	= (z[i][j] & 1) ? 4000 : 5014;
+			if (z[i][j] & 1) {
+				x = i;
+				y = j;
+			}
 		}
 	}
+
+	Main_Data::game_player->ReserveTeleport(GetMapId(), x, y, 0, TeleportTarget::eParallelTeleport);
 
 	/*for (size_t i = 0; i < map->upper_layer.size(); i++) {
 		map->upper_layer[i] = (std::rand() & 1) ? 5014 : 4000;

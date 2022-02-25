@@ -103,8 +103,8 @@ void Sprite_Picture::Draw(Bitmap& dst) {
 
 	SetX(x);
 	SetY(y);
-	SetZoomX(data.current_magnify / 100.0);
-	SetZoomY(data.current_magnify / 100.0);
+	SetZoomX(data.current_magnify / 200.0);
+	SetZoomY(data.current_magnify / 200.0);
 
 	auto sr = GetSrcRect();
 	SetOx(sr.width / 2);
