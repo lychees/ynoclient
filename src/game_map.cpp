@@ -846,8 +846,6 @@ int Game_Map::GetBushDepth(int x, int y) {
 
 void Game_Map::Randomize() {
 
-	map->lower_layer->Draw();
-
 	Output::Debug("size: {}", map->lower_layer.size());
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
 		Output::Debug("info: {} {}", i, map->lower_layer[i]);
