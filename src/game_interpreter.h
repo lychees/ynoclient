@@ -102,8 +102,6 @@ public:
 	/** @return true if wait command (time or key) is active. Used by 2k3 battle system */
 	bool IsWaitingForWaitCommand() const;
 
-	bool CommandRefreshTileset();
-
 protected:
 	static constexpr int loop_limit = 10000;
 	static constexpr int call_stack_limit = 1000;
@@ -237,8 +235,6 @@ protected:
 	bool CommandPlayMemorizedBGM(lcf::rpg::EventCommand const& com);
 	bool CommandKeyInputProc(lcf::rpg::EventCommand const& com);
 	bool CommandChangeMapTileset(lcf::rpg::EventCommand const& com);
-
-
 	bool CommandChangePBG(lcf::rpg::EventCommand const& com);
 	bool CommandChangeEncounterRate(lcf::rpg::EventCommand const& com);
 	bool CommandTileSubstitution(lcf::rpg::EventCommand const& com);
