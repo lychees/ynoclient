@@ -860,8 +860,9 @@ void Game_Map::Randomize() {
 		map->upper_layer[i] = (std::rand() & 1) ? 4000 : 4000;
 	}
 
-	map->lower_layer.Draw();
-	map->upper_layer.Draw();
+	//map->lower_layer.Draw();
+	//map->upper_layer.Draw();
+	map->Draw();
 	Player::Draw();
 }
 
