@@ -6,10 +6,12 @@
 using std::vector;
 
 namespace Roguelike {
-	vector<vector<int> > Gen(int n, int m) {
-		vector<int> z; z.resize(n);
-		for (int i=0;i<m;++i) {
-			z.push_back((std::rand() & 1) ? 1 : 0);
+	vector<vector<int> > Gen(int h, int w) {
+		vector<int> z; z.resize(h);
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				z[i].push_back((std::rand() & 1) ? 1 : 0);
+			}
 		}
 		return z;
 	}
