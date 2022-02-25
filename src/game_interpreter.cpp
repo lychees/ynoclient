@@ -3181,7 +3181,7 @@ bool Game_Interpreter::CommandRefreshTileset() {
 	Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
 	if (!scene) return true;
 	scene->spriteset->ChipsetUpdated();
-	Game_Map::Refresh();
+	// Game_Map::Refresh();
 	return true;
 }
 

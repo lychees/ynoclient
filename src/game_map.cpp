@@ -857,12 +857,7 @@ void Game_Map::Randomize() {
 	/*for (size_t i = 0; i < map->upper_layer.size(); i++) {
 		map->upper_layer[i] = (std::rand() & 1) ? 5014 : 4000;
 	}*/
-
-	//map->lower_layer.Draw();
-	//map->upper_layer.Draw();
-	// map->Draw();
-	 SetNeedRefresh(true);
-	// GetInterpreter().CommandRefreshTileset();
+	GetInterpreter().CommandRefreshTileset();
 }
 
 
