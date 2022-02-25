@@ -867,7 +867,7 @@ void Game_Map::Randomize() {
 		}
 	}
 
-	Main_Data::game_player->ReserveTeleport(GetMapId(), x, y, 0, TeleportTarget::eParallelTeleport);
+	Main_Data::game_player->ReserveTeleport(GetMapId(), y, x, 0, TeleportTarget::eParallelTeleport);
 
 	/*for (size_t i = 0; i < map->upper_layer.size(); i++) {
 		map->upper_layer[i] = (std::rand() & 1) ? 5014 : 4000;
