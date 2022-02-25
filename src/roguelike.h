@@ -40,13 +40,15 @@ namespace Roguelike {
 
 				dig(x, y, x+h-1, y+w-1);
 
-				/*if ( roomNum != 0 ) {
-					dig(lastx,lasty,x+h/2,lasty);
-					dig(x+h/2,lasty,x+h/2,y+w/2);
+				int xx = x+h/2;
+				int yy = y+w/2;
+				if ( roomNum != 0 ) {
+					dig(lastx,lasty,xx,lasty);
+					dig(xx,lasty,xx,yy);
 				}
-				lastx=x+h/2;
-				lasty=y+w/2;
-				roomNum++;*/
+				lastx=xx;
+				lasty=yy;
+				roomNum++;
 			}
 			return true;
 		}
