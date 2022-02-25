@@ -862,7 +862,8 @@ void Game_Map::Randomize() {
 
 	//map->lower_layer.Draw();
 	//map->upper_layer.Draw();
-	map->Draw();
+	// map->Draw();
+	SetNeedRefresh(true);
 	Player::Draw();
 }
 
