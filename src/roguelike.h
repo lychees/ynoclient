@@ -37,14 +37,15 @@ namespace Roguelike {
 				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
 				x=rng->getInt(node->x+1, node->x+node->h-h-1);
 				y=rng->getInt(node->y+1, node->y+node->w-w-1);
-				dig(x, y, x+h-1, y+w-1);
-				if ( roomNum != 0 ) {
+				// dig(x, y, x+h-1, y+w-1);
+
+				/*if ( roomNum != 0 ) {
 					dig(lastx,lasty,x+h/2,lasty);
 					dig(x+h/2,lasty,x+h/2,y+w/2);
 				}
 				lastx=x+h/2;
 				lasty=y+w/2;
-				roomNum++;
+				roomNum++;*/
 			}
 			return true;
 		}
