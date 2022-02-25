@@ -208,7 +208,7 @@ static uint32_t MakeAbTileHash(int id, int anim_step) {
 void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 
 
-	Output::Debug("draw z-order: {}", z_order);
+	// Output::Debug("draw z-order: {}", z_order);
 
 	// Get the number of tiles that can be displayed on window
 	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
