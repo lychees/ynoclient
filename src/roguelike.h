@@ -13,8 +13,8 @@ namespace Roguelike {
 	const int ROOM_MIN_SIZE = 6;
 
 	void dig(int x1, int y1, int x2, int y2) {
-		if (x1 > x2) swap(x1, x2);
-		if (y1 > y2) swap(y1, y2);
+		if (x1 > x2) std::swap(x1, x2);
+		if (y1 > y2) std::swap(y1, y2);
 		for (int i=x1; i<=x2; ++i) {
 			for (int j=y1; j<=y2; ++j) {
 				A[i][j] = 1;
@@ -26,7 +26,7 @@ namespace Roguelike {
 	private :
 		int lastx, lasty, roomNum;
 	public :
-		BspListener() :  {
+		BspListener() {
 			roomNum = 0;
 		}
 		bool visitNode(TCODBsp *node, void *userData) {
