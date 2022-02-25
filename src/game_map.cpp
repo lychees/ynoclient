@@ -846,8 +846,6 @@ int Game_Map::GetBushDepth(int x, int y) {
 
 void Game_Map::Randomize() {
 
-
-
 	Output::Debug("size: {}", map->lower_layer.size());
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
 		Output::Debug("content: {} {}", i, map->lower_layer[i]);
@@ -863,8 +861,8 @@ void Game_Map::Randomize() {
 	//map->lower_layer.Draw();
 	//map->upper_layer.Draw();
 	// map->Draw();
-	// SetNeedRefresh(true);
-	GetInterpreter().CommandRefreshTileset();
+	 SetNeedRefresh(true);
+	// GetInterpreter().CommandRefreshTileset();
 }
 
 
