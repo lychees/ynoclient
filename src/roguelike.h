@@ -31,19 +31,19 @@ namespace Roguelike {
 		}
 		bool visitNode(TCODBsp *node, void *userData) {
 			if ( node->isLeaf() ) {
-				int x,y,w,h;
+				int x,y,h,w;
 				TCODRandom *rng=TCODRandom::getInstance();
-				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
 				h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
-				x=rng->getInt(node->x+1, node->x+node->w-w-1);
-				y=rng->getInt(node->y+1, node->y+node->h-h-1);
-				dig(x, y, x+w-1, y+h-1);
+				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
+				x=rng->getInt(node->x+1, node->x+node->h-h-1);
+				y=rng->getInt(node->y+1, node->y+node->w-w-1);
+				dig(x, y, x+h-1, y+w-1);
 				if ( roomNum != 0 ) {
-					dig(lastx,lasty,x+w/2,lasty);
-					dig(x+w/2,lasty,x+w/2,y+h/2);
+					dig(lastx,lasty,x+h/2,lasty);
+					dig(x+h/2,lasty,x+h/2,y+w/2);
 				}
-				lastx=x+w/2;
-				lasty=y+h/2;
+				lastx=x+h/2;
+				lasty=y+w/2;
 				roomNum++;
 			}
 			return true;
@@ -58,7 +58,7 @@ namespace Roguelike {
 				A[i].push_back(0);
 			}
 		}
-		TCODBsp bsp(0,0,w,h);
+		TCODBsp bsp(0,0,h,w);
 		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
 		BspListener listener;
 		bsp.traverseInvertedLevelOrder(&listener,NULL);
