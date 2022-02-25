@@ -8,7 +8,7 @@ using std::vector;
 namespace Roguelike {
 
 	vector<vector<int>> A;
-	int n, m;
+	int h, w;
 	const int ROOM_MAX_SIZE = 12;
 	const int ROOM_MIN_SIZE = 6;
 
