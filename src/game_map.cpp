@@ -853,17 +853,17 @@ void Game_Map::Randomize() {
 		Output::Debug("content: {} {}", i, map->lower_layer[i]);
 	}
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
-		map->lower_layer[i] = (std::rand() & 1) ? 4000 : 4000;
+		map->lower_layer[i] = (std::rand() & 1) ? 5014 : 4000;
 	}
 
-	for (size_t i = 0; i < map->upper_layer.size(); i++) {
-		map->upper_layer[i] = (std::rand() & 1) ? 4000 : 4000;
-	}
+	/*for (size_t i = 0; i < map->upper_layer.size(); i++) {
+		map->upper_layer[i] = (std::rand() & 1) ? 5014 : 4000;
+	}*/
 
 	//map->lower_layer.Draw();
 	//map->upper_layer.Draw();
 	// map->Draw();
-	SetNeedRefresh(true);
+	// SetNeedRefresh(true);
 	GetInterpreter().CommandRefreshTileset();
 }
 
