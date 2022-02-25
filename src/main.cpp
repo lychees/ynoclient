@@ -16,7 +16,6 @@
  */
 
 #include "player.h"
-#include "libtcod.hpp"
 #include <cstdlib>
 
 // This is needed on Windows

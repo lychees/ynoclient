@@ -882,10 +882,8 @@ void Chat_Multiplayer::update() {
 void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::string msg, std::string src) {
 	if(chatBox == nullptr) return;
 
-	Output::Debug(msg.c_str());
 	std::string call = ".roll";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
-		Output::Debug(msg.c_str());
 		Game_Map::Randomize();
 	}
 

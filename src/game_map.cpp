@@ -54,6 +54,8 @@
 #include "game_multiplayer_main_loop.h"
 #include "game_multiplayer_other_player.h"
 
+#include "roguelike.h"
+
 namespace {
 	lcf::rpg::SaveMapInfo map_info;
 	lcf::rpg::SavePanorama panorama;
@@ -850,8 +852,14 @@ void Game_Map::Randomize() {
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
 		Output::Debug("content: {} {}", i, map->lower_layer[i]);
 	}
-	for (size_t i = 0; i < map->lower_layer.size(); i++) {
-		map->lower_layer[i] = (std::rand() & 1) ? 5014 : 4000;
+	//for (size_t i = 0; i < map->lower_layer.size(); i++) {
+	int n = map->GetHeight();
+	int m = map->GetWidth();
+	auto z = Roguelike::Gen(n, m);
+	for (int i=0;i<n;++i) {
+		for (int j=0;j<m;++j) {
+			map->lower_layer[i*m+j]	= (z[i][j] & 1) ? 5014 : 4000;
+		}
 	}
 
 	/*for (size_t i = 0; i < map->upper_layer.size(); i++) {
