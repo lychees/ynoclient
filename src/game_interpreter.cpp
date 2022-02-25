@@ -3178,8 +3178,12 @@ bool Game_Interpreter::CommandKeyInputProc(lcf::rpg::EventCommand const& com) { 
 }
 
 bool Game_Interpreter::CommandRefreshTileset() {
+	Output::Debug("123456789");
 	Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+	if (!scene) return true;
 	scene->spriteset->ChipsetUpdated();
+	Game_Map::Refresh();
+	Output::Debug("123456");
 	return true;
 }
 
