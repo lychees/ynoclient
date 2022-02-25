@@ -849,9 +849,9 @@ void Game_Map::Randomize() {
 
 
 	Output::Debug("size: {}", map->lower_layer.size());
-	for (size_t i = 0; i < map->lower_layer.size(); i++) {
+	/*for (size_t i = 0; i < map->lower_layer.size(); i++) {
 		Output::Debug("content: {} {}", i, map->lower_layer[i]);
-	}
+	}*/
 	for (size_t i = 0; i < map->lower_layer.size(); i++) {
 		map->lower_layer[i] = (std::rand() & 1) ? 4000 : 4000;
 	}
@@ -865,6 +865,10 @@ void Game_Map::Randomize() {
 	// map->Draw();
 	SetNeedRefresh(true);
 	Player::Draw();
+
+	//Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+	//scene->spriteset->ChipsetUpdated();
+	Game_Map::GetInterpreter().CommandRefreshTileset();
 }
 
 
