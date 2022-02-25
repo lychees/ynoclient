@@ -3177,6 +3177,12 @@ bool Game_Interpreter::CommandKeyInputProc(lcf::rpg::EventCommand const& com) { 
 	return true;
 }
 
+bool Game_Interpreter::CommandRefreshTileset() {
+	Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+	scene->spriteset->ChipsetUpdated();
+	return true;
+}
+
 bool Game_Interpreter::CommandChangeMapTileset(lcf::rpg::EventCommand const& com) { // code 11710
 	int chipset_id = com.parameters[0];
 
