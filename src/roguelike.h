@@ -12,6 +12,16 @@ namespace Roguelike {
 	const int ROOM_MAX_SIZE = 12;
 	const int ROOM_MIN_SIZE = 6;
 
+	void dig(int x1, int y1, int x2, int y2) {
+		if (x1 > x2) swap(x1, x2);
+		if (y1 > y2) swap(y1, y2);
+		for (int i=x1; i<=x2; ++i) {
+			for (int j=y1; j<=y2; ++j) {
+				A[i][j] = 1;
+			}
+		}
+	}
+
 	class BspListener : public ITCODBspCallback {
 	private :
 		int lastx, lasty, roomNum;
@@ -39,22 +49,6 @@ namespace Roguelike {
 			return true;
 		}
 	};
-
-	Map::Map(int width, int height) : width(width),height(height) {
-		tiles=new Tile[width*height];
-
-	}
-
-	void dig(int x1, int y1, int x2, int y2) {
-		if (x1 > x2) swap(x1, x2);
-		if (y1 > y2) swap(y1, y2);
-		for (int i=x1; i<=x2; ++i) {
-			for (int j=y1; j<=y2; ++j) {
-				A[i][j] = 1;
-			}
-		}
-	}
-
 
 	vector<vector<int>> Gen(int _h, int _w) {
 		h = _h; w = _w;
