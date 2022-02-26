@@ -30,14 +30,14 @@
 
 extern "C" int main(int argc, char* argv[]) {
 	Player::Init(argc, argv);
-	// Player::Run();
+	Player::Run();
 
     /*while ( !TCODConsole::isWindowClosed() ) {
     	engine.update();
     	engine.render();
 		TCODConsole::flush();
     }*/
-
+	/*
     int playerx=40,playery=25;
     TCODConsole::initRoot(80,50,"libtcod C++ tutorial",false);
     while ( !TCODConsole::isWindowClosed() ) {
@@ -55,6 +55,7 @@ extern "C" int main(int argc, char* argv[]) {
         TCODConsole::flush();
     }
     return 0;
+	*/
 
 	return EXIT_SUCCESS;
 }
