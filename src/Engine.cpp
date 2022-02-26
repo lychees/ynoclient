@@ -1,21 +1,19 @@
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
 #include "Engine.hpp"
 
 Engine::Engine() {
-    TCODConsole::initRoot(80,50,"libtcod C++ tutorial",false);
-    player = new Actor(40,25,'@',TCODColor::white);
-    actors.push(player);
-    map = new Map(80,45);
+    // TCODConsole::initRoot(80,50,"libtcod C++ tutorial",false);
+    //player = new Actor(40,25,'@',TCODColor::white);
+    //actors.push(player);
+    //map = new Map(80,45);
 }
 
 Engine::~Engine() {
-    actors.clearAndDelete();
-    delete map;
+   // actors.clearAndDelete();
+   // delete map;
 }
 
 void Engine::update() {
+    /*
     TCOD_key_t key;
     TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
     switch(key.vk) {
@@ -40,16 +38,16 @@ void Engine::update() {
             }
         break;
         default:break;
-    }
+    }*/
 }
 
 void Engine::render() {
-	TCODConsole::root->clear();
+	/*TCODConsole::root->clear();
 	// draw the map
 	map->render();
 	// draw the actors
 	for (Actor **iterator=actors.begin();
 	    iterator != actors.end(); iterator++) {
 	    (*iterator)->render();
-	}
+	}*/
 }
