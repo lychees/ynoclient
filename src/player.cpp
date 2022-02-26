@@ -231,24 +231,10 @@ void Player::Init(int argc, char *argv[]) {
 
 
 #include "libtcod.hpp"
-//#include "Actor.hpp"
-//#include "Map.hpp"
-#include "Engine.hpp"
-//Engine engine2;
+
 int ii = 0;
 
 void Player::Run() {
-	while (Game_Clock::NextGameTimeStep()) {
-			//engine2.update();
-			BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "aaaa" + char('0' + (ii++)/600 );
-
-	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
-	DisplayUi->UpdateDisplay();
-
-	}
-
-	return;
 	Instrumentation::Init("EasyRPG-Player");
 	Scene::Push(std::make_shared<Scene_Logo>());
 	Graphics::UpdateSceneCallback();
@@ -274,6 +260,17 @@ void Player::Run() {
 }
 
 void Player::MainLoop() {
+
+	/*
+	while (Game_Clock::NextGameTimeStep()) {
+		BitmapRef surface = DisplayUi->GetDisplaySurface();
+		std::string message = "aaaa" + char('0' + (ii++)/600 );
+		Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
+		DisplayUi->UpdateDisplay();
+	}
+	*/
+
+
 	Instrumentation::FrameScope iframe;
 
 	const auto frame_time = Game_Clock::now();
