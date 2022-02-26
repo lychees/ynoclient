@@ -233,8 +233,8 @@ void Player::Init(int argc, char *argv[]) {
 #include "libtcod.hpp"
 //#include "Actor.hpp"
 //#include "Map.hpp"
-//#include "Engine.hpp"
-//Engine engine2;
+#include "Engine.hpp"
+Engine engine2;
 
 void Player::Run() {
 	while (Game_Clock::NextGameTimeStep()) {
