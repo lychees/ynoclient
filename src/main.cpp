@@ -26,11 +26,7 @@
 
 
 
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "Engine.hpp"
-Engine engine;
+
 
 
 
@@ -44,7 +40,7 @@ extern "C" int main(int argc, char* argv[]) {
     	//engine.update();
     	// engine.render();
 		TCODConsole::flush();
-    }*/
+    }
  
 	return EXIT_SUCCESS;
 }

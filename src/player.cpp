@@ -229,6 +229,13 @@ void Player::Init(int argc, char *argv[]) {
 	player_config = std::move(cfg.player);
 }
 
+
+#include "libtcod.hpp"
+#include "Actor.hpp"
+#include "Map.hpp"
+#include "Engine.hpp"
+Engine engine;
+
 void Player::Run() {
 	while (Game_Clock::NextGameTimeStep()) {
 		engine.update();
