@@ -30,7 +30,7 @@
 #include "Actor.hpp"
 #include "Map.hpp"
 #include "Engine.hpp"
-/*Engine engine;*/
+Engine engine;
 
 
 
@@ -40,11 +40,11 @@ extern "C" int main(int argc, char* argv[]) {
 	Player::Init(argc, argv);
 	Player::Run();
 
-    while ( !TCODConsole::isWindowClosed() ) {
+    /*while ( !TCODConsole::isWindowClosed() ) {
     	//engine.update();
     	// engine.render();
 		TCODConsole::flush();
-    }
+    }*/
  
 	return EXIT_SUCCESS;
 }
