@@ -232,7 +232,7 @@ void Player::Init(int argc, char *argv[]) {
 void Player::Run() {
 
 	BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "It's now safe to turn off\n      your browser.";
+	std::string message = "M200 を大好き.啊啊啊寶寶寶";
 
 	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
 	DisplayUi->UpdateDisplay();
