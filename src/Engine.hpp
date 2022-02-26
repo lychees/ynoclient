@@ -4,7 +4,7 @@
 
 class Engine {
 public :
-    TCODList<Actor *> actors;
+    //TCODList<Actor *> actors;
     Actor *player;
     Map *map;
  
