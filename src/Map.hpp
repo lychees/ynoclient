@@ -1,4 +1,4 @@
-struct Tile {
+/*struct Tile {
     bool canWalk; // can we walk through this tile?
     Tile() : canWalk(false) {}
 };
@@ -18,3 +18,4 @@ protected :
     void dig(int x1, int y1, int x2, int y2);
     void createRoom(bool first, int x1, int y1, int x2, int y2);
 };
+*/

@@ -1,5 +1,6 @@
 #include "libtcod.hpp"
 #include "Map.hpp"
+/*
 #include "Actor.hpp"
 #include "Engine.hpp"
 
@@ -96,3 +97,4 @@ void Map::render() const {
 	    }
 	}
 }
+*/
