@@ -35,10 +35,18 @@ public :
    // Actor *player;
    // Map *map;
 
-    Engine();
-    ~Engine();
-    void update();
-    void render();
+    Engine(){
+
+	}
+    ~Engine(){
+
+	}
+    void update(){
+
+	}
+    void render(){
+
+	}
 };
 	Engine engine;
 }
