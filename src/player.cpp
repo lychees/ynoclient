@@ -229,24 +229,14 @@ void Player::Init(int argc, char *argv[]) {
 	player_config = std::move(cfg.player);
 }
 
-
-#include "libtcod.hpp"
-//#include "Actor.hpp"
-//#include "Map.hpp"
-#include "Engine.hpp"
-//Engine engine2;
-int ii = 0;
-
 void Player::Run() {
-	while (Game_Clock::NextGameTimeStep()) {
-			//engine2.update();
-			BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "aaaa" + char('0' + (ii++)/600 );
+
+	BitmapRef surface = DisplayUi->GetDisplaySurface();
+	std::string message = "M200 を大好き.啊啊啊寶寶寶";
 
 	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
 	DisplayUi->UpdateDisplay();
-
-	}
+	return;
 
 	return;
 	Instrumentation::Init("EasyRPG-Player");
