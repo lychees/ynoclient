@@ -26,11 +26,11 @@
 
 
 
-/*#include "libtcod.hpp"
+#include "libtcod.hpp"
 #include "Actor.hpp"
 #include "Map.hpp"
 #include "Engine.hpp"
-Engine engine;*/
+/*Engine engine;*/
 
 
 
