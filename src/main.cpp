@@ -40,7 +40,7 @@ extern "C" int main(int argc, char* argv[]) {
     	//engine.update();
     	// engine.render();
 		TCODConsole::flush();
-    }
+    }*/
  
 	return EXIT_SUCCESS;
 }
