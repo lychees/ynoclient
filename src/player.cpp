@@ -230,13 +230,15 @@ void Player::Init(int argc, char *argv[]) {
 }
 
 void Player::Run() {
-
-	BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "M200 を大好き.啊啊啊寶寶寶";
+	while (Game_Clock::NextGameTimeStep()) {
+		engine.update();
+			BitmapRef surface = DisplayUi->GetDisplaySurface();
+	std::string message = "aaaa";
 
 	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
 	DisplayUi->UpdateDisplay();
-	return;
+
+	}
 
 	return;
 	Instrumentation::Init("EasyRPG-Player");
