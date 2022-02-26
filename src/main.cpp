@@ -23,43 +23,17 @@
 #  include <SDL.h>
 #endif
 
+#include "Engine.hpp"
 
-
-
-#include "libtcod.hpp"
-
-namespace Roguelike {
-	class Engine {
-public :
-    //TCODList<Actor *> actors;
-   // Actor *player;
-   // Map *map;
-
-    Engine(){
-
-	}
-    ~Engine(){
-
-	}
-    void update(){
-
-	}
-    void render(){
-
-	}
-};
-	Engine engine;
-}
-
-
+Engine engine;
 
 extern "C" int main(int argc, char* argv[]) {
-	Player::Init(argc, argv);
+	//Player::Init(argc, argv);
 	// Player::Run();
 
     while ( !TCODConsole::isWindowClosed() ) {
-    	Roguelike::engine.update();
-    	Roguelike::engine.render();
+    	engine.update();
+    	engine.render();
 		TCODConsole::flush();
     }
 
