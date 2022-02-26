@@ -8,11 +8,12 @@ Engine::Engine() {
 }
 
 Engine::~Engine() {
-    actors.clearAndDelete();
-    delete map;
+   // actors.clearAndDelete();
+   // delete map;
 }
 
 void Engine::update() {
+    /*
     TCOD_key_t key;
     TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS,&key,NULL);
     switch(key.vk) {
@@ -37,7 +38,7 @@ void Engine::update() {
             }
         break;
         default:break;
-    }
+    }*/
 }
 
 void Engine::render() {
