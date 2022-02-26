@@ -27,7 +27,9 @@
 
 
 #include "libtcod.hpp"
-class Engine {
+
+namespace Roguelike {
+	class Engine {
 public :
     //TCODList<Actor *> actors;
    // Actor *player;
@@ -38,7 +40,6 @@ public :
     void update();
     void render();
 };
-namespace Roguelike {
 	Engine engine;
 }
 
