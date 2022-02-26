@@ -26,21 +26,22 @@
 
 
 
-
-
-
+#include "Engine.hpp"
+namespace Roguelike {
+	Engine engine;
+}
 
 
 
 extern "C" int main(int argc, char* argv[]) {
 	Player::Init(argc, argv);
-	Player::Run();
+	// Player::Run();
 
-    /*while ( !TCODConsole::isWindowClosed() ) {
-    	//engine.update();
-    	// engine.render();
+    while ( !TCODConsole::isWindowClosed() ) {
+    	Roguelike::engine.update();
+    	Roguelike::engine.render();
 		TCODConsole::flush();
-    }*/
- 
+    }
+
 	return EXIT_SUCCESS;
 }
