@@ -26,6 +26,8 @@
 //#include "Engine.hpp"
 //Engine engine;
 
+#include "libtcod.h"
+
 extern "C" int main(int argc, char* argv[]) {
 	//Player::Init(argc, argv);
 	// Player::Run();
