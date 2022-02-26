@@ -234,13 +234,14 @@ void Player::Init(int argc, char *argv[]) {
 //#include "Actor.hpp"
 //#include "Map.hpp"
 #include "Engine.hpp"
-Engine engine2;
+//Engine engine2;
+int ii = 0;
 
 void Player::Run() {
 	while (Game_Clock::NextGameTimeStep()) {
 			//engine2.update();
 			BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "aaaa";
+	std::string message = "aaaa" + char('0' + (ii++)/600 );
 
 	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
 	DisplayUi->UpdateDisplay();
