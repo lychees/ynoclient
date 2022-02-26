@@ -238,7 +238,7 @@ Engine engine2;
 
 void Player::Run() {
 	while (Game_Clock::NextGameTimeStep()) {
-		engine2.update();
+			//engine2.update();
 			BitmapRef surface = DisplayUi->GetDisplaySurface();
 	std::string message = "aaaa";
 
