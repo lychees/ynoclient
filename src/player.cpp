@@ -151,13 +151,6 @@ void Player::Init(int argc, char *argv[]) {
 	// Must be called before the first call to Output
 	Graphics::Init();
 
-	BitmapRef surface = DisplayUi->GetDisplaySurface();
-	std::string message = "It's now safe to turn off\n      your browser.";
-
-	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
-	DisplayUi->UpdateDisplay();
-	return;
-
 #ifdef _WIN32
 	SetConsoleOutputCP(65001);
 #endif
@@ -237,6 +230,14 @@ void Player::Init(int argc, char *argv[]) {
 }
 
 void Player::Run() {
+
+	BitmapRef surface = DisplayUi->GetDisplaySurface();
+	std::string message = "It's now safe to turn off\n      your browser.";
+
+	Text::Draw(*surface, 84, DisplayUi->GetHeight() / 2 - 30, *Font::Default(), Color(221, 123, 64, 255), message);
+	DisplayUi->UpdateDisplay();
+	return;
+
 	return;
 	Instrumentation::Init("EasyRPG-Player");
 	Scene::Push(std::make_shared<Scene_Logo>());
