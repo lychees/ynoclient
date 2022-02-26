@@ -29,7 +29,7 @@
 #include "libtcod.h"
 
 extern "C" int main(int argc, char* argv[]) {
-	//Player::Init(argc, argv);
+	Player::Init(argc, argv);
 	// Player::Run();
 
     /*while ( !TCODConsole::isWindowClosed() ) {
