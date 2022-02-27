@@ -346,7 +346,6 @@ void Transition::Draw(Bitmap& dst) {
 		break;
 	case TransitionMosaicIn:
 	case TransitionMosaicOut:
-	/*
 		// If TransitionMosaicIn, invert percentage and screen:
 		if (transition_type == TransitionMosaicIn) { percentage = 100 - percentage; }
 		screen_pointer1 = transition_type == TransitionMosaicIn ? screen2 : screen1;
@@ -362,7 +361,6 @@ void Transition::Draw(Bitmap& dst) {
 				}
 		else
 			dst.Blit(0, 0, *screen_pointer1, screen_pointer1->GetRect(), 255);
-			*/
 		break;
 	case TransitionWaveIn:
 	case TransitionWaveOut:
