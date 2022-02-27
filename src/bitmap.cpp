@@ -576,7 +576,7 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 		return;
 	}
 
-	auto mask = CreateMask(opacity, src_rect);
+	//auto mask = CreateMask(opacity, src_rect);
 
 	double zoom_x = 2;
 	double zoom_y = 2;
