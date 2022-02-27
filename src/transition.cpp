@@ -155,14 +155,14 @@ void Transition::SetAttributesTransitions() {
 		break;
 	case TransitionZoomIn:
 	case TransitionZoomOut:
-		if (scene != nullptr && scene->type == Scene::Map) {
+		/*if (scene != nullptr && scene->type == Scene::Map) {
 			zoom_position[0] = std::max(0, std::min(Main_Data::game_player->GetScreenX(), (int)SCREEN_TARGET_WIDTH));
 			zoom_position[1] = std::max(0, std::min(Main_Data::game_player->GetScreenY() - 8, (int)SCREEN_TARGET_HEIGHT));
 		}
 		else {
 			zoom_position[0] = SCREEN_TARGET_WIDTH / 2;
 			zoom_position[1] = SCREEN_TARGET_HEIGHT / 2;
-		}
+		}*/
 		break;
 	default:
 		// do nothing, keep the compiler happy
@@ -326,8 +326,8 @@ void Transition::Draw(Bitmap& dst) {
 		percentage = percentage <= 97 ? percentage : 97;
 
 		for (int i = 0; i < 2; i++) {
-			z_min = z_length[i] / 4;
-			z_max = z_length[i] * 3 / 4;
+			z_min = z_length[i] * 4;
+			z_max = z_length[i] * 3 * 4;
 			z_pos[i] = std::max(z_min, std::min((int)zoom_position[i], z_max)) * percentage / 100;
 			z_size[i] = z_length[i] * (100 - percentage) / 100;
 
@@ -346,6 +346,7 @@ void Transition::Draw(Bitmap& dst) {
 		break;
 	case TransitionMosaicIn:
 	case TransitionMosaicOut:
+	/*
 		// If TransitionMosaicIn, invert percentage and screen:
 		if (transition_type == TransitionMosaicIn) { percentage = 100 - percentage; }
 		screen_pointer1 = transition_type == TransitionMosaicIn ? screen2 : screen1;
@@ -361,6 +362,7 @@ void Transition::Draw(Bitmap& dst) {
 				}
 		else
 			dst.Blit(0, 0, *screen_pointer1, screen_pointer1->GetRect(), 255);
+			*/
 		break;
 	case TransitionWaveIn:
 	case TransitionWaveOut:
