@@ -584,7 +584,7 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 							 src_rect.x, src_rect.y,
 							 0, 0,
 							 x, y,
-							 src_rect.width, src_rect.height);
+							 src_rect.width/2, src_rect.height/2);
 }
 
 void Bitmap::BlitFast(int x, int y, Bitmap const & src, Rect const & src_rect, Opacity const & opacity) {
