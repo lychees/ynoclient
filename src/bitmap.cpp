@@ -578,8 +578,8 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 
 	//auto mask = CreateMask(opacity, src_rect);
 
-	double zoom_x = 0.75;
-	double zoom_y = 0.75;
+	double zoom_x = 1.25;
+	double zoom_y = 1.25;
 
 	Transform xform = Transform::Scale(zoom_x, zoom_y);
 
