@@ -214,7 +214,7 @@ void Player::Init(int argc, char *argv[]) {
 
 	if(! DisplayUi) {
 		#if defined(INGAME_CHAT)
-			// DisplayUi = BaseUi::CreateUi(TOTAL_TARGET_WIDTH, SCREEN_TARGET_HEIGHT, cfg.video);
+			DisplayUi = BaseUi::CreateUi(TOTAL_TARGET_WIDTH, SCREEN_TARGET_HEIGHT, cfg.video);
 		#else
 			DisplayUi = BaseUi::CreateUi(SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT, cfg.video);
 		#endif
