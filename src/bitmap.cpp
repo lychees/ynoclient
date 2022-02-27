@@ -581,10 +581,10 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 	pixman_image_composite32(src.GetOperator(mask.get(), blend_mode),
 							 src.bitmap.get(),
 							 mask.get(), bitmap.get(),
-							 src_rect.x*2, src_rect.y*2,
+							 src_rect.x, src_rect.y,
 							 0, 0,
-							 x, y,
-							 src_rect.width, src_rect.height);
+							 x, y ,
+							 src_rect.width * 2, src_rect.height * 2);
 }
 
 void Bitmap::BlitFast(int x, int y, Bitmap const & src, Rect const & src_rect, Opacity const & opacity) {
@@ -598,7 +598,7 @@ void Bitmap::BlitFast(int x, int y, Bitmap const & src, Rect const & src_rect, O
 		src_rect.x, src_rect.y,
 		0, 0,
 		x, y,
-		src_rect.width, src_rect.height);
+		src_rect.width * 2, src_rect.height * 2);
 }
 
 PixmanImagePtr Bitmap::GetSubimage(Bitmap const& src, const Rect& src_rect) {
