@@ -155,14 +155,14 @@ void Transition::SetAttributesTransitions() {
 		break;
 	case TransitionZoomIn:
 	case TransitionZoomOut:
-		/*if (scene != nullptr && scene->type == Scene::Map) {
+		if (scene != nullptr && scene->type == Scene::Map) {
 			zoom_position[0] = std::max(0, std::min(Main_Data::game_player->GetScreenX(), (int)SCREEN_TARGET_WIDTH));
 			zoom_position[1] = std::max(0, std::min(Main_Data::game_player->GetScreenY() - 8, (int)SCREEN_TARGET_HEIGHT));
 		}
 		else {
 			zoom_position[0] = SCREEN_TARGET_WIDTH / 2;
 			zoom_position[1] = SCREEN_TARGET_HEIGHT / 2;
-		}*/
+		}
 		break;
 	default:
 		// do nothing, keep the compiler happy
