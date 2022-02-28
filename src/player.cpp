@@ -367,7 +367,7 @@ void Player::UpdateInput() {
 }
 
 void Player::Update(bool update_scene) {
-	Output::Debug("Player Update");
+	// Output::Debug("Player Update");
 	std::shared_ptr<Scene> old_instance = Scene::instance;
 
 	if (exit_flag) {
@@ -403,6 +403,7 @@ void Player::Update(bool update_scene) {
 	if (Main_Data::game_quit) {
 		Main_Data::game_quit->Update();
 	}
+	return;
 
 	auto& transition = Transition::instance();
 
