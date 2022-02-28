@@ -17,6 +17,7 @@
 #include "compiler.h"
 #include "game_map.h"
 #include "game_multiplayer_my_data.h"
+#include "transition.h"
 
 using namespace Game_Multiplayer;
 
