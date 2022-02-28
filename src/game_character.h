@@ -1184,7 +1184,6 @@ inline bool Game_Character::IsMoving() const {
 }
 
 inline bool Game_Character::IsStopping() const {
-	return false;
 	return !(IsMoving() || IsJumping());
 }
 
