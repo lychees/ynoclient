@@ -885,6 +885,20 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	std::string call = ".roll";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
 		Game_Map::Randomize();
+		return;
+	}
+
+	std::string call = ".zoom_in";
+	if (std::equal(call.begin(), call.end(), msg.begin())) {
+		return;
+	}
+
+	std::string call = ".zoom";
+	if (std::equal(call.begin(), call.end(), msg.begin())) {
+		Transition::instance().InitShow(Transition::TransitionZoomIn, this, 120);
+
+		//Game_Map::Randomize();
+		return;
 	}
 
 	addLogEntry(
