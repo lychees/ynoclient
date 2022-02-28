@@ -405,14 +405,14 @@ void Player::Update(bool update_scene) {
 	}
 	//return;
 
-	/*auto& transition = Transition::instance();
+	auto& transition = Transition::instance();
 
 	if (transition.IsActive()) {
 		transition.Update();
 	} else {
 		// If we aren't waiting on a transition, but we are waiting for scene delay.
 		Scene::instance->UpdateDelayFrames();
-	}*/
+	}
 
 	if (update_scene) {
 		if (Main_Data::game_ineluki) {
