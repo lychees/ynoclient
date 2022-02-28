@@ -225,7 +225,7 @@ void Scene::Suspend(SceneType /* next_scene */) {
 }
 
 void Scene::OnFinishAsync() {
-	Debug::Output("OnFinishAsync");
+	Output::Debug("OnFinishAsync");
 	if (async_continuation) {
 		// The continuation could set another continuation, so move this
 		// one out of the way first before we call it.
