@@ -288,7 +288,6 @@ void Player::MainLoop() {
 
 
 		if (num_updates > 0) {
-			Output::Debug("Input Player");
 			Player::UpdateInput();
 		}
 
@@ -299,7 +298,6 @@ void Player::MainLoop() {
 	}
 	if (num_updates == 0) {
 		// If no logical frames ran, we need to update the system keys only.
-		Output::Debug("Input System");
 		Input::UpdateSystem();
 	}
 
