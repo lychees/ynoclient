@@ -261,6 +261,9 @@ void Player::Run() {
 
 void Player::MainLoop() {
 
+
+	Output::Debug("Main Loop");
+
 	/*
 	while (Game_Clock::NextGameTimeStep()) {
 		BitmapRef surface = DisplayUi->GetDisplaySurface();
@@ -407,7 +410,6 @@ void Player::Update(bool update_scene) {
 	auto& transition = Transition::instance();
 
 	if (transition.IsActive()) {
-		Output::Debug("Player Update Transition IsActive");
 		transition.Update();
 	} else {
 		// If we aren't waiting on a transition, but we are waiting for scene delay.
