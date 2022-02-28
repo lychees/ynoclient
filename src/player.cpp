@@ -367,7 +367,6 @@ void Player::UpdateInput() {
 }
 
 void Player::Update(bool update_scene) {
-	// Output::Debug("Player Update");
 	std::shared_ptr<Scene> old_instance = Scene::instance;
 
 	if (exit_flag) {
@@ -408,6 +407,7 @@ void Player::Update(bool update_scene) {
 	auto& transition = Transition::instance();
 
 	if (transition.IsActive()) {
+		Output::Debug("Player Update Transition IsActive");
 		transition.Update();
 	} else {
 		// If we aren't waiting on a transition, but we are waiting for scene delay.
