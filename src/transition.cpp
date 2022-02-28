@@ -72,8 +72,10 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 	// Triggering multiple transitions on a single frame is a bug.
 	assert(!IsActive());
 
-	if (duration < 0) {
-		duration = GetDefaultFrames(type);
+	if (duration < 0) {\
+		duration = -duration;
+		running = true;
+		//duration = GetDefaultFrames(type);
 	}
 	transition_type = type;
 	scene = linked_scene;

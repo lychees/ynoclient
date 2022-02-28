@@ -131,6 +131,7 @@ private:
 	int total_frames = 0;
 	bool from_erase = false;
 	bool to_erase = false;
+	bool running = false;
 
 	struct FlashData {
 		int32_t red = 0;

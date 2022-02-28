@@ -192,6 +192,8 @@ void Scene::MainFunction() {
 		assert(Scene::instance == instances.back() &&
 			"Don't set Scene::instance directly, use Push instead!");
 
+		Output::Debug("Loop");
+
 		Graphics::Update();
 
 		auto next_scene = instance ? instance->type : Null;
