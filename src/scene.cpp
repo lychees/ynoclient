@@ -153,6 +153,7 @@ void Scene::MainFunction() {
 	// The continuation could have caused a new async wait condition, or
 	// it could have changed the scene.
 	if (!IsAsyncPending() && Scene::instance.get() == this) {
+		Output::Debug("Loop get ==");
 		if (!init) {
 			auto prev_scene = Graphics::UpdateSceneCallback();
 			auto prev_scene_type = prev_scene ? prev_scene->type : Null;
@@ -189,6 +190,7 @@ void Scene::MainFunction() {
 	}
 
 	if (Scene::instance.get() != this) {
+		Output::Debug("Loop get !=");
 		// Shutdown after scene switch
 		assert(Scene::instance == instances.back() &&
 			"Don't set Scene::instance directly, use Push instead!");
@@ -224,17 +226,16 @@ void Scene::Suspend(SceneType /* next_scene */) {
 }
 
 void Scene::OnFinishAsync() {
-	Output::Debug("OnFinishAsync");
 	if (async_continuation) {
 		// The continuation could set another continuation, so move this
 		// one out of the way first before we call it.
-		/*AsyncContinuation continuation;
+		AsyncContinuation continuation;
 		async_continuation.swap(continuation);
 
 		continuation();
-		*/
 	}
 }
+
 
 bool Scene::IsAsyncPending() {
 	return Transition::instance().IsActive() || AsyncHandler::IsImportantFilePending()
