@@ -140,6 +140,8 @@ void Scene::MainFunction() {
 	static bool init = false;
 
 	if (IsAsyncPending()) {
+
+		Output::Debug("Loop");
 		Player::Update(false);
 		return;
 	} else {
@@ -192,8 +194,6 @@ void Scene::MainFunction() {
 		assert(Scene::instance == instances.back() &&
 			"Don't set Scene::instance directly, use Push instead!");
 
-		Output::Debug("Loop");
-
 		Graphics::Update();
 
 		auto next_scene = instance ? instance->type : Null;
@@ -225,6 +225,7 @@ void Scene::Suspend(SceneType /* next_scene */) {
 }
 
 void Scene::OnFinishAsync() {
+	Debug::Output("OnFinishAsync");
 	if (async_continuation) {
 		// The continuation could set another continuation, so move this
 		// one out of the way first before we call it.
