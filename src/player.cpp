@@ -287,9 +287,10 @@ void Player::MainLoop() {
 		// Output::Debug("Main Loop 2");
 
 
-		// if (num_updates > 0) {
+		if (num_updates > 0) {
+			Output::Debug("Input Player");
 			Player::UpdateInput();
-		// }
+		}
 
 		Scene::old_instances.clear();
 		Scene::instance->MainFunction();
@@ -298,6 +299,7 @@ void Player::MainLoop() {
 	}
 	if (num_updates == 0) {
 		// If no logical frames ran, we need to update the system keys only.
+		Output::Debug("Input System");
 		Input::UpdateSystem();
 	}
 
