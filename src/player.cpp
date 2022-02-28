@@ -367,6 +367,7 @@ void Player::UpdateInput() {
 }
 
 void Player::Update(bool update_scene) {
+	Output::Debug("Player Update");
 	std::shared_ptr<Scene> old_instance = Scene::instance;
 
 	if (exit_flag) {
