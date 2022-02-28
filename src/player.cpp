@@ -262,7 +262,7 @@ void Player::Run() {
 void Player::MainLoop() {
 
 
-	Output::Debug("Main Loop 1");
+	// Output::Debug("Main Loop 1");
 
 	/*
 	while (Game_Clock::NextGameTimeStep()) {
@@ -284,12 +284,12 @@ void Player::MainLoop() {
 	int num_updates = 0;
 	while (Game_Clock::NextGameTimeStep()) {
 
-		Output::Debug("Main Loop 2");
+		// Output::Debug("Main Loop 2");
 
 
-		if (num_updates > 0) {
+		// if (num_updates > 0) {
 			Player::UpdateInput();
-		}
+		// }
 
 		Scene::old_instances.clear();
 		Scene::instance->MainFunction();
@@ -310,7 +310,7 @@ void Player::MainLoop() {
 		return;
 	}
 
-	Output::Debug("Main Loop 3");
+	// Output::Debug("Main Loop 3");
 
 	auto frame_limit = DisplayUi->GetFrameLimit();
 	if (frame_limit == Game_Clock::duration()) {
