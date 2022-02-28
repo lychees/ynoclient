@@ -262,7 +262,7 @@ void Player::Run() {
 void Player::MainLoop() {
 
 
-	Output::Debug("Main Loop");
+	Output::Debug("Main Loop 1");
 
 	/*
 	while (Game_Clock::NextGameTimeStep()) {
@@ -305,6 +305,8 @@ void Player::MainLoop() {
 		Exit();
 		return;
 	}
+
+		Output::Debug("Main Loop 2");
 
 	auto frame_limit = DisplayUi->GetFrameLimit();
 	if (frame_limit == Game_Clock::duration()) {
