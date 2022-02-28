@@ -92,9 +92,6 @@ static void UpdateButton(int i, bool pressed) {
 	using namespace Input;
 
 	if (pressed) {
-
-		Output::Debug("Press Button: {}", i);
-
 		released[i] = false;
 		press_time[i] += 1;
 	} else {
@@ -185,10 +182,10 @@ void Input::UpdateSystem() {
 
 	// Check button states
 	for (unsigned i = 0; i < BUTTON_COUNT; ++i) {
-		//if (IsSystemButton(static_cast<InputButton>(i))) {
+		if (IsSystemButton(static_cast<InputButton>(i))) {
 			bool pressed = pressed_buttons[i];
 			UpdateButton(i, pressed);
-		//}
+		}
 	}
 }
 
