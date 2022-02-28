@@ -883,21 +883,19 @@ void Chat_Multiplayer::update() {
 void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::string msg, std::string src) {
 	if(chatBox == nullptr) return;
 
-	std::string call = ".roll";
+	std::string call;
+	call = ".roll";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
 		Game_Map::Randomize();
 		return;
 	}
-
-	std::string call = ".zoom_in";
+	call = ".zoom_in";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
 		return;
 	}
-
-	std::string call = ".zoom";
+	call = ".zoom";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
 		Transition::instance().InitShow(Transition::TransitionZoomIn, this, 120);
-
 		//Game_Map::Randomize();
 		return;
 	}
