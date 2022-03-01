@@ -1035,6 +1035,7 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 
 	if (!actx.IsActive()) {
 		//If not resuming from async op ...
+		Output::Debug("Game Map Update 3");
 		Main_Data::game_player->Update();
 		Game_Multiplayer::Update();
 
@@ -1053,6 +1054,7 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 	}
 
 	if (!actx.IsActive()) {
+		Output::Debug("Game Map Update 3");
 		Main_Data::game_party->UpdateTimers();
 		Main_Data::game_screen->Update();
 		Main_Data::game_pictures->Update(false);
