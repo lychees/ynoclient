@@ -124,8 +124,11 @@ int Game_Character::GetScreenZ(bool apply_shift) const {
 }
 
 void Game_Character::Update() {
+
+	Output::Debug("Character Update..");
+
 	if (!IsActive() || IsProcessed()) {
-		// return;
+		return;
 	}
 	SetProcessed(true);
 

@@ -138,7 +138,9 @@ void Scene::ScheduleTransitionIn(Scene::SceneType prev_scene_type) {
 
 void Scene::MainFunction() {
 	static bool init = false;
-	Output::Debug("Main Function");
+	// Output::Debug("Main Function");
+
+
 	if (IsAsyncPending()) {
 		// Output::Debug("Loop");
 		Player::Update(false);
