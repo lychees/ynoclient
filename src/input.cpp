@@ -365,9 +365,6 @@ const Input::KeyStatus& Input::GetAllRawReleased() {
 }
 
 int Input::getDir4() {
-
-	Output::Debug("getDir4: {}", dir4);
-	return dir4;
 	if(!isGameFocused()) return Direction::NONE; // disable game input if external (chat) content is focused
 	return dir4;
 }

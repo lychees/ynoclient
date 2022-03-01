@@ -1184,7 +1184,7 @@ inline bool Game_Character::IsMoving() const {
 }
 
 inline bool Game_Character::IsStopping() const {
-	return !(IsMoving() || IsJumping());
+	return !Transition::instance().running && (!(IsMoving() || IsJumping()));
 }
 
 inline int Game_Character::GetBeginJumpX() const {
