@@ -191,7 +191,7 @@ void Scene::MainFunction() {
 			Player::Update();
 		}
 	}
-	Output::Debug("isRunning 2: {}" Transition::instance().running);
+	Output::Debug("isRunning 2: {}" ,Transition::instance().running);
 	Output::Debug("Main Function 2");
 
 	if (Scene::instance.get() != this) {
