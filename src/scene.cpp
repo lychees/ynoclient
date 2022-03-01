@@ -188,11 +188,14 @@ void Scene::MainFunction() {
 			init = true;
 			return;
 		} else {
+
+			Output::Debug("isRunning 1.89: {}", Transition::instance().running);
 			Player::Update();
 		}
 	}
-	Output::Debug("isRunning 2: {}" ,Transition::instance().running);
-	Output::Debug("Main Function 2");
+
+	// Output::Debug("isRunning 2: {}" ,Transition::instance().running);
+	// Output::Debug("Main Function 2");
 
 	if (Scene::instance.get() != this) {
 		// Shutdown after scene switch
