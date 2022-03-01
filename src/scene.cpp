@@ -140,10 +140,11 @@ void Scene::MainFunction() {
 	static bool init = false;
 	// Output::Debug("Main Function");
 
+	Output::Debug("isRunning 1: {}" Transition::instance().running);
 
 	if (IsAsyncPending()) {
-		Output::Debug("IsAsyncPending");
 		Player::Update(false);
+		Output::Debug("isRunning 1.5: {}" Transition::instance().running);
 		return;
 	} else {
 		// This is used to provide a hook for Scene_Map to finish
@@ -155,6 +156,7 @@ void Scene::MainFunction() {
 	// The continuation could have caused a new async wait condition, or
 	// it could have changed the scene.
 	if (!IsAsyncPending() && Scene::instance.get() == this) {
+		Output::Debug("isRunning 1.6: {}" Transition::instance().running);
 		if (!init) {
 			auto prev_scene = Graphics::UpdateSceneCallback();
 			auto prev_scene_type = prev_scene ? prev_scene->type : Null;
@@ -189,7 +191,7 @@ void Scene::MainFunction() {
 			Player::Update();
 		}
 	}
-
+	Output::Debug("isRunning 2: {}" Transition::instance().running);
 	Output::Debug("Main Function 2");
 
 	if (Scene::instance.get() != this) {
