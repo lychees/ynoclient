@@ -238,7 +238,7 @@ void Scene::OnFinishAsync() {
 
 
 bool Scene::IsAsyncPending() {
-	return /*Transition::instance().IsActive() ||*/ AsyncHandler::IsImportantFilePending()
+	return Transition::instance().IsActive() || AsyncHandler::IsImportantFilePending()
 		|| (instance != nullptr && instance->HasDelayFrames());
 }
 
