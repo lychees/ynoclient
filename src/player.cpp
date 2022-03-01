@@ -377,7 +377,6 @@ void Player::UpdateInput() {
 
 void Player::Update(bool update_scene) {
 	std::shared_ptr<Scene> old_instance = Scene::instance;
-	Output::Debug("Player Update");
 
 	if (exit_flag) {
 		Scene::PopUntil(Scene::Null);
