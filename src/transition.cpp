@@ -74,7 +74,6 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 
 	if (duration < 0) {\
 		duration = -duration;
-		running = true;
 		//duration = GetDefaultFrames(type);
 	}
 	transition_type = type;
