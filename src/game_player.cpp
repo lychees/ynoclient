@@ -346,7 +346,6 @@ void Game_Player::UpdateNextMovementAction() {
 }
 
 void Game_Player::UpdateMovement(int amount) {
-	Output::Debug("Game Player UpdateMovement");
 	const bool was_jumping = IsJumping();
 
 	Game_Character::UpdateMovement(amount);
@@ -360,8 +359,6 @@ void Game_Player::UpdateMovement(int amount) {
 }
 
 void Game_Player::Update() {
-
-	Output::Debug("Game Player Update");
 	Game_Character::Update();
 
 	if (IsStopping()) {

@@ -377,6 +377,7 @@ void Player::UpdateInput() {
 
 void Player::Update(bool update_scene) {
 	std::shared_ptr<Scene> old_instance = Scene::instance;
+	Output::Debug("Player Update");
 
 	if (exit_flag) {
 		Scene::PopUntil(Scene::Null);
@@ -426,7 +427,7 @@ void Player::Update(bool update_scene) {
 		if (Main_Data::game_ineluki) {
 			Main_Data::game_ineluki->Update();
 		}
-
+		Output::Debug("Scene Update");
 		Scene::instance->Update();
 	}
 }
