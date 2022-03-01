@@ -155,7 +155,10 @@ void Game_Character::Update() {
 
 void Game_Character::UpdateMovement(int amount) {
 
-
+	if (Transition::instance().running == true) {
+		Output::Debug("Cancel {}", amount);
+		return;
+	}
 	Output::Debug("UpdateMovement {}", amount);
 
 
