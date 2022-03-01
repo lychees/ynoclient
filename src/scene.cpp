@@ -143,7 +143,7 @@ void Scene::MainFunction() {
 
 	if (IsAsyncPending()) {
 		// Output::Debug("IsAsyncPending");
-		Player::Update(true);
+		Player::Update(false);
 		return;
 	} else {
 		// This is used to provide a hook for Scene_Map to finish
@@ -238,7 +238,7 @@ void Scene::OnFinishAsync() {
 
 
 bool Scene::IsAsyncPending() {
-	return Transition::instance().IsActive() || AsyncHandler::IsImportantFilePending()
+	return /*Transition::instance().IsActive() ||*/ AsyncHandler::IsImportantFilePending()
 		|| (instance != nullptr && instance->HasDelayFrames());
 }
 
