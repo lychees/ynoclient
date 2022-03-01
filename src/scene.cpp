@@ -142,7 +142,7 @@ void Scene::MainFunction() {
 
 
 	if (IsAsyncPending()) {
-		// Output::Debug("IsAsyncPending");
+		Output::Debug("IsAsyncPending");
 		Player::Update(false);
 		return;
 	} else {
