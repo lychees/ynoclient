@@ -171,7 +171,7 @@ void Game_Character::UpdateMovement(int amount) {
 		if (IsMoveRouteOverwritten() && GetMoveRouteIndex() >= static_cast<int>(move_route.move_commands.size())) {
 
 
-			Output::Debug("SetMoveRoute", );
+			Output::Debug("SetMoveRoute");
 
 			SetMoveRouteRepeated(true);
 			SetMoveRouteIndex(0);
