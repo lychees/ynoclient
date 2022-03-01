@@ -154,10 +154,16 @@ void Game_Character::Update() {
 }
 
 void Game_Character::UpdateMovement(int amount) {
+
+
+	Output::Debug("UpdateMovement {}", amount);
+
+
 	SetRemainingStep(GetRemainingStep() - amount);
 	if (GetRemainingStep() <= 0) {
 		SetRemainingStep(0);
 		SetJumping(false);
+		Output::Debug("UpdateMovement {}", amount);
 
 		auto& move_route = GetMoveRoute();
 		if (IsMoveRouteOverwritten() && GetMoveRouteIndex() >= static_cast<int>(move_route.move_commands.size())) {
