@@ -26,6 +26,7 @@
 #include <lcf/rpg/eventpage.h>
 #include <lcf/rpg/savemapeventbase.h>
 #include "utils.h"
+#include "transition.h"
 #include "game_multiplayer_senders.h"
 
 /**
