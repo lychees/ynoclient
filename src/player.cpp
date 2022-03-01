@@ -399,7 +399,7 @@ void Player::Update(bool update_scene) {
 	}
 
 	Audio().Update();
-	// Input::Update();
+	Input::Update();
 
 	#if defined(INGAME_CHAT)
 		Chat_Multiplayer::update();
