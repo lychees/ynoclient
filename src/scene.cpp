@@ -142,7 +142,7 @@ void Scene::MainFunction() {
 
 
 	if (IsAsyncPending()) {
-		// Output::Debug("Loop");
+		Output::Debug("IsAsyncPending");
 		Player::Update(false);
 		return;
 	} else {
@@ -155,7 +155,6 @@ void Scene::MainFunction() {
 	// The continuation could have caused a new async wait condition, or
 	// it could have changed the scene.
 	if (!IsAsyncPending() && Scene::instance.get() == this) {
-		Output::Debug("Loop get ==");
 		if (!init) {
 			auto prev_scene = Graphics::UpdateSceneCallback();
 			auto prev_scene_type = prev_scene ? prev_scene->type : Null;
@@ -192,7 +191,6 @@ void Scene::MainFunction() {
 	}
 
 	if (Scene::instance.get() != this) {
-		Output::Debug("Loop get !=");
 		// Shutdown after scene switch
 		assert(Scene::instance == instances.back() &&
 			"Don't set Scene::instance directly, use Push instead!");
