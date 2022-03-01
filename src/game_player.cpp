@@ -330,6 +330,9 @@ Output::Debug("ready getDir4???");
 		}
 	}
 
+	bool fa = IsStopping();
+	Output::Debug("Gao? {}", fa);
+
 	if (IsStopping()) {
 		if (Input::IsTriggered(Input::DECISION)) {
 			if (!GetOnOffVehicle()) {
