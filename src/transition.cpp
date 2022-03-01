@@ -54,6 +54,7 @@ int Transition::GetDefaultFrames(Transition::Type type)
 Transition::Transition() : Drawable(Priority_Transition, Drawable::Flags::Global)
 {
 	DrawableMgr::Register(this);
+	running = false;
 }
 
 void Transition::PrependFlashes(int r, int g, int b, int p, int duration, int iterations) {
@@ -74,9 +75,9 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 
 	if (duration < 0) {
 
-		if (duration < 10000) {
+		/*if (duration < 10000) {
 			running = true;
-		}
+		}*/
 
 		duration = -duration;
 
