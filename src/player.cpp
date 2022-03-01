@@ -399,7 +399,7 @@ void Player::Update(bool update_scene) {
 	}
 
 	Audio().Update();
-	Input::Update();
+	// Input::Update();
 
 	#if defined(INGAME_CHAT)
 		Chat_Multiplayer::update();
@@ -419,9 +419,7 @@ void Player::Update(bool update_scene) {
 	auto& transition = Transition::instance();
 
 	if (transition.IsActive()) {
-		if (!Transition::instance().running)  {
-			transition.Update();
-		}
+		transition.Update();
 	} else {
 		// If we aren't waiting on a transition, but we are waiting for scene delay.
 		Scene::instance->UpdateDelayFrames();

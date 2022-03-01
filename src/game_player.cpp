@@ -260,7 +260,7 @@ bool Game_Player::UpdateAirship() {
 
 void Game_Player::UpdateNextMovementAction() {
 
-	Output::Debug("UpdateNextMovementAction()");
+	// Output::Debug("UpdateNextMovementAction()");
 
 	if (UpdateAirship()) {
 		return;
