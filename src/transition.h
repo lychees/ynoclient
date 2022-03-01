@@ -115,6 +115,8 @@ public:
 	bool FromErase() const;
 	bool ToErase() const;
 
+	bool running = false;
+
 private:
 	Transition();
 	void Init(Type type, Scene *linked_scene, int duration, bool erase);
@@ -131,7 +133,7 @@ private:
 	int total_frames = 0;
 	bool from_erase = false;
 	bool to_erase = false;
-	bool running = false;
+
 
 	struct FlashData {
 		int32_t red = 0;
