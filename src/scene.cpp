@@ -190,6 +190,8 @@ void Scene::MainFunction() {
 		}
 	}
 
+	Output::Debug("Main Function 2");
+
 	if (Scene::instance.get() != this) {
 		// Shutdown after scene switch
 		assert(Scene::instance == instances.back() &&
