@@ -117,6 +117,9 @@ void Input::Update() {
 	// Check button states
 	for (unsigned i = 0; i < BUTTON_COUNT; ++i) {
 		bool pressed = pressed_buttons[i];
+		if (pressed) {
+			Output::Debug("Input::Update: {}", i);
+		}
 		UpdateButton(i, pressed);
 	}
 
@@ -168,14 +171,13 @@ void Input::Update() {
 	}
 
 	// Determine pressed & released keys from raw keystate
-	/*
+	 
 	const auto& raw_pressed_now = source->GetPressedKeys();
 	for (unsigned i = 0; i < Input::Keys::KEYS_COUNT; ++i) {
 		raw_triggered[i] = raw_pressed_now[i] && !raw_pressed[i];
 		raw_released[i] = !raw_pressed_now[i] && raw_pressed[i];
 	}
 	raw_pressed = raw_pressed_now;
-	*/
 }
 
 void Input::UpdateSystem() {
