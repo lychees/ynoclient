@@ -260,6 +260,8 @@ bool Game_Player::UpdateAirship() {
 
 void Game_Player::UpdateNextMovementAction() {
 
+	Output::Debug("UpdateNextMovementAction");
+
 	if (UpdateAirship()) {
 		return;
 	}
@@ -345,6 +347,9 @@ void Game_Player::UpdateNextMovementAction() {
 }
 
 void Game_Player::UpdateMovement(int amount) {
+
+	Output::Debug("UpdateMovemen");
+
 	const bool was_jumping = IsJumping();
 
 	Game_Character::UpdateMovement(amount);
