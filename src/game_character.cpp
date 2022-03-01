@@ -156,12 +156,14 @@ void Game_Character::Update() {
 void Game_Character::UpdateMovement(int amount) {
 
 
-
-	return;
 	SetRemainingStep(GetRemainingStep() - amount);
 
 
 	Output::Debug("UpdateMovement {}", GetRemainingStep() - amount);
+
+
+
+	return;
 
 	if (GetRemainingStep() <= 0) {
 		SetRemainingStep(0);
