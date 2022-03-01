@@ -118,7 +118,9 @@ public:
 	bool running = false;
 
 private:
-	Transition();
+	Transition() {
+		 running = false;
+	}
 	void Init(Type type, Scene *linked_scene, int duration, bool erase);
 
 	const uint32_t size_random_blocks = 4;
