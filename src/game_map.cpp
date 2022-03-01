@@ -1031,6 +1031,8 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 		return;
 	}
 
+	Output::Debug("Game Map Update 2");
+
 	if (!actx.IsActive()) {
 		//If not resuming from async op ...
 		Main_Data::game_player->Update();
