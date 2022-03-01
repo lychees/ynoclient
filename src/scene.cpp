@@ -142,8 +142,8 @@ void Scene::MainFunction() {
 
 
 	if (IsAsyncPending()) {
-		Output::Debug("IsAsyncPending");
-		Player::Update(false);
+		// Output::Debug("IsAsyncPending");
+		Player::Update(true);
 		return;
 	} else {
 		// This is used to provide a hook for Scene_Map to finish
