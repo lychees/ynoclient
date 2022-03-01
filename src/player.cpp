@@ -377,7 +377,7 @@ void Player::UpdateInput() {
 
 void Player::Update(bool update_scene) {
 
-	Output::Debug("Player Update: {}", update_scene);
+	// Output::Debug("Player Update: {}", update_scene);
 
 	std::shared_ptr<Scene> old_instance = Scene::instance;
 
@@ -419,7 +419,9 @@ void Player::Update(bool update_scene) {
 	auto& transition = Transition::instance();
 
 	if (transition.IsActive()) {
-		transition.Update();
+		if (!Transition::instance().running)  {
+			transition.Update();
+		}
 	} else {
 		// If we aren't waiting on a transition, but we are waiting for scene delay.
 		Scene::instance->UpdateDelayFrames();
@@ -429,7 +431,7 @@ void Player::Update(bool update_scene) {
 		if (Main_Data::game_ineluki) {
 			Main_Data::game_ineluki->Update();
 		}
-		Output::Debug("Scene Update");
+		// Output::Debug("Scene Update");
 		Scene::instance->Update();
 	}
 }
