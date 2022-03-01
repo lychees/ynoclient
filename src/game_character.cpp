@@ -155,21 +155,24 @@ void Game_Character::Update() {
 
 void Game_Character::UpdateMovement(int amount) {
 
-	if (Transition::instance().running == true) {
-		Output::Debug("Cancel {}", amount);
-		return;
-	}
-	Output::Debug("UpdateMovement {}", amount);
+
 
 
 	SetRemainingStep(GetRemainingStep() - amount);
+
+
+	Output::Debug("UpdateMovement {}", GetRemainingStep() - amount);
+
 	if (GetRemainingStep() <= 0) {
 		SetRemainingStep(0);
 		SetJumping(false);
-		Output::Debug("UpdateMovement {}", amount);
 
 		auto& move_route = GetMoveRoute();
 		if (IsMoveRouteOverwritten() && GetMoveRouteIndex() >= static_cast<int>(move_route.move_commands.size())) {
+
+
+			Output::Debug("SetMoveRoute", );
+
 			SetMoveRouteRepeated(true);
 			SetMoveRouteIndex(0);
 			if (!move_route.repeat) {
