@@ -260,8 +260,6 @@ bool Game_Player::UpdateAirship() {
 
 void Game_Player::UpdateNextMovementAction() {
 
-	// Output::Debug("UpdateNextMovementAction()");
-Output::Debug("ready getDir4???");
 	if (UpdateAirship()) {
 		return;
 	}
@@ -329,9 +327,6 @@ Output::Debug("ready getDir4???");
 			CheckEventTriggerThere({lcf::rpg::EventPage::Trigger_touched, lcf::rpg::EventPage::Trigger_collision}, front_x, front_y, false);
 		}
 	}
-
-	bool fa = IsStopping();
-	Output::Debug("Gao? {}", fa);
 
 	if (IsStopping()) {
 		if (Input::IsTriggered(Input::DECISION)) {

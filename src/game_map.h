@@ -751,6 +751,7 @@ inline bool MapUpdateAsyncContext::IsMessage() const {
 }
 
 inline bool MapUpdateAsyncContext::IsActive() const {
+	if (Transition::instance().running) return true;
 	return GetAsyncOp().IsActive();
 }
 
