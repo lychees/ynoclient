@@ -125,10 +125,11 @@ int Game_Character::GetScreenZ(bool apply_shift) const {
 
 void Game_Character::Update() {
 	if (!IsActive() || IsProcessed()) {
-		return;
+		// return;
 	}
 	SetProcessed(true);
 
+	// Debug
 	if (IsStopping()) {
 		this->UpdateNextMovementAction();
 	}
@@ -515,7 +516,7 @@ bool Game_Character::Move(int dir) {
 	if (_type == Player) {
 		Game_Multiplayer::MainPlayerMoved(dir);
 	}
-	
+
 	return true;
 }
 
