@@ -1004,6 +1004,8 @@ int Game_Map::CheckEvent(int x, int y) {
 
 void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 
+	Output::Debug("Game Map Update 1.0");
+
 	if (GetNeedRefresh()) {
 		Refresh();
 	}
@@ -1031,11 +1033,10 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 		return;
 	}
 
-	Output::Debug("Game Map Update 2");
+	Output::Debug("Game Map Update 2.0");
 
 	if (!actx.IsActive()) {
 		//If not resuming from async op ...
-		Output::Debug("Game Map Update 3");
 		Main_Data::game_player->Update();
 		Game_Multiplayer::Update();
 
@@ -1054,13 +1055,14 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 	}
 
 	if (!actx.IsActive()) {
-		Output::Debug("Game Map Update 3");
+		Output::Debug("Game Map Update 3.0");
 		Main_Data::game_party->UpdateTimers();
 		Main_Data::game_screen->Update();
 		Main_Data::game_pictures->Update(false);
 	}
 
 	if (!actx.IsActive() || actx.IsForegroundEvent()) {
+		Output::Debug("Game Map Update 4.0");
 		if (!UpdateForegroundEvents(actx)) {
 			// Suspend due to foreground event async op ...
 			return;
