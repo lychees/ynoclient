@@ -119,7 +119,8 @@ public:
 
 private:
 	Transition() {
-		 running = false;
+		Drawable();
+		running = false;
 	}
 	void Init(Type type, Scene *linked_scene, int duration, bool erase);
 
