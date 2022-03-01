@@ -1003,6 +1003,9 @@ int Game_Map::CheckEvent(int x, int y) {
 }
 
 void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
+
+Output::Debug("Game Map Update");
+
 	if (GetNeedRefresh()) {
 		Refresh();
 	}
@@ -1029,6 +1032,9 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 	if (is_preupdate) {
 		return;
 	}
+
+
+
 
 	if (!actx.IsActive()) {
 		//If not resuming from async op ...
