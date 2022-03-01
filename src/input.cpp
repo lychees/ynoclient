@@ -117,9 +117,6 @@ void Input::Update() {
 	// Check button states
 	for (unsigned i = 0; i < BUTTON_COUNT; ++i) {
 		bool pressed = pressed_buttons[i];
-		if (pressed) {
-			Output::Debug("Input::Update: {}", i);
-		}
 		UpdateButton(i, pressed);
 	}
 
@@ -170,8 +167,7 @@ void Input::Update() {
 		else if (dirpress[Direction::DOWNLEFT] > 0)	dir8 = Direction::DOWNLEFT;
 	}
 
-	// Determine pressed & released keys from raw keystate
-	 
+	// Determine pressed & released keys from raw keystats
 	const auto& raw_pressed_now = source->GetPressedKeys();
 	for (unsigned i = 0; i < Input::Keys::KEYS_COUNT; ++i) {
 		raw_triggered[i] = raw_pressed_now[i] && !raw_pressed[i];
@@ -369,6 +365,7 @@ const Input::KeyStatus& Input::GetAllRawReleased() {
 }
 
 int Input::getDir4() {
+	return dir4;	
 	if(!isGameFocused()) return Direction::NONE; // disable game input if external (chat) content is focused
 	return dir4;
 }
