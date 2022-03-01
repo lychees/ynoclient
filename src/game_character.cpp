@@ -157,7 +157,7 @@ void Game_Character::UpdateMovement(int amount) {
 
 
 
-
+	return;
 	SetRemainingStep(GetRemainingStep() - amount);
 
 
