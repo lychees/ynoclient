@@ -246,7 +246,7 @@ void Scene::OnFinishAsync() {
 
 bool Scene::IsAsyncPending() {
 
-	if (Transition::instance().running) return false;
+	// if (Transition::instance().running) return false;
 
 	if (Transition::instance().running) {
 		Output::Debug("!!!!!!");
