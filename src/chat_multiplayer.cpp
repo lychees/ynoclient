@@ -886,7 +886,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 	call = ".zoom";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
-		Transition::instance().InitShow(Transition::TransitionZoomOut, Scene::instance.get(), 60);
+		Transition::instance().InitErase(Transition::TransitionZoomIn, Scene::instance.get(), 60);
 		return;
 	}
 
