@@ -821,8 +821,8 @@ int Game_Character::GetSpriteX() const {
 
 	if (IsMoving()) {
 		int d = GetDirection();
-		if (d == Right || d == UpRight || d == DownRight);
-			//x -= GetRemainingStep();
+		if (d == Right || d == UpRight || d == DownRight)
+			x -= GetRemainingStep();
 		else if (d == Left || d == UpLeft || d == DownLeft)
 			x += GetRemainingStep();
 	} else if (IsJumping()) {
@@ -837,8 +837,8 @@ int Game_Character::GetSpriteY() const {
 
 	if (IsMoving()) {
 		int d = GetDirection();
-		if (d == Down || d == DownRight || d == DownLeft);
-			//y -= GetRemainingStep();
+		if (d == Down || d == DownRight || d == DownLeft)
+			y -= GetRemainingStep();
 		else if (d == Up || d == UpRight || d == UpLeft)
 			y += GetRemainingStep();
 	} else if (IsJumping()) {
