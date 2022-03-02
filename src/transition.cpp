@@ -73,6 +73,8 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 	// Triggering multiple transitions on a single frame is a bug.
 	assert(!IsActive());
 
+		if (running == true) return;
+
 	if (duration < 0) {
 
 		/*if (duration < 10000) {
@@ -124,7 +126,7 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 
 	to_erase = next_erase;
 
-	if (running == true) return;
+
 
 	SetAttributesTransitions();
 }
