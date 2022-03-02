@@ -251,7 +251,10 @@ bool Scene::IsAsyncPending() {
 	if (Transition::instance().running) {
 		Output::Debug("!!!!!!");
 	}
-	return (Transition::instance().IsActive() && !Transition::instance().running) || AsyncHandler::IsImportantFilePending()
+	/*return (Transition::instance().IsActive() && !Transition::instance().running) || AsyncHandler::IsImportantFilePending()
+		|| (instance != nullptr && instance->HasDelayFrames());*/
+
+		return (Transition::instance().IsActive() || AsyncHandler::IsImportantFilePending()
 		|| (instance != nullptr && instance->HasDelayFrames());
 }
 
