@@ -14,6 +14,7 @@
 #include "input.h"
 #include "utils.h"
 #include "player.h"
+#include "transition.h"
 #include "compiler.h"
 #include "game_multiplayer_my_data.h"
 
