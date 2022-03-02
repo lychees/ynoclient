@@ -896,7 +896,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	call = ".zoom";
 	if (std::equal(call.begin(), call.end(), msg.begin())) {
 		Transition::instance().running = true;
-		Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), -12000);
+		Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), 120);
 		//Game_Map::Randomize();
 		return;
 	}
