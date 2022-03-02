@@ -113,7 +113,7 @@ void Transition::Init(Type type, Scene *linked_scene, int duration, bool next_er
 	}
 
 	to_erase = next_erase;
-
+	return;
 	SetAttributesTransitions();
 }
 
