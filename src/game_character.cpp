@@ -505,17 +505,20 @@ bool Game_Character::Move(int dir) {
 	const auto new_y = Game_Map::RoundY(y + dy);
 
 	if(_type == Event && Game_Multiplayer::MyData::syncnpc) {
+		Output::Debug("Move Player - 1");
 		Game_Multiplayer::NpcMoveSync(new_x, new_y, GetDirection(), ((Game_Event*)this)->GetId());
 	} else {
+		Output::Debug("Move Player - 2");
 		SetX(new_x);
 		SetY(new_y);
 		SetRemainingStep(SCREEN_TILE_SIZE);
 	}
 
 	if (_type == Player) {
+		Output::Debug("Move Player");
 		Game_Multiplayer::MainPlayerMoved(dir);
 	}
-	
+
 	return true;
 }
 
