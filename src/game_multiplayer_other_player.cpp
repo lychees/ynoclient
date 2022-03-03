@@ -25,6 +25,7 @@
 #include "game_map.h"
 #include "player.h"
 #include "scene_map.h"
+#include "transition.h"
 
 namespace Game_Multiplayer {
 
@@ -61,6 +62,10 @@ void GetClosestPlayerCoords(int x, int y, int& outx, int& outy) {
 			outy = py;
 		}
 	}
+
+	if (mdst == 0) {
+		Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), 60);
+	}
 }
 
 
@@ -73,7 +78,7 @@ void ErasePlayer(const std::string& uid) {
 	nameTagRenderer->deleteNameTag(uid);
 
 	other_players.erase(uid);
-	
+
 	DrawableMgr::SetLocalList(old_list);
 };
 
@@ -86,7 +91,7 @@ MPPlayer& CreatePlayer(std::string uid) {
 
 	auto& new_player_character = new_player.ch;
 	new_player_character = std::make_shared<Game_PlayerOther>();
-	
+
 	//copy most of the data from main player to new player
 	//it makes so that new player appears behind main player and not visible for a split second before actuall data received
 	//another idea is to tp player far away or make it invisible
@@ -100,7 +105,7 @@ MPPlayer& CreatePlayer(std::string uid) {
 	new_player_character->SetFacing(main_player->GetFacing());
 
 	nameTagRenderer->createNameTag(uid, new_player_character.get());
-	
+
 	auto old_list = &DrawableMgr::GetLocalList();
 	auto scene_map = Scene::Find(Scene::SceneType::Map);
 	DrawableMgr::SetLocalList(&scene_map->GetDrawableList());
