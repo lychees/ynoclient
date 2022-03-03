@@ -62,7 +62,7 @@ void GetClosestPlayerCoords(int x, int y, int& outx, int& outy) {
 			outy = py;
 		}
 	}
-
+	Output::Debug("dist: {}", mdst);
 	if (mdst == 0) {
 		Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), 60);
 	}
