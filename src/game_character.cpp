@@ -523,7 +523,7 @@ bool Game_Character::Move(int dir) {
 
 		int xx = abs(GetX() - mpx);
 		int yy = abs(GetX() - mpy);
-		Output::Debug('msdt: {}',  xx + yy);
+		Output::Debug("msdt: {}",  xx + yy);
 	}
 
 	return true;
