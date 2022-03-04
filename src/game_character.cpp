@@ -523,7 +523,7 @@ bool Game_Character::Move(int dir) {
 		int xx = abs(GetX() - mpx);
 		int yy = abs(GetY() - mpy);
 		// Output::Debug("msdt: {} {} {} {} {}",  xx + yy, mpx, mpy, GetX(), GetY());
-		int msdt = xx ++ yy;
+		int msdt = xx + yy;
 		if (msdt == 0) {
 			Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), 60);
 		}
