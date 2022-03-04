@@ -517,6 +517,13 @@ bool Game_Character::Move(int dir) {
 	if (_type == Player) {
 		Output::Debug("Move Player");
 		Game_Multiplayer::MainPlayerMoved(dir);
+	} else {
+		int mpx = Main_Data::game_player->GetX();
+		int mpy = Main_Data::game_player->GetY();
+
+		int xx = abs(GetX() - mpx);
+		int yy = abs(GetX() - mpy);
+		Output::Debug('msdt: {}',  xx + yy);
 	}
 
 	return true;
