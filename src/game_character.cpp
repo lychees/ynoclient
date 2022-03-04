@@ -520,10 +520,9 @@ bool Game_Character::Move(int dir) {
 	} else {
 		int mpx = Main_Data::game_player->GetX();
 		int mpy = Main_Data::game_player->GetY();
-
 		int xx = abs(GetX() - mpx);
 		int yy = abs(GetX() - mpy);
-		Output::Debug("msdt: {}",  xx + yy);
+		Output::Debug("msdt: {} {} {} {} {}",  xx + yy, mpx, mpy, GetX(), GetY());
 	}
 
 	return true;
