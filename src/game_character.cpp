@@ -521,8 +521,12 @@ bool Game_Character::Move(int dir) {
 		int mpx = Main_Data::game_player->GetX();
 		int mpy = Main_Data::game_player->GetY();
 		int xx = abs(GetX() - mpx);
-		int yy = abs(GetX() - mpy);
-		Output::Debug("msdt: {} {} {} {} {}",  xx + yy, mpx, mpy, GetX(), GetY());
+		int yy = abs(GetY() - mpy);
+		// Output::Debug("msdt: {} {} {} {} {}",  xx + yy, mpx, mpy, GetX(), GetY());
+		int msdt = xx ++ yy;
+		if (msdt == 0) {
+			Transition::instance().InitShow(Transition::TransitionZoomIn, Scene::instance.get(), 60);
+		}
 	}
 
 	return true;
