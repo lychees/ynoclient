@@ -22,6 +22,8 @@
 #include <sstream>
 #include <cassert>
 #include <ctime>
+#include <cstdio>
+#include <cstdlib>
 #include "game_interpreter.h"
 #include "audio.h"
 #include "dynrpg.h"
@@ -61,6 +63,8 @@
 #include "algo.h"
 #include "rand.h"
 #include "game_multiplayer_senders.h"
+
+extern "C" void SendChatMessage(const char* msg);
 
 enum BranchSubcommand {
 	eOptionBranchElse = 1
@@ -877,6 +881,12 @@ bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { /
 
 	if (!Game_Message::CanShowMessage(main_flag)) {
 		return false;
+	}
+
+	std::string cmd = ToString(com.string);
+	if (cmd.size() > 0 && cmd[0] == '.') {
+		SendChatMessage(cmd.c_str());
+		return true;
 	}
 
 	auto pm = PendingMessage();
@@ -1990,6 +2000,9 @@ bool Game_Interpreter::CommandFadeOutBGM(lcf::rpg::EventCommand const& com) { //
 bool Game_Interpreter::CommandPlaySound(lcf::rpg::EventCommand const& com) { // code 11550
 	lcf::rpg::Sound sound;
 	sound.name = ToString(com.string);
+
+	Output::Debug("Play SE: {}", sound.name);
+
 	sound.volume = com.parameters[0];
 	sound.tempo = com.parameters[1];
 	sound.balance = com.parameters[2];
@@ -3609,9 +3622,30 @@ bool Game_Interpreter::CommandCallEvent(lcf::rpg::EventCommand const& com) { // 
 	int evt_id;
 	int event_page;
 
+
+
 	switch (com.parameters[0]) {
 	case 0: { // Common Event
 		evt_id = com.parameters[1];
+
+		if (evt_id == 348) { // fire
+			int x = Main_Data::game_player->GetX();
+			int y = Main_Data::game_player->GetY();
+			int d = Main_Data::game_player->GetDirection();
+			std::string msg = ".fire " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(d);
+			SendChatMessage(msg.c_str());
+		}
+
+		if (evt_id == 301 ||
+			evt_id == 403 ||
+			301 <= evt_id && evt_id <= 340 ||
+			410 <= evt_id && evt_id <= 420 ||
+		 	363 <= evt_id && evt_id <= 367 ||
+			395 <= evt_id && evt_id <= 396) {
+		} else {
+			Output::Debug("Call Common Event Id: {}", evt_id);
+		}
+
 		Game_CommonEvent* common_event = lcf::ReaderUtil::GetElement(Game_Map::GetCommonEvents(), evt_id);
 		if (!common_event) {
 			Output::Warning("CallEvent: Can't call invalid common event {}", evt_id);
@@ -3625,10 +3659,16 @@ bool Game_Interpreter::CommandCallEvent(lcf::rpg::EventCommand const& com) { // 
 	case 1: // Map Event
 		evt_id = com.parameters[1];
 		event_page = com.parameters[2];
+
+		Output::Debug("Call Map Event: {}, {}", evt_id, event_page);
+
 		break;
 	case 2: // Indirect
 		evt_id = Main_Data::game_variables->Get(com.parameters[1]);
 		event_page = Main_Data::game_variables->Get(com.parameters[2]);
+
+		Output::Debug("Call Map Event: {}, {}", evt_id, event_page);
+
 		break;
 	default:
 		return false;
