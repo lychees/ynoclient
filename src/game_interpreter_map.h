@@ -53,6 +53,8 @@ public:
 
 	bool ExecuteCommand() override;
 
+	void CommandRefreshTileset();
+
 private:
 	bool CommandRecallToLocation(lcf::rpg::EventCommand const& com);
 	bool CommandEnemyEncounter(lcf::rpg::EventCommand const& com);

@@ -4,15 +4,15 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
 	cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
-project(EasyRPG_Player VERSION 0.7.0 LANGUAGES CXX)
+project(EasyRPG_Player VERSION 0.7.0 LANGUAGES C CXX)
 
 # Extra CMake Module files
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/builds/cmake/Modules")
 include(ConfigureWindows)
 include(PlayerFindPackage)
 
-# C++14 is required
-set(CMAKE_CXX_STANDARD 14)
+# C++17 is required
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
@@ -652,6 +652,9 @@ target_link_libraries(${PROJECT_NAME} PIXMAN::PIXMAN)
 
 find_package(fmt REQUIRED)
 target_link_libraries(${PROJECT_NAME} fmt::fmt)
+
+find_package(libtcod REQUIRED)
+target_link_libraries(${PROJECT_NAME} libtcod::libtcod)
 
 # Always enable Wine registry support on non-Windows, but not for console ports
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows" AND NOT ${PLAYER_TARGET_PLATFORM} MATCHES "^(psvita|3ds|switch)$")

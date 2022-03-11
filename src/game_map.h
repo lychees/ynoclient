@@ -76,6 +76,7 @@ class MapUpdateAsyncContext {
  * Game_Map namespace
  */
 namespace Game_Map {
+
 	/**
 	 * Initialize Game_Map.
 	 */
@@ -103,10 +104,11 @@ namespace Game_Map {
 	 * @pre Main_Data::game_player->GetMapId() reflects the new map.
 	 */
 	void Setup(std::unique_ptr<lcf::rpg::Map> map);
+	void Setup();
 
 	/**
 	 * Setups a map from a savegame.
-	 * 
+	 *
 	 * @param map - The map data
 	 * @param save_map - The map state
 	 * @param save_boat - The boat state
@@ -607,6 +609,8 @@ namespace Game_Map {
 	bool UpdateMapEvents(MapUpdateAsyncContext& actx);
 	bool UpdateMessage(MapUpdateAsyncContext& actx);
 	bool UpdateForegroundEvents(MapUpdateAsyncContext& actx);
+
+	void Gen();
 
 	/**
 	 * Construct a map name, either for EasyRPG or RPG Maker projects

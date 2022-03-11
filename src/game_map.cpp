@@ -53,6 +53,7 @@
 #include "game_multiplayer_connection.h"
 #include "game_multiplayer_main_loop.h"
 #include "game_multiplayer_other_player.h"
+#include "libtcod.h"
 
 namespace {
 	lcf::rpg::SaveMapInfo map_info;
@@ -221,7 +222,7 @@ void Game_Map::SetupFromSave(
 
 	//we disconnect from the room before loading the map since some stuff might trigger and send packets to previous room
 	Game_Multiplayer::ClearPlayers();
-	
+
 	map = std::move(map_in);
 	map_info = std::move(save_map);
 	panorama = std::move(save_pan);
@@ -417,6 +418,10 @@ const std::vector<uint8_t>& Game_Map::GetTilesLayer(int layer) {
 	return layer >= 1 ? map_info.upper_tiles : map_info.lower_tiles;
 }
 
+void Game_Map::Setup() {
+	Setup(std::move(map));
+}
+
 void Game_Map::Refresh() {
 	if (GetMapId() > 0) {
 		for (Game_Event& ev : events) {
@@ -595,7 +600,7 @@ bool Game_Map::MakeWay(const Game_Character& self,
 	const auto vehicle_type = GetCollisionVehicleType(&self);
 
 	bool self_conflict = false;
-	
+
 	for(auto& other : Game_Multiplayer::other_players) {
 		if(MakeWayCollideEvent(to_x, to_y, self, *(other.second.ch.get()), false)) {
 			return false;
@@ -1002,7 +1007,7 @@ void Game_Map::Update(MapUpdateAsyncContext& actx, bool is_preupdate) {
 		//If not resuming from async op ...
 		Main_Data::game_player->Update();
 		Game_Multiplayer::Update();
-		
+
 		for (auto& vehicle: vehicles) {
 			if (vehicle.GetMapId() == GetMapId()) {
 				vehicle.Update();
@@ -1614,6 +1619,33 @@ std::string Game_Map::ConstructMapName(int map_id, bool is_easyrpg) {
 
 FileRequestAsync* Game_Map::RequestMap(int map_id) {
 	return AsyncHandler::RequestFile(Game_Map::ConstructMapName(map_id, false));
+}
+
+
+static const int ROOM_MAX_SIZE = 24;
+static const int ROOM_MIN_SIZE = 12;
+
+void Game_Map::Gen() {
+	auto h = GetHeight();
+	auto w = GetWidth();
+	Output::Debug("height x width: {} {}", h, w);
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
+		}
+	}
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
+			// map->lower_layer[i*w+j] = 0;
+		}
+	}
+
+	TCODBsp bsp(0,0,w,h);
+	bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+	GetInterpreter().CommandRefreshTileset();
 }
 
 // Parallax

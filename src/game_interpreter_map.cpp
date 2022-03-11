@@ -678,3 +678,7 @@ bool Game_Interpreter_Map::CommandOpenVideoOptions(lcf::rpg::EventCommand const&
 	return true;
 }
 
+void Game_Interpreter_Map::CommandRefreshTileset() {
+	Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+	scene->spriteset->ChipsetUpdated();
+}

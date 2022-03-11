@@ -884,7 +884,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 
 	// TODO(minakokojima): Only resolve cmd from other player
-	if (Game_Multiplayer::MyData::username != name.substr(0, name.rfind('#'))) {
+	//if (Game_Multiplayer::MyData::username != name.substr(0, name.rfind('#'))) {
 		std::string cmd;
 		cmd = ".fire";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
@@ -912,7 +912,14 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 			Scene::PopUntil(Scene::Map);
 			return;
 		}
-	}
+
+		cmd = ".gen";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Game_Map::Gen();
+			// Game_Map::GetInterpreter().Push(&ce);
+			return;
+		}
+	//}
 
 
 	addLogEntry(
