@@ -1623,19 +1623,11 @@ namespace Roguelike {
 
 	static const int ROOM_MAX_SIZE = 24;
 	static const int ROOM_MIN_SIZE = 12;
-	vector<int> A; int w, h;
+	std::vector<int> A; int w, h;
 
 	void dig(int x1, int y1, int x2, int y2) {
-		if ( x2 < x1 ) {
-			int tmp=x2;
-			x2=x1;
-			x1=tmp;
-		}
-		if ( y2 < y1 ) {
-			int tmp=y2;
-			y2=y1;
-			y1=tmp;
-		}
+		if ( x2 < x1 ) swap(x1, x2);
+		if ( y2 < y1 ) swap(y1, y2);
 		for (int x=x1; x <= x2; ++x) {
 			for (int y=y1; y <= y2; ++y) {
 				A[x+y*w] = 1;
