@@ -1658,7 +1658,7 @@ namespace Roguelike {
 				h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
 				x=rng->getInt(node->x+1, node->x+node->w-w-1);
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
-				map.createRoom(rr == 0, x, y, x+w-1, y+h-1);
+				dig(x, y, x+w-1, y+h-1);
 				x += w/2; y += h/2;
 				if (rr) {
 					// dig a corridor from last room
@@ -1674,7 +1674,7 @@ namespace Roguelike {
 	void Gen() {
 		h = GetHeight(); w = GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
-		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+		bsp.splitRecursive(NULL,8,Roguelike::ROOM_MAX_SIZE,Roguelike::ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener(*this);
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 	}
