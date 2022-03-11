@@ -1626,8 +1626,8 @@ namespace Roguelike {
 	std::vector<int> A; int w, h;
 
 	void dig(int x1, int y1, int x2, int y2) {
-		if ( x2 < x1 ) swap(x1, x2);
-		if ( y2 < y1 ) swap(y1, y2);
+		if ( x2 < x1 ) std::swap(x1, x2);
+		if ( y2 < y1 ) std::swap(y1, y2);
 		for (int x=x1; x <= x2; ++x) {
 			for (int y=y1; y <= y2; ++y) {
 				A[x+y*w] = 1;
@@ -1667,7 +1667,7 @@ namespace Roguelike {
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
 		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
-    	BspListener listener();
+    	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 	}
 };
