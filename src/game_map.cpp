@@ -1675,7 +1675,7 @@ namespace Roguelike {
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
 		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
-    	BspListener listener(*this);
+    	BspListener listener();
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 	}
 };
