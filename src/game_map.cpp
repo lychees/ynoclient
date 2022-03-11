@@ -1621,6 +1621,35 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 static const int ROOM_MAX_SIZE = 24;
 static const int ROOM_MIN_SIZE = 12;
 
+class BspListener : public ITCODBspCallback {
+private :
+    int rr; // room number
+    int xx, yy; // center of the last room
+public :
+    BspListener() : rr(0) {}
+    bool visitNode(TCODBsp *node, void *userData) {
+    	if (node->isLeaf()) {
+    		int x,y,w,h;
+			// dig a room
+			TCODRandom *rng=TCODRandom::getInstance();
+			w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
+			h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
+			x=rng->getInt(node->x+1, node->x+node->w-w-1);
+			y=rng->getInt(node->y+1, node->y+node->h-h-1);
+			map.createRoom(rr == 0, x, y, x+w-1, y+h-1);
+			x += w/2; y += h/2;
+			if (rr) {
+			    // dig a corridor from last room
+			    map.dig(xx,yy,x,yy);
+			    map.dig(x,yy,x,y);
+			}
+            xx = x; yy = y; ++rr;
+        }
+        return true;
+    }
+};
+
+
 void Game_Map::Roll() {
 	auto h = GetHeight();
 	auto w = GetWidth();
@@ -1635,7 +1664,6 @@ void Game_Map::Roll() {
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
-			// map->lower_layer[i*w+j] = 0;
 		}
 	}
 
@@ -1645,7 +1673,7 @@ void Game_Map::Roll() {
 
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			if (map->lower_layer[i*w+j] == 5014) {
+			if (map->lower_layer[i*w+j] == 4000) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
