@@ -418,10 +418,6 @@ const std::vector<uint8_t>& Game_Map::GetTilesLayer(int layer) {
 	return layer >= 1 ? map_info.upper_tiles : map_info.lower_tiles;
 }
 
-void Game_Map::Setup() {
-	Setup(std::move(map));
-}
-
 void Game_Map::Refresh() {
 	if (GetMapId() > 0) {
 		for (Game_Event& ev : events) {
@@ -1624,6 +1620,29 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 
 static const int ROOM_MAX_SIZE = 24;
 static const int ROOM_MIN_SIZE = 12;
+
+void Game_Map::Roll() {
+	auto h = GetHeight();
+	auto w = GetWidth();
+	Output::Debug("height x width: {} {}", h, w);
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
+		}
+	}
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
+			// map->lower_layer[i*w+j] = 0;
+		}
+	}
+
+	TCODBsp bsp(0,0,w,h);
+	bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+	GetInterpreter().CommandRefreshTileset();
+}
 
 void Game_Map::Gen() {
 	auto h = GetHeight();
