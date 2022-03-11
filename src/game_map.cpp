@@ -1672,9 +1672,9 @@ namespace Roguelike {
 	};
 
 	void Gen() {
-		h = GetHeight(); w = GetWidth(); A.clear(); A.resize(w*h);
+		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
-		bsp.splitRecursive(NULL,8,Roguelike::ROOM_MAX_SIZE,Roguelike::ROOM_MAX_SIZE,1.5f,1.5f);
+		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener(*this);
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 	}
@@ -1736,8 +1736,6 @@ void Game_Map::Gen() {
 		}
 	}
 
-	TCODBsp bsp(0,0,w,h);
-	bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
 	GetInterpreter().CommandRefreshTileset();
 }
 
