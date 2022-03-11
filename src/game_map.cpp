@@ -1642,6 +1642,15 @@ void Game_Map::Roll() {
 	TCODBsp bsp(0,0,w,h);
 	bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
 	GetInterpreter().CommandRefreshTileset();
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			if (map->lower_layer[i*w+j] == 5014) {
+				Main_Data::game_player->SetX(i);
+				Main_Data::game_player->SetY(j);
+			}
+		}
+	}
 }
 
 void Game_Map::Gen() {
