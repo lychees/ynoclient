@@ -916,9 +916,15 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 		cmd = ".gen";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			Game_Map::Gen();
-			// Game_Map::GetInterpreter().Push(&ce);
 			return;
 		}
+
+		cmd = ".roll";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Game_Map::Roll();
+			return;
+		}
+
 	//}
 
 

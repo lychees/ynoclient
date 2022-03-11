@@ -104,7 +104,6 @@ namespace Game_Map {
 	 * @pre Main_Data::game_player->GetMapId() reflects the new map.
 	 */
 	void Setup(std::unique_ptr<lcf::rpg::Map> map);
-	void Setup();
 
 	/**
 	 * Setups a map from a savegame.
@@ -611,6 +610,7 @@ namespace Game_Map {
 	bool UpdateForegroundEvents(MapUpdateAsyncContext& actx);
 
 	void Gen();
+	void Roll();
 
 	/**
 	 * Construct a map name, either for EasyRPG or RPG Maker projects
