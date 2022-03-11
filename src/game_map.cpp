@@ -1618,37 +1618,67 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 }
 
 
-static const int ROOM_MAX_SIZE = 24;
-static const int ROOM_MIN_SIZE = 12;
 
-class BspListener : public ITCODBspCallback {
-private :
-    int rr; // room number
-    int xx, yy; // center of the last room
-public :
-    BspListener() : rr(0) {}
-    bool visitNode(TCODBsp *node, void *userData) {
-    	if (node->isLeaf()) {
-    		int x,y,w,h;
-			// dig a room
-			TCODRandom *rng=TCODRandom::getInstance();
-			w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
-			h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
-			x=rng->getInt(node->x+1, node->x+node->w-w-1);
-			y=rng->getInt(node->y+1, node->y+node->h-h-1);
-			map.createRoom(rr == 0, x, y, x+w-1, y+h-1);
-			x += w/2; y += h/2;
-			if (rr) {
-			    // dig a corridor from last room
-			    map.dig(xx,yy,x,yy);
-			    map.dig(x,yy,x,y);
+namespace Roguelike {
+
+	static const int ROOM_MAX_SIZE = 24;
+	static const int ROOM_MIN_SIZE = 12;
+	vector<int> A; int w, h;
+
+	void dig(int x1, int y1, int x2, int y2) {
+		if ( x2 < x1 ) {
+			int tmp=x2;
+			x2=x1;
+			x1=tmp;
+		}
+		if ( y2 < y1 ) {
+			int tmp=y2;
+			y2=y1;
+			y1=tmp;
+		}
+		for (int x=x1; x <= x2; ++x) {
+			for (int y=y1; y <= y2; ++y) {
+				A[x+y*w] = 1;
 			}
-            xx = x; yy = y; ++rr;
-        }
-        return true;
-    }
-};
+		}
+	}
 
+	class BspListener : public ITCODBspCallback {
+	private :
+		int rr; // room number
+		int xx, yy; // center of the last room
+	public :
+		BspListener() : rr(0) {}
+		bool visitNode(TCODBsp *node, void *userData) {
+			if (node->isLeaf()) {
+				int x,y,w,h;
+				// dig a room
+				TCODRandom *rng=TCODRandom::getInstance();
+				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
+				h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
+				x=rng->getInt(node->x+1, node->x+node->w-w-1);
+				y=rng->getInt(node->y+1, node->y+node->h-h-1);
+				map.createRoom(rr == 0, x, y, x+w-1, y+h-1);
+				x += w/2; y += h/2;
+				if (rr) {
+					// dig a corridor from last room
+					dig(xx,yy,x,yy);
+					dig(x,yy,x,y);
+				}
+				xx = x; yy = y; ++rr;
+			}
+			return true;
+		}
+	};
+
+	void Gen() {
+		h = GetHeight(); w = GetWidth(); A.clear(); A.resize(w*h);
+		TCODBsp bsp(0,0,w,h);
+		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+    	BspListener listener(*this);
+    	bsp.traverseInvertedLevelOrder(&listener,NULL);
+	}
+};
 
 void Game_Map::Roll() {
 	auto h = GetHeight();
@@ -1661,14 +1691,20 @@ void Game_Map::Roll() {
 		}
 	}
 
+	/*
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
 		}
 	}
+	*/
+	Roguelike::Gen();
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			map->lower_layer[i*w+j] = (Roguelike::A[i*w+j] ? 4000 : 5014);
+		}
+	}
 
-	TCODBsp bsp(0,0,w,h);
-	bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
 	GetInterpreter().CommandRefreshTileset();
 
 	for (int i=0;i<h;++i) {
