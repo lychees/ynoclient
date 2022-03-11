@@ -1646,7 +1646,7 @@ void Game_Map::Roll() {
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			if (map->lower_layer[i*w+j] == 5014) {
-				auto tt = main_flag ? TeleportTarget::eForegroundTeleport : TeleportTarget::eParallelTeleport;
+				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), i, j, -1, tt);
 				break;
 			}
