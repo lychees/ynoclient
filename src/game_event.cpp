@@ -48,7 +48,7 @@ Game_Event::Game_Event(int map_id, const lcf::rpg::Event* event) :
 	RefreshPage();
 }
 
-void Game_Event::SetID(int id) {
+void Game_Event::SetId(int id) {
 	data()->ID = id;
 }
 

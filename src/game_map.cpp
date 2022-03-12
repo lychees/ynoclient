@@ -1855,7 +1855,7 @@ void Game_Map::Roll() {
 				auto& t = events.back();
 				t.SetX(t.GetX()+rand() % 20);
 				t.SetY(t.GetY()+rand() % 20);
-				t.SetID(events.size());
+				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
 			}
 		}
