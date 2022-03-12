@@ -1627,6 +1627,7 @@ namespace Roguelike {
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h;
+	std::vector<std::pair<int, int>> empty_grids;
 
 	void dig(int x1, int y1, int x2, int y2) {
 		if ( x2 < x1 ) std::swap(x1, x2);
@@ -1654,6 +1655,13 @@ namespace Roguelike {
 				x=rng->getInt(node->x+1, node->x+node->w-w-1);
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
 				dig(x, y, x+w-1, y+h-1);
+
+				for (int i=0;i<w;++i) {
+					for (int i=0;i<h;++j) {
+						empty_grids.push_back({x+i,y+j});
+					}
+				}
+
 				x += w/2; y += h/2;
 				if (rr) {
 					// dig a corridor from last room
@@ -1834,14 +1842,13 @@ void Game_Map::Roll() {
 		}
 	}
 
-	std::vector<std::pair<int, int>> empty_grids;
-	for (int i=0;i<h;++i) {
+	/*for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
 				empty_grids.push_back({j, i});
 			}
 		}
-	}
+	}*/
 
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
@@ -1870,10 +1877,10 @@ void Game_Map::Roll() {
 	} */
 
 	for (auto& ev : events) {
-		int id = rand() % empty_grids.size();
-		int xx = empty_grids[id].first;
-		int yy = empty_grids[id].second;
-		empty_grids.erase(empty_grids.begin() + id);
+		int id = rand() % Roguelike::empty_grids.size();
+		int xx = Roguelike::empty_grids[id].first;
+		int yy = Roguelike::empty_grids[id].second;
+		Roguelike::empty_grids.erase(empty_grids.begin() + id);
 		ev.SetX(xx);
 		ev.SetY(yy);
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
