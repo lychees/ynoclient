@@ -1828,7 +1828,7 @@ void Game_Map::Roll() {
 	Roguelike::Gen();
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
+			map->lower_layer[i*w+j] = 4000 + 1*50; // Roguelike::A[i*w+j];
 		}
 	}
 
