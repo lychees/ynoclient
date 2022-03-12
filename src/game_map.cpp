@@ -1832,22 +1832,20 @@ void Game_Map::Roll() {
 		}
 	}
 
-	GetInterpreter().CommandRefreshTileset();
-
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
-			if (Roguelike::_A[i*w+j]) {
+			//if (Roguelike::_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
-			}
+			//}
 		}
 	}
 
 	// Randomize box position
 	std::vector<Game_Event> new_events;
 	for (const auto& ev : map->events) {
-		for (int i=0;i<10;++i) {
+		for (int i=0;i<1;++i) {
 			events.emplace_back(GetMapId(), &ev);
 			if (events.back().GetName() != "Box") {
 				events.pop_back();
@@ -1860,6 +1858,8 @@ void Game_Map::Roll() {
 			}
 		}
 	}
+
+	GetInterpreter().CommandRefreshTileset();
 }
 
 void Game_Map::Gen() {
