@@ -53,6 +53,7 @@
 #include "game_multiplayer_connection.h"
 #include "game_multiplayer_main_loop.h"
 #include "game_multiplayer_other_player.h"
+#include "scene_map.h"
 #include "libtcod.h"
 
 namespace {

@@ -40,7 +40,6 @@
 #include "scene_load.h"
 #include "output.h"
 #include "dynrpg.h"
-#include "scene_map.h"
 
 using namespace std::chrono_literals;
 
