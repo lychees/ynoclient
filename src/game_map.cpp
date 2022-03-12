@@ -1859,6 +1859,7 @@ void Game_Map::Roll() {
 		}
 	}
 
+	Refresh();
 	GetInterpreter().CommandRefreshTileset();
 }
 
