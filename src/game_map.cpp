@@ -1852,8 +1852,8 @@ void Game_Map::Roll() {
 			evnets.pop_back();
 		} else {
 			auto t = evnets.back();
-			t.SetX(ev.GetX()+2);
-			t.SetY(ev.GetY()+2);
+			t.SetX(t.GetX()+2);
+			t.SetY(t.GetY()+2);
 			Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
 		}
 	}
