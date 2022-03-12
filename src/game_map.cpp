@@ -1634,7 +1634,7 @@ namespace Roguelike {
 		if ( y2 < y1 ) std::swap(y1, y2);
 		for (int x=x1; x <= x2; ++x) {
 			for (int y=y1; y <= y2; ++y) {
-				A[x*w+y] = 1;
+				A[x+y*w] = 1;
 			}
 		}
 	}
@@ -1656,20 +1656,9 @@ namespace Roguelike {
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
 				dig(x, y, x+w-1, y+h-1);
 
-/*
-	for (int i=h-1;i>=0;--i) {
-		for (int j=0;j<w;++j) {
-			if (Roguelike::_A[i*w+j]) {
-				auto tt = TeleportTarget::eForegroundTeleport;
-				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-				break;
-			}
-		}
-	}*/
-
-				for (int i=0;i<h;++i) {
-					for (int j=0;j<w;++j) {
-						empty_grids.push_back({x+i,y+j});
+				for (int i=0;i<w;++i) {
+					for (int j=0;j<h;++j) {
+						empty_grids.push_back({y+j,x+i});
 					}
 				}
 
@@ -1712,14 +1701,14 @@ namespace Roguelike {
 						int x = i, y = j;
 
 						bool lf = !check(x, y-1);
-						bool up = !check(x+1, y);
+						bool up = !check(x-1, y);
 						bool rt = !check(x, y+1);
-						bool dn = !check(x-1, y);
+						bool dn = !check(x+1, y);
 
-						bool lu = !check(x+1, y-1);
-						bool ru = !check(x+1, y+1);
-						bool rd = !check(x-1, y+1);
-						bool ld = !check(x-1, y-1);
+						bool lu = !check(x-1, y-1);
+						bool ru = !check(x-1, y+1);
+						bool rd = !check(x+1, y+1);
+						bool ld = !check(x+1, y-1);
 
 						int cnt = int(lf) + int(up) + int(rt) + int(dn);
 
@@ -1818,7 +1807,7 @@ namespace Roguelike {
 
 	void Gen() {
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
-		TCODBsp bsp(0,0,h,w);
+		TCODBsp bsp(0,0,w,h);
 		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
@@ -1865,7 +1854,7 @@ void Game_Map::Roll() {
 		for (int j=0;j<w;++j) {
 			if (Roguelike::_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
-				Main_Data::game_player->ReserveTeleport(GetMapId(), i, j, -1, tt);
+				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
 			}
 		}
