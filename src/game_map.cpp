@@ -1843,6 +1843,13 @@ void Game_Map::Roll() {
 			}
 		}
 	}
+
+	// Randomize box position
+
+	for (const auto& ev : map->events) {
+		//events.emplace_back(GetMapId(), &ev);
+		Output::Debug("map event: {} ", ev);
+	}
 }
 
 void Game_Map::Gen() {
