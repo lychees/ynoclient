@@ -1848,10 +1848,10 @@ void Game_Map::Roll() {
 	std::vector<Game_Event> new_events;
 	for (const auto& ev : map->events) {
 		events.emplace_back(GetMapId(), &ev);
-		if (evnets.back().GetName() != "Box") {
-			evnets.pop_back();
+		if (events.back().GetName() != "Box") {
+			events.pop_back();
 		} else {
-			auto t = evnets.back();
+			auto t = events.back();
 			t.SetX(t.GetX()+2);
 			t.SetY(t.GetY()+2);
 			Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
