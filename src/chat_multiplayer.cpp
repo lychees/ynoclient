@@ -889,7 +889,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	std::string cmd;
 	cmd = ".fire";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		if (from_me) break;
+		if (from_me) return;
 		std::istringstream iss(msg);
 		std::string _; int x, y, d;  iss >> _ >> x >> y >> d; const int id = 440 - 1;
 		// TODO(minakokojima): Check collision
