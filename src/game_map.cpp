@@ -1810,13 +1810,13 @@ namespace Roguelike {
 void Game_Map::Roll() {
 	auto h = GetHeight();
 	auto w = GetWidth();
+	/*
 	Output::Debug("height x width: {} {}", h, w);
-
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
 		}
-	}
+	} */
 
 	/*
 	for (int i=0;i<h;++i) {
@@ -1843,7 +1843,6 @@ void Game_Map::Roll() {
 	}
 
 	// Randomize box position
-	std::vector<Game_Event> new_events;
 	for (const auto& ev : map->events) {
 		for (int i=0;i<1;++i) {
 			events.emplace_back(GetMapId(), &ev);
@@ -1855,6 +1854,8 @@ void Game_Map::Roll() {
 				t.SetY(t.GetY()+rand() % 20);
 				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
+				Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+				scene->spriteset->CreateSprite(&t, LoopHorizontal(), LoopVertical());
 			}
 		}
 	}
