@@ -65,6 +65,7 @@ public:
 	 * @return event ID.
 	 */
 	int GetId() const;
+	void SetId();
 
 	/**
 	 * Gets event name.

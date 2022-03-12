@@ -48,6 +48,10 @@ Game_Event::Game_Event(int map_id, const lcf::rpg::Event* event) :
 	RefreshPage();
 }
 
+void Game_Event::SetID(int id) {
+	data()->ID = id;
+}
+
 void Game_Event::SanitizeData() {
 	StringView name = event->name;
 	Game_Character::SanitizeData(name);
@@ -409,7 +413,7 @@ void Game_Event::CheckCollisonOnMoveFailure() {
 
 bool Game_Event::Move(int dir) {
 	bool isMoving = Game_Character::Move(dir);
-	
+
 	if (!isMoving) {
 		CheckCollisonOnMoveFailure();
 		return false;
