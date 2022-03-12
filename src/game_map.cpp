@@ -1622,8 +1622,8 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 
 namespace Roguelike {
 
-	static const int ROOM_MAX_SIZE = 6; ///24;
-	static const int ROOM_MIN_SIZE = 4; //12
+	static const int ROOM_MAX_SIZE = 24;
+	static const int ROOM_MIN_SIZE = 12;
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h;
@@ -1822,7 +1822,7 @@ namespace Roguelike {
 	void Gen() {
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
-		bsp.splitRecursive(NULL,2,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 		Automatize();
