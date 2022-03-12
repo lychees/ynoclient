@@ -1833,6 +1833,15 @@ void Game_Map::Roll() {
 		}
 	}
 
+	std::vector<std::pair<int, int>> empty_grids;
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
+				empty_grids.push_back({i, j});
+			}
+		}
+	}
+
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
 			//if (Roguelike::_A[i*w+j]) {
@@ -1845,14 +1854,20 @@ void Game_Map::Roll() {
 
 	// Randomize box position
 	for (const auto& ev : map->events) {
-		for (int i=0;i<1;++i) {
+		for (int i=0;i<30;++i) {
 			events.emplace_back(GetMapId(), &ev);
 			if (events.back().GetName() != "Box") {
 				events.pop_back();
 			} else {
 				auto& t = events.back();
-				t.SetX(t.GetX()+rand() % 20);
-				t.SetY(t.GetY()+rand() % 20);
+
+				int id = rand() % empty_grids.size();
+				int xx = empty_grids[id].first;
+				int yy = empty_grids[id].second;
+				empty_grids.erase(empty_grids.begin() + id);
+
+				t.SetX(xx);
+				t.SetY(yy);
 				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
 				Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
