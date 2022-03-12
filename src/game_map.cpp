@@ -1868,14 +1868,13 @@ void Game_Map::Roll() {
 	}
 
 	for (const auto& ev : events) {
-		auto t = ev;
 		int id = rand() % empty_grids.size();
 		int xx = empty_grids[id].first;
 		int yy = empty_grids[id].second;
 		empty_grids.erase(empty_grids.begin() + id);
-		t.SetX(xx);
-		t.SetY(yy);
-		Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
+		ev.SetX(xx);
+		ev.SetY(yy);
+		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
 	}
 
 	/*
