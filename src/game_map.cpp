@@ -1829,7 +1829,8 @@ void Game_Map::Roll() {
 	Roguelike::Gen();
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = 5000 + 24*2 + 6; //4000 + 1*50; // Roguelike::A[i*w+j];
+			// map->lower_layer[i*w+j] = 5000 + 24*2 + 6; //4000 + 1*50; // Roguelike::A[i*w+j];
+			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
 		}
 	}
 
@@ -1844,15 +1845,16 @@ void Game_Map::Roll() {
 
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
-			//if (Roguelike::_A[i*w+j]) {
+			if (Roguelike::_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
-			//}
+			}
 		}
 	}
 
 	// Randomize box position
+	/*
 	// Add One Box
 	for (const auto& ev : map->events) {
 		events.emplace_back(GetMapId(), &ev);
@@ -1865,7 +1867,7 @@ void Game_Map::Roll() {
 			scene->spriteset->CreateSprite(&t, LoopHorizontal(), LoopVertical());
 			break;
 		}
-	}
+	} */
 
 	for (auto& ev : events) {
 		int id = rand() % empty_grids.size();
