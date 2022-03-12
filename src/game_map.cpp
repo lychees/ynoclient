@@ -1656,9 +1656,28 @@ namespace Roguelike {
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
 				dig(x, y, x+w-1, y+h-1);
 
+
+				/*
+				for (int i=h-1;i>=0;--i) {
+					for (int j=0;j<w;++j) {
+						if (Roguelike::_A[i*w+j]) {
+							auto tt = TeleportTarget::eForegroundTeleport;
+							Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
+							break;
+						}
+					}
+				}
+				*/
+
+
 				for (int i=0;i<w;++i) {
 					for (int j=0;j<h;++j) {
-						empty_grids.push_back({y+j,x+i});
+
+						// A[x+i + (y+j)*w】
+						// y+j -> i
+						// x+i -> j
+
+						empty_grids.push_back({x+i,::(h-1)-(y+j)});
 					}
 				}
 
