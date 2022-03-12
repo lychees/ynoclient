@@ -1672,12 +1672,7 @@ namespace Roguelike {
 
 				for (int i=0;i<w;++i) {
 					for (int j=0;j<h;++j) {
-
-						// A[x+i + (y+j)*w】
-						// y+j -> i
-						// x+i -> j
-
-						empty_grids.push_back({x+i,(Game_Map::GetHeight()-1)-(y+j)});
+						empty_grids.push_back({x+i,y+j});
 					}
 				}
 
@@ -1900,8 +1895,7 @@ void Game_Map::Roll() {
 		int xx = Roguelike::empty_grids[id].first;
 		int yy = Roguelike::empty_grids[id].second;
 		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
-		ev.SetX(xx);
-		ev.SetY(yy);
+		ev.SetX(yy); ev.SetY((h-1)-xx);
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
 	}
 
