@@ -1858,7 +1858,7 @@ void Game_Map::Roll() {
 			}
 		}
 	}
-    events.insert(events.end(), new_events.begin(), new_events.end())
+    events.insert(events.end(), new_events.begin(), new_events.end());
 }
 
 void Game_Map::Gen() {
