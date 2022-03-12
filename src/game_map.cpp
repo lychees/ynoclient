@@ -1623,7 +1623,9 @@ namespace Roguelike {
 
 	static const int ROOM_MAX_SIZE = 24;
 	static const int ROOM_MIN_SIZE = 12;
-	std::vector<int> A; int w, h;
+	static const int dx[4] = {1,0,-1,0};
+	static const int dy[4] = {0,1,0,-1};
+	std::vector<int> A, _A; int w, h;
 
 	void dig(int x1, int y1, int x2, int y2) {
 		if ( x2 < x1 ) std::swap(x1, x2);
@@ -1663,10 +1665,133 @@ namespace Roguelike {
 		}
 	};
 
+	bool inBound(int x, int y) {
+		return 0 <= x && x < h && 0 <= y && y < w;
+	}
+
+	bool check(int x, int y) {
+		return inBound(x, y) && !_A[x*w + y];
+	}
+
 	void Automatize() {
+
+		_A = A;
+
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
-				A[i*w+j] = A[i*w+j] ? 5014 : 4050;
+
+				int &a = A[i*w+j];
+
+				//if (i < 12 && j <= 50) {
+				if (false) {
+					A[i*w+j] = 4000 + i*50 + j;
+				} else {
+					if (!_A[i*w+j]) {
+						a += 4000 + 1*50;
+
+						int x = i, y = j;
+
+						bool lf = !check(x, y-1);
+						bool up = !check(x-1, y);
+						bool rt = !check(x, y+1);
+						bool dn = !check(x+1, y);
+
+						bool lu = !check(x-1, y-1);
+						bool ru = !check(x-1, y+1);
+						bool rd = !check(x+1, y+1);
+						bool ld = !check(x+1, y-1);
+
+						int cnt = int(lf) + int(up) + int(rt) + int(dn);
+
+						if (cnt == 0) {
+							if (lu) a += 1 << 0;
+							if (ru) a += 1 << 1;
+							if (rd) a += 1 << 2;
+							if (ld) a += 1 << 3;
+						} else if (cnt == 1) {
+							if (lf) {
+								a += (1 << 4) + 0;
+								if (ru) a += 1;
+								if (rd) a += 2;
+							} else if (up) {
+								a += (1 << 4) + 4;
+								if (rd) a += 1;
+								if (ld) a += 2;
+							} else if (rt) {
+								a += (1 << 4) + 8;
+								if (ld) a += 1;
+								if (lu) a += 2;
+							} else { // dn
+								a += (1 << 4) + 12;
+								if (lu) a += 1;
+								if (ru) a += 2;
+							}
+						} else if (cnt == 2) {
+
+							a += (1 << 4) + 16;
+
+							if (lf && rt) {
+								a += 0;
+							} else if (up && dn) {
+								a += 1;
+							} else if (up) {
+								if (lf) {
+									a += 2;
+									if (rd) a += 1;
+								} else { // rt
+									a += 4;
+									if (ld) a += 1;
+								}
+							} else { // dn
+								if (rt) {
+									a += 6;
+									if (lu) a += 1;
+								} else { // lt
+									a += 8;
+									if (ru) a += 1;
+								}
+							}
+						} else if (cnt == 3) {
+
+							a += (1 << 4) + 26;
+
+							if (!dn) {
+								a += 0;
+							} else if (!rt) {
+								a += 1;
+							} else if (!up) {
+								a += 2;
+							} else { // up
+								a += 3;
+							}
+						} else { // cnt == 4
+							a += (1 << 4) + 30;
+						}
+					} else {
+						a = 5000 + 24*2 + 6;
+					}
+
+
+					/*if (!_A[i*w+j]) {
+						A[i*w+j] = 4000 + 1*50;
+						for (int d=0;d<4;++d) {
+							int x = i+dx[d];
+							int y = j+dy[d];
+							if (inBound(x, y) && _A[x*w+y]) {
+								A[i*w+j] += 1<<(d+4);
+							}
+						}
+					} else {
+						A[i*w+j] = 5000 + 24*2 + 6;
+					}*/
+				}
+			}
+		}
+	}
+
+	void AddWall() {
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
 			}
 		}
 	}
@@ -1678,6 +1803,7 @@ namespace Roguelike {
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 		Automatize();
+		AddWall();
 	}
 };
 
@@ -1708,9 +1834,9 @@ void Game_Map::Roll() {
 
 	GetInterpreter().CommandRefreshTileset();
 
-	for (int i=0;i<h;++i) {
+	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
-			if (map->lower_layer[i*w+j] == 4000) {
+			if (Roguelike::_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
