@@ -1854,7 +1854,7 @@ void Game_Map::Roll() {
 
 	// Randomize box position
 	for (const auto& ev : map->events) {
-		for (int i=0;i<30;++i) {
+		for (int i=0;i<1;++i) {
 			events.emplace_back(GetMapId(), &ev);
 			if (events.back().GetName() != "Box") {
 				events.pop_back();
