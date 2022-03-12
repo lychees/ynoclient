@@ -907,7 +907,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 	cmd = ".call";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		if (from_me) break;
+		if (from_me) return;
 		std::istringstream iss(msg);
 		std::string _; int id;  iss >> _ >> id; --id;
 		auto& ce = Game_Map::GetCommonEvents()[id];
@@ -918,7 +918,6 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 	cmd = ".exec";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		// if (from_me) break;
 		std::istringstream iss(msg);
 		std::string _; int id;  iss >> _ >> id; --id;
 		auto& ce = Game_Map::GetCommonEvents()[id];
