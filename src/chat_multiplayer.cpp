@@ -884,7 +884,7 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 
 	// TODO(minakokojima): Only resolve cmd from other player
-	bool from_me = Game_Multiplayer::MyData::username == name.substr(0, name.rfind('#');
+	bool from_me = Game_Multiplayer::MyData::username == name.substr(0, name.rfind('#'));
 
 	std::string cmd;
 	cmd = ".fire";
