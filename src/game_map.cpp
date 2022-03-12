@@ -1867,7 +1867,7 @@ void Game_Map::Roll() {
 		}
 	}
 
-	for (const auto& ev : events) {
+	for (auto& ev : events) {
 		int id = rand() % empty_grids.size();
 		int xx = empty_grids[id].first;
 		int yy = empty_grids[id].second;
