@@ -1857,7 +1857,6 @@ void Game_Map::Roll() {
 			Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
 		}
 	}
-    events.insert(events.end(), new_events.begin(), new_events.end());
 }
 
 void Game_Map::Gen() {
