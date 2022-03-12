@@ -1845,11 +1845,20 @@ void Game_Map::Roll() {
 	}
 
 	// Randomize box position
-
+	std::vector<Game_Event> new_events;
 	for (const auto& ev : events) {
 		//events.emplace_back(GetMapId(), &ev);
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
+		if (ev.GetName() == "Box") {
+			auto t = ev;
+			t.SetX(ev.GetX()+2);
+			t.SetY(ev.GetY()+2);
+			while (1) {
+				new_events.push_back(t);
+			}
+		}
 	}
+    events.insert(events.end(), new_events.begin(), new_events.end())
 }
 
 void Game_Map::Gen() {
