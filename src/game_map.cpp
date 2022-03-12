@@ -1622,8 +1622,8 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 
 namespace Roguelike {
 
-	static const int ROOM_MAX_SIZE = 24;
-	static const int ROOM_MIN_SIZE = 12;
+	static const int ROOM_MAX_SIZE = 6; ///24;
+	static const int ROOM_MIN_SIZE = 4; //12
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h;
