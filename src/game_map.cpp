@@ -1838,7 +1838,7 @@ void Game_Map::Roll() {
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
-				empty_grids.push_back({i, j});
+				empty_grids.push_back({j, i});
 			}
 		}
 	}
