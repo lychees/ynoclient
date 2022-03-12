@@ -1880,7 +1880,7 @@ void Game_Map::Roll() {
 		int id = rand() % Roguelike::empty_grids.size();
 		int xx = Roguelike::empty_grids[id].first;
 		int yy = Roguelike::empty_grids[id].second;
-		Roguelike::empty_grids.erase(empty_grids.begin() + id);
+		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
 		ev.SetX(xx);
 		ev.SetY(yy);
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
