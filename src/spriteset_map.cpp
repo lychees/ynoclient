@@ -45,6 +45,8 @@ Spriteset_Map::Spriteset_Map() {
 	need_x_clone = Game_Map::LoopHorizontal();
 	need_y_clone = Game_Map::LoopVertical();
 
+
+	// Output::Debug("Create Spriteset");
 	for (Game_Event& ev : Game_Map::GetEvents()) {
 		CreateSprite(&ev, need_x_clone, need_y_clone);
 	}

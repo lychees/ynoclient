@@ -884,49 +884,59 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 
 	// TODO(minakokojima): Only resolve cmd from other player
-	//if (Game_Multiplayer::MyData::username != name.substr(0, name.rfind('#'))) {
-		std::string cmd;
-		cmd = ".fire";
-		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			std::istringstream iss(msg);
-			std::string _; int x, y, d;  iss >> _ >> x >> y >> d; const int id = 440 - 1;
-			// TODO(minakokojima): Check collision
+	bool from_me = Game_Multiplayer::MyData::username == name.substr(0, name.rfind('#'));
 
-			int my_x = Main_Data::game_player->GetX();
-			int my_y = Main_Data::game_player->GetY();
+	std::string cmd;
+	cmd = ".fire";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		if (from_me) return;
+		std::istringstream iss(msg);
+		std::string _; int x, y, d;  iss >> _ >> x >> y >> d; const int id = 440 - 1;
+		// TODO(minakokojima): Check collision
 
-			if (x == my_x || y == my_y) {
-				auto& ce = Game_Map::GetCommonEvents()[id];
-				Game_Map::GetInterpreter().Push(&ce);
-				Scene::PopUntil(Scene::Map);
-			}
-			return;
-		}
+		int my_x = Main_Data::game_player->GetX();
+		int my_y = Main_Data::game_player->GetY();
 
-		cmd = ".call";
-		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			std::istringstream iss(msg);
-			std::string _; int id;  iss >> _ >> id; --id;
+		if (x == my_x || y == my_y) {
 			auto& ce = Game_Map::GetCommonEvents()[id];
 			Game_Map::GetInterpreter().Push(&ce);
 			Scene::PopUntil(Scene::Map);
-			return;
 		}
+		return;
+	}
 
-		cmd = ".gen";
-		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Game_Map::Gen();
-			return;
-		}
+	cmd = ".call";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		if (from_me) return;
+		std::istringstream iss(msg);
+		std::string _; int id;  iss >> _ >> id; --id;
+		auto& ce = Game_Map::GetCommonEvents()[id];
+		Game_Map::GetInterpreter().Push(&ce);
+		Scene::PopUntil(Scene::Map);
+		return;
+	}
 
-		cmd = ".roll";
-		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Game_Map::Roll();
-			return;
-		}
+	cmd = ".exec";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		std::istringstream iss(msg);
+		std::string _; int id;  iss >> _ >> id; --id;
+		auto& ce = Game_Map::GetCommonEvents()[id];
+		Game_Map::GetInterpreter().Push(&ce);
+		Scene::PopUntil(Scene::Map);
+		return;
+	}
 
-	//}
+	cmd = ".gen";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		Game_Map::Gen();
+		return;
+	}
 
+	cmd = ".roll";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		Game_Map::Roll();
+		return;
+	}
 
 	addLogEntry(
 		(src=="G"?"G← ":"")+name,

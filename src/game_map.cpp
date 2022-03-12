@@ -53,6 +53,7 @@
 #include "game_multiplayer_connection.h"
 #include "game_multiplayer_main_loop.h"
 #include "game_multiplayer_other_player.h"
+#include "scene_map.h"
 #include "libtcod.h"
 
 namespace {
@@ -101,7 +102,7 @@ void Game_Map::Init() {
 	interpreter.reset(new Game_Interpreter_Map(true));
 
 	common_events.clear();
-	common_events.reserve(lcf::Data::commonevents.size());
+	common_events.reserve(lcf::Data::commonevents.size() * 10);
 	for (const lcf::rpg::CommonEvent& ev : lcf::Data::commonevents) {
 		common_events.emplace_back(ev.ID);
 	}
@@ -1626,6 +1627,7 @@ namespace Roguelike {
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h;
+	std::vector<std::pair<int, int>> empty_grids;
 
 	void dig(int x1, int y1, int x2, int y2) {
 		if ( x2 < x1 ) std::swap(x1, x2);
@@ -1653,6 +1655,27 @@ namespace Roguelike {
 				x=rng->getInt(node->x+1, node->x+node->w-w-1);
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
 				dig(x, y, x+w-1, y+h-1);
+
+
+				/*
+				for (int i=h-1;i>=0;--i) {
+					for (int j=0;j<w;++j) {
+						if (Roguelike::_A[i*w+j]) {
+							auto tt = TeleportTarget::eForegroundTeleport;
+							Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
+							break;
+						}
+					}
+				}
+				*/
+
+
+				for (int i=0;i<w;++i) {
+					for (int j=0;j<h;++j) {
+						empty_grids.push_back({y+j,x+i});
+					}
+				}
+
 				x += w/2; y += h/2;
 				if (rr) {
 					// dig a corridor from last room
@@ -1797,9 +1820,10 @@ namespace Roguelike {
 	}
 
 	void Gen() {
+		empty_grids.clear();
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
-		bsp.splitRecursive(NULL,8,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
+		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 		Automatize();
@@ -1810,13 +1834,13 @@ namespace Roguelike {
 void Game_Map::Roll() {
 	auto h = GetHeight();
 	auto w = GetWidth();
+	/*
 	Output::Debug("height x width: {} {}", h, w);
-
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
 		}
-	}
+	} */
 
 	/*
 	for (int i=0;i<h;++i) {
@@ -1828,11 +1852,18 @@ void Game_Map::Roll() {
 	Roguelike::Gen();
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
+			// map->lower_layer[i*w+j] = 5000 + 24*2 + 6; //4000 + 1*50; // Roguelike::A[i*w+j];
 			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
 		}
 	}
 
-	GetInterpreter().CommandRefreshTileset();
+	/*for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
+				empty_grids.push_back({j, i});
+			}
+		}
+	}*/
 
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
@@ -1843,6 +1874,56 @@ void Game_Map::Roll() {
 			}
 		}
 	}
+
+	// Randomize box position
+	/*
+	// Add One Box
+	for (const auto& ev : map->events) {
+		events.emplace_back(GetMapId(), &ev);
+		if (events.back().GetName() != "Box") {
+			events.pop_back();
+		} else {
+			auto& t = events.back();
+			t.SetId(events.size());
+			Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+			scene->spriteset->CreateSprite(&t, LoopHorizontal(), LoopVertical());
+			break;
+		}
+	} */
+
+	for (auto& ev : events) {
+		int id = rand() % Roguelike::empty_grids.size();
+		int xx = Roguelike::empty_grids[id].first;
+		int yy = Roguelike::empty_grids[id].second;
+		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
+
+		ev.SetX(yy); ev.SetY(xx);
+		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
+	}
+
+	/*
+	for (const auto& ev : map->events) {
+		for (int i=0;i<1;++i) {
+			events.emplace_back(GetMapId(), &ev);
+			if (events.back().GetName() != "Box") {
+				events.pop_back();
+			} else {
+				auto& t = events.back();
+
+
+				t.SetX(xx);
+				t.SetY(yy);
+				t.SetId(events.size());
+				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
+
+
+			}
+		}
+	}
+	*/
+
+	Refresh();
+	GetInterpreter().CommandRefreshTileset();
 }
 
 void Game_Map::Gen() {
