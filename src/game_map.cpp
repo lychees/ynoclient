@@ -1847,7 +1847,7 @@ void Game_Map::Roll() {
 	// Randomize box position
 	std::vector<Game_Event> new_events;
 	for (const auto& ev : map->events) {
-		while (10) {
+		for (int i=0;i<10;++i) {
 			events.emplace_back(GetMapId(), &ev);
 			if (events.back().GetName() != "Box") {
 				events.pop_back();
