@@ -1864,11 +1864,13 @@ void Game_Map::Roll() {
 		}
 	}*/
 
+	int jj, ii;
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
 			if (Roguelike::_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
+				jj = j; ii = i;
 				break;
 			}
 		}
@@ -1895,7 +1897,10 @@ void Game_Map::Roll() {
 		int xx = Roguelike::empty_grids[id].first;
 		int yy = Roguelike::empty_grids[id].second;
 		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
-		ev.SetX(yy); ev.SetY((h-1)-xx);
+		//ev.SetX(yy); ev.SetY((h-1)-xx);
+
+		ev.SetX(jj); ev.SetY(ii);
+
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
 	}
 
