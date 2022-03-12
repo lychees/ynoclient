@@ -1853,6 +1853,32 @@ void Game_Map::Roll() {
 	}
 
 	// Randomize box position
+	// Add One Box
+	for (const auto& ev : map->events) {
+		events.emplace_back(GetMapId(), &ev);
+		if (events.back().GetName() != "Box") {
+			events.pop_back();
+		} else {
+			auto& t = events.back();
+			t.SetId(events.size());
+			Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+			scene->spriteset->CreateSprite(&t, LoopHorizontal(), LoopVertical());
+			break;
+		}
+	}
+
+	for (const auto& ev : events) {
+		auto t = &ev;
+		int id = rand() % empty_grids.size();
+		int xx = empty_grids[id].first;
+		int yy = empty_grids[id].second;
+		empty_grids.erase(empty_grids.begin() + id);
+		t.SetX(xx);
+		t.SetY(yy);
+		Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
+	}
+
+	/*
 	for (const auto& ev : map->events) {
 		for (int i=0;i<1;++i) {
 			events.emplace_back(GetMapId(), &ev);
@@ -1861,20 +1887,17 @@ void Game_Map::Roll() {
 			} else {
 				auto& t = events.back();
 
-				int id = rand() % empty_grids.size();
-				int xx = empty_grids[id].first;
-				int yy = empty_grids[id].second;
-				empty_grids.erase(empty_grids.begin() + id);
 
 				t.SetX(xx);
 				t.SetY(yy);
 				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
-				Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
-				scene->spriteset->CreateSprite(&t, LoopHorizontal(), LoopVertical());
+
+
 			}
 		}
 	}
+	*/
 
 	Refresh();
 	GetInterpreter().CommandRefreshTileset();
