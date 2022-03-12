@@ -1851,7 +1851,7 @@ void Game_Map::Roll() {
 		if (events.back().GetName() != "Box") {
 			events.pop_back();
 		} else {
-			auto t = events.back();
+			auto& t = events.back();
 			t.SetX(t.GetX()+2);
 			t.SetY(t.GetY()+2);
 			Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
