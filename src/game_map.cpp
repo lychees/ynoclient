@@ -1657,7 +1657,7 @@ namespace Roguelike {
 				dig(x, y, x+w-1, y+h-1);
 
 				for (int i=0;i<w;++i) {
-					for (int i=0;i<h;++j) {
+					for (int j=0;j<h;++j) {
 						empty_grids.push_back({x+i,y+j});
 					}
 				}
