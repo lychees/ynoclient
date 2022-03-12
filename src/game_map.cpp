@@ -102,7 +102,7 @@ void Game_Map::Init() {
 	interpreter.reset(new Game_Interpreter_Map(true));
 
 	common_events.clear();
-	common_events.reserve(lcf::Data::commonevents.size());
+	common_events.reserve(lcf::Data::commonevents.size() * 10);
 	for (const lcf::rpg::CommonEvent& ev : lcf::Data::commonevents) {
 		common_events.emplace_back(ev.ID);
 	}
