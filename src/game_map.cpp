@@ -1848,7 +1848,7 @@ void Game_Map::Roll() {
 
 	for (const auto& ev : map->events) {
 		//events.emplace_back(GetMapId(), &ev);
-		Output::Debug("map event: {} ", ev);
+		Output::Debug("map event: {} {} {}", ev->GetId(), ev->GetX(), ev->GetY());
 	}
 }
 
