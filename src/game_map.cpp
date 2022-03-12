@@ -1677,7 +1677,7 @@ namespace Roguelike {
 						// y+j -> i
 						// x+i -> j
 
-						empty_grids.push_back({x+i,::(h-1)-(y+j)});
+						empty_grids.push_back({x+i,(::h-1)-(y+j)});
 					}
 				}
 
