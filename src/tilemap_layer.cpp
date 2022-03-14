@@ -180,11 +180,11 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	auto& dstt = *DisplayUi->GetDisplaySurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		//dstt.BlitFast(x, y, *src, rect, 255);
-		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
+		dstt.BlitFast(x, y, *src, rect, 255);
+		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
-		//dstt.Blit(x, y, *src, rect, 255);
-		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
+		dstt.Blit(x, y, *src, rect, 255);
+		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 }
 
@@ -361,6 +361,10 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 			}
 		}
 	}
+
+
+	Transform xform = Transform::Scale(0.9, 0.9);
+    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
