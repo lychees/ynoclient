@@ -395,6 +395,8 @@ bool Sdl2Ui::RefreshDisplayMode() {
 		// Drawing surface will be the window itself
 		main_surface = Bitmap::Create(
 			current_display_mode.width, current_display_mode.height, Color(0, 0, 0, 255));
+		map_surface = Bitmap::Create(
+			current_display_mode.width, current_display_mode.height, Color(0, 0, 0, 255));
 	}
 
 	return true;
