@@ -62,8 +62,7 @@ void Graphics::Quit() {
 	Scene::Pop();
 }
 
-void Graphics::Update() {
-	BitmapRef disp = DisplayUi->GetDisplaySurface();
+void Graphics::Update() {	
 	fps_overlay->SetDrawFps(DisplayUi->RenderFps());
 
 	//Update Graphics:
