@@ -30,7 +30,7 @@
 #include "drawable_mgr.h"
 #include "baseui.h"
 #include "game_clock.h"
-#include "transform.h";
+#include "transform.h"
 
 using namespace std::chrono_literals;
 
@@ -119,7 +119,8 @@ void Graphics::Draw(Bitmap& dst) {
 		dst.Clear();
 	}
 	LocalDraw(dst, min_z, max_z);
-	Transform xform = Transform::Scale(2, 2);
+	Output::Debug("Draw");
+	Transform xform = Transform::Scale(0.5, 0.5);
 	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
