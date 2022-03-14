@@ -578,6 +578,7 @@ public:
 
 	ImageOpacity ComputeImageOpacity() const;
 	ImageOpacity ComputeImageOpacity(Rect rect) const;
+	PixmanImagePtr bitmap;
 
 protected:
 	DynamicFormat format;
@@ -589,7 +590,7 @@ protected:
 	std::string filename;
 
 	/** Bitmap data. */
-	PixmanImagePtr bitmap;
+	//PixmanImagePtr bitmap;
 	pixman_format_code_t pixman_format;
 
 	void Init(int width, int height, void* data, int pitch = 0, bool destroy = true);
