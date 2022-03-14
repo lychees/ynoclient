@@ -180,11 +180,11 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dstt.BlitFast(x, y, *src, rect, 255);
-		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
+		//dstt.BlitFast(x, y, *src, rect, 255);
+		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
 	} else {
-		dstt.Blit(x, y, *src, rect, 255);
-		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
+		//dstt.Blit(x, y, *src, rect, 255);
+		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
 	}
 }
 
