@@ -364,9 +364,8 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	}
 
 
-	Transform xform = Transform::Scale(2, 2);
-    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
-	//dst.Blit2x();
+	//Transform xform = Transform::Scale(2, 2);
+    //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
@@ -692,6 +691,8 @@ void TilemapSubLayer::Draw(Bitmap& dst) {
 	}
 
 	tilemap->Draw(dst, GetZ());
+	Transform xform = Transform::Scale(2, 2);
+    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
 void TilemapLayer::SetTone(Tone tone) {
