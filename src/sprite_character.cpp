@@ -74,8 +74,8 @@ void Sprite_Character::Update() {
 	SetY(character->GetScreenY(y_shift));
 	// y_shift because Z is calculated via the screen Y position
 	SetZ(character->GetScreenZ(y_shift));
-	SetZoomX(2);
-	SetZoomY(2);
+	// SetZoomX(1);
+	// SetZoomY(1);
 
 	int bush_split = 4 - character->GetBushDepth();
 	SetBushDepth(bush_split > 3 ? 0 : GetHeight() / bush_split);
