@@ -364,7 +364,7 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	}
 
 
-	Transform xform = Transform::Scale(0.9, 0.9);
+	Transform xform = Transform::Scale(0.5, 0.5);
     pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 	//dst.Blit2x();
 }
