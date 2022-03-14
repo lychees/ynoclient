@@ -181,10 +181,10 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
 		//dstt.BlitFast(x, y, *src, rect, 255);
-		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
+		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
 		//dstt.Blit(x, y, *src, rect, 255);
-		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.7, 0.7, 1);
+		dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 }
 
