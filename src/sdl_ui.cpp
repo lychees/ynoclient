@@ -326,6 +326,10 @@ bool SdlUi::RefreshDisplayMode() {
 											  current_display_mode.height,
 											  false,
 											  current_display_mode.bpp);
+		map_surface = Bitmap::Create(current_display_mode.width,
+											  current_display_mode.height,
+											  false,
+											  current_display_mode.bpp);
 
 		if (!main_surface)
 			return false;
@@ -334,6 +338,8 @@ bool SdlUi::RefreshDisplayMode() {
 		void *pixels = (uint8_t*) sdl_surface->pixels;
 		// Drawing surface will be the window itself
 		main_surface = Bitmap::Create(
+			pixels, sdl_surface->w, sdl_surface->h, sdl_surface->pitch, format);
+		map_surface = Bitmap::Create(
 			pixels, sdl_surface->w, sdl_surface->h, sdl_surface->pitch, format);
 	}
 

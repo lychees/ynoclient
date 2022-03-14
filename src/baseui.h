@@ -151,6 +151,7 @@ public:
 
 	BitmapRef const& GetDisplaySurface() const;
 	BitmapRef& GetDisplaySurface();
+	BitmapRef& GetMapSurface();
 
 	typedef std::bitset<Input::Keys::KEYS_COUNT> KeyStatus;
 
@@ -212,6 +213,7 @@ protected:
 
 	/** Surface used for zoom. */
 	BitmapRef main_surface;
+	BitmapRef map_surface;
 
 	/** Mouse position on screen relative to the window. */
 	Point mouse_pos;
@@ -279,6 +281,10 @@ inline BitmapRef const& BaseUi::GetDisplaySurface() const {
 
 inline BitmapRef& BaseUi::GetDisplaySurface() {
 	return main_surface;
+}
+
+inline BitmapRef& BaseUi::GetMapSurface() {
+	return map_surface;
 }
 
 inline long BaseUi::GetWidth() const {

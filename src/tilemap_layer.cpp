@@ -29,6 +29,9 @@
 #include "game_system.h"
 #include "drawable_mgr.h"
 #include "baseui.h"
+#include "transform.h"
+
+const double ZOOM = 1.25;
 
 // Blocks subtiles IDs
 // Mess with this code and you will die in 3 days...
@@ -163,6 +166,8 @@ void TilemapLayer::DrawTile(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, 
 	}
 }
 
+
+
 void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, int x, int y, int row, int col, uint32_t tone_hash, ImageOpacity op, bool allow_fast_blit) {
 
 	auto rect = Rect{ col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE };
@@ -177,12 +182,21 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
+	//Transform xform = Transform::Scale(ZOOM, ZOOM);
+	//pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
+
+	//auto& dstt = *DisplayUi->GetDisplaySurface();
+	auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dst.BlitFast(x, y, *src, rect, 255);
+		dstt.BlitFast(x, y, *src, rect, 255);
+		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
-		dst.Blit(x, y, *src, rect, 255);
+		dstt.Blit(x, y, *src, rect, 255);
+		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
+
+	//pixman_image_set_transform(src->bitmap.get(), nullptr);
 }
 
 static uint32_t MakeFTileHash(int id) {
@@ -206,6 +220,10 @@ static uint32_t MakeAbTileHash(int id, int anim_step) {
 }
 
 void TilemapLayer::Draw(Bitmap& dst, int z_order) {
+
+	auto &src = *DisplayUi->GetMapSurface();
+
+
 	// Get the number of tiles that can be displayed on window
 	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
 	int tiles_y = (int)ceil(SCREEN_TARGET_HEIGHT / (float)TILE_SIZE);
@@ -266,9 +284,10 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				map_x < 0 || map_x >= width ||
 				map_y < 0 || map_y >= height;
 
+			/*
 			if (out_of_bounds) {
 				continue;
-			}
+			}*/
 
 			// Get the tile data
 			TileData &tile = GetDataCache(map_x, map_y);
@@ -354,9 +373,18 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 						DrawTile(dst, *chipset, *chipset_effect, map_draw_x, map_draw_y, row, col, tone_hash);
 					}
 				}
+
 			}
 		}
 	}
+
+
+	//Transform xform = Transform::Scale(2, 2);
+    //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+
+
+	//auto &dst = *DisplayUi->GetDisplaySurface();
+
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
@@ -680,8 +708,19 @@ void TilemapSubLayer::Draw(Bitmap& dst) {
 	if (!tilemap->GetChipset()) {
 		return;
 	}
-
+	auto &src = *DisplayUi->GetMapSurface();
+	src.Clear();
 	tilemap->Draw(dst, GetZ());
+
+	Transform xform = Transform::Scale(ZOOM, ZOOM);
+	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	dst.Blit(0,0,src,src.GetRect(),255);
+
+	// Tilemap Scale
+	// Transform xform = Transform::Scale(1, 2);
+    // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	// xform = Transform::Scale(1, 2);
+    // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
 void TilemapLayer::SetTone(Tone tone) {

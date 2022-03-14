@@ -30,6 +30,7 @@
 #include "drawable_mgr.h"
 #include "baseui.h"
 #include "game_clock.h"
+#include "transform.h"
 
 using namespace std::chrono_literals;
 
@@ -63,7 +64,7 @@ void Graphics::Quit() {
 }
 
 void Graphics::Update() {
-	BitmapRef disp = DisplayUi->GetDisplaySurface();
+	// BitmapRef disp = DisplayUi->GetDisplaySurface();
 	fps_overlay->SetDrawFps(DisplayUi->RenderFps());
 
 	//Update Graphics:
@@ -117,7 +118,18 @@ void Graphics::Draw(Bitmap& dst) {
 		min_z = transition.GetZ() + 1;
 		dst.Clear();
 	}
+
+
+
+
 	LocalDraw(dst, min_z, max_z);
+	// Output::Debug("Draw");
+
+	//Transform xform = Transform::Scale(0.5, 0.5);
+	//pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	// ?
+
+
 }
 
 void Graphics::LocalDraw(Bitmap& dst, int min_z, int max_z) {

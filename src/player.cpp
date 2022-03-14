@@ -89,6 +89,7 @@
 #include "baseui.h"
 #include "game_clock.h"
 #include "chat_multiplayer.h"
+#include "transform.h"
 
 #ifndef EMSCRIPTEN
 // This is not used on Emscripten.
@@ -407,8 +408,34 @@ void Player::Update(bool update_scene) {
 
 void Player::Draw() {
 	Graphics::Update();
+
+    //auto &dstt = *DisplayUi->GetDisplaySurface();
+	//Transform xform = Transform::Scale(1, 2);
+	//pixman_image_set_transform(dstt.bitmap.get(), &xform.matrix);
+
+
+	//Transform xform = Transform::Scale(1, 2);
+	//pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	// &&1
+
+		/*
+void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity const& opacity, Bitmap::BlendMode blend_mode) {
+	if (opacity.IsTransparent()) {
+		return;
+	}*/
+
+
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
+
+	/*auto &src = *DisplayUi->GetMapSurface();
+	auto &dst = *DisplayUi->GetDisplaySurface();
+	Transform xform = Transform::Scale(2, 2);
+	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	dst.Blit(0,0,src,src.GetRect(),255);*/
+
 	DisplayUi->UpdateDisplay();
+
+
 }
 
 void Player::IncFrame() {

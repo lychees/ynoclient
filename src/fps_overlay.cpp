@@ -24,6 +24,7 @@
 #include "input.h"
 #include "font.h"
 #include "drawable_mgr.h"
+#include "transform.h"
 
 using namespace std::chrono_literals;
 
@@ -81,7 +82,11 @@ void FpsOverlay::Draw(Bitmap& dst) {
 			fps_dirty = false;
 		}
 
+		Transform xform = Transform::Scale(2, 2);
+		pixman_image_set_transform(fps_bitmap->bitmap.get(), &xform.matrix);
 		dst.Blit(1, 2, *fps_bitmap, fps_rect, 255);
+
+
 	}
 
 	// Always drawn when speedup is on independent of FPS

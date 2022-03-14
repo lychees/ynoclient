@@ -70,10 +70,12 @@ void Sprite_Character::Update() {
 	SetOpacity(character->GetOpacity());
 	SetVisible(character->IsVisible());
 
-	SetX(character->GetScreenX(x_shift));
-	SetY(character->GetScreenY(y_shift));
+	SetX( int(character->GetScreenX(x_shift) / 1.25 ) );
+	SetY( int(character->GetScreenY(y_shift) / 1.25 ) );
 	// y_shift because Z is calculated via the screen Y position
-	SetZ(character->GetScreenZ(y_shift));
+	SetZ( int(character->GetScreenZ(y_shift) / 1.25)  );
+	// SetZoomX(1);
+	// SetZoomY(1);
 
 	int bush_split = 4 - character->GetBushDepth();
 	SetBushDepth(bush_split > 3 ? 0 : GetHeight() / bush_split);
