@@ -151,6 +151,7 @@ public:
 
 	BitmapRef const& GetDisplaySurface() const;
 	BitmapRef& GetDisplaySurface();
+	BitmapRef& GetMapSurface();
 
 	typedef std::bitset<Input::Keys::KEYS_COUNT> KeyStatus;
 
