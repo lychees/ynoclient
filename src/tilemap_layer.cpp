@@ -29,6 +29,7 @@
 #include "game_system.h"
 #include "drawable_mgr.h"
 #include "baseui.h"
+#include "transform.h"
 
 // Blocks subtiles IDs
 // Mess with this code and you will die in 3 days...
@@ -363,8 +364,9 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	}
 
 
-	Transform xform = Transform::Scale(0.9, 0.9);
-    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	//Transform xform = Transform::Scale(0.9, 0.9);
+    //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	dst.Blit2x();
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
