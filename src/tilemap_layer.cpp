@@ -177,11 +177,12 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
+	auto dstt = *DisplayUi->GetDisplaySurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dst.BlitFast(x, y, *src, rect, 255);
+		dstt.BlitFast(x, y, *src, rect, 255);
 	} else {
-		dst.Blit(x, y, *src, rect, 255);
+		dstt.Blit(x, y, *src, rect, 255);
 	}
 }
 
@@ -206,8 +207,6 @@ static uint32_t MakeAbTileHash(int id, int anim_step) {
 }
 
 void TilemapLayer::Draw(Bitmap& dst, int z_order) {
-
-	dst = *DisplayUi->GetDisplaySurface();
 
 	// Get the number of tiles that can be displayed on window
 	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
