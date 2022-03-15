@@ -31,6 +31,8 @@
 #include "baseui.h"
 #include "transform.h"
 
+const double ZOOM = 1.25;
+
 // Blocks subtiles IDs
 // Mess with this code and you will die in 3 days...
 // [tile-id][row][col]
@@ -164,9 +166,11 @@ void TilemapLayer::DrawTile(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, 
 	}
 }
 
+
+
 void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, int x, int y, int row, int col, uint32_t tone_hash, ImageOpacity op, bool allow_fast_blit) {
 
-	auto rect = Rect{ col * TILE_SIZE/2, row * TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2 };
+	auto rect = Rect{ col * TILE_SIZE / ZOOM, row * TILE_SIZE / ZOOM, TILE_SIZE / ZOOM, TILE_SIZE / ZOOM };
 
 	auto* src = &tileset;
 
@@ -178,7 +182,7 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
-	Transform xform = Transform::Scale(2, 2);
+	Transform xform = Transform::Scale(ZOOM, ZOOM);
 	pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
 
 	auto& dstt = *DisplayUi->GetDisplaySurface();
@@ -192,7 +196,7 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 
-	// pixman_image_set_transform(src->bitmap.get(), nullptr);
+	 pixman_image_set_transform(src->bitmap.get(), nullptr);
 }
 
 static uint32_t MakeFTileHash(int id) {
@@ -277,9 +281,10 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				map_x < 0 || map_x >= width ||
 				map_y < 0 || map_y >= height;
 
+			/*
 			if (out_of_bounds) {
 				continue;
-			}
+			}*/
 
 			// Get the tile data
 			TileData &tile = GetDataCache(map_x, map_y);
