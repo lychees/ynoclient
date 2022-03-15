@@ -119,11 +119,14 @@ void Graphics::Draw(Bitmap& dst) {
 		dst.Clear();
 	}
 
-	Transform xform = Transform::Scale(2, 2);
-	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+
 
 	LocalDraw(dst, min_z, max_z);
 	// Output::Debug("Draw");
+
+	Transform xform = Transform::Scale(2, 2);
+	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	// ?
 
 }
 
