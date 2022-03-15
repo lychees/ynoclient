@@ -170,7 +170,7 @@ void TilemapLayer::DrawTile(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, 
 
 void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, int x, int y, int row, int col, uint32_t tone_hash, ImageOpacity op, bool allow_fast_blit) {
 
-	auto rect = Rect{ col * TILE_SIZE / ZOOM, row * TILE_SIZE / ZOOM, TILE_SIZE / ZOOM, TILE_SIZE / ZOOM };
+	auto rect = Rect{ int(col * TILE_SIZE / ZOOM), int(row * TILE_SIZE / ZOOM), int(TILE_SIZE / ZOOM), int(TILE_SIZE / ZOOM) };
 
 	auto* src = &tileset;
 
@@ -189,10 +189,10 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	//auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dstt.BlitFast(x/2, y/2, *src, rect, 255);
+		dstt.BlitFast(int(x/ZOOM), int(y/ZOOM), *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
-		dstt.Blit(x/2, y/2, *src, rect, 255);
+		dstt.Blit(int(x/ZOOM), int(y/ZOOM), *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 
