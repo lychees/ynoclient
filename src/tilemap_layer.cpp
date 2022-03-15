@@ -170,7 +170,7 @@ void TilemapLayer::DrawTile(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, 
 
 void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, int x, int y, int row, int col, uint32_t tone_hash, ImageOpacity op, bool allow_fast_blit) {
 
-	auto rect = Rect{ int(col * TILE_SIZE / ZOOM), int(row * TILE_SIZE / ZOOM), int(TILE_SIZE / ZOOM), int(TILE_SIZE / ZOOM) };
+	auto rect = Rect{ col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE };
 
 	auto* src = &tileset;
 
@@ -182,21 +182,21 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
-	Transform xform = Transform::Scale(ZOOM, ZOOM);
-	pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
+	//Transform xform = Transform::Scale(ZOOM, ZOOM);
+	//pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
 
-	auto& dstt = *DisplayUi->GetDisplaySurface();
-	//auto& dstt = *DisplayUi->GetMapSurface();
+	//auto& dstt = *DisplayUi->GetDisplaySurface();
+	auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dstt.BlitFast(int(x/ZOOM), int(y/ZOOM), *src, rect, 255);
+		dstt.BlitFast(x, y, *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
-		dstt.Blit(int(x/ZOOM), int(y/ZOOM), *src, rect, 255);
+		dstt.Blit(x, y, *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 
-	 pixman_image_set_transform(src->bitmap.get(), nullptr);
+	//pixman_image_set_transform(src->bitmap.get(), nullptr);
 }
 
 static uint32_t MakeFTileHash(int id) {
@@ -377,6 +377,12 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 
 	//Transform xform = Transform::Scale(2, 2);
     //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+
+	auto &src = *DisplayUi->GetMapSurface();
+	auto &dst = *DisplayUi->GetDisplaySurface();
+	Transform xform = Transform::Scale(ZOOM, ZOOM);
+	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	dst.Blit(0,0,src,src.GetRect(),255);
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
