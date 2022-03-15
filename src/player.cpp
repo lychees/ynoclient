@@ -409,7 +409,9 @@ void Player::Draw() {
 	Graphics::Update();
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
 	DisplayUi->UpdateDisplay();
+
 	auto &dst = *DisplayUi->GetDisplaySurface();
+	Transform xform = Transform::Scale(0.5, 0.5);
 	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 		//dst.Blit(1, 2, *fps_bitmap, fps_rect, 255);
 }
