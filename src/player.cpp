@@ -427,11 +427,11 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
 
-	auto &src = *DisplayUi->GetMapSurface();
+	/*auto &src = *DisplayUi->GetMapSurface();
 	auto &dst = *DisplayUi->GetDisplaySurface();
 	Transform xform = Transform::Scale(2, 2);
 	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
-	dst.Blit(0,0,src,src.GetRect(),255);
+	dst.Blit(0,0,src,src.GetRect(),255);*/
 
 	DisplayUi->UpdateDisplay();
 

@@ -166,7 +166,7 @@ void TilemapLayer::DrawTile(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, 
 
 void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tileset, int x, int y, int row, int col, uint32_t tone_hash, ImageOpacity op, bool allow_fast_blit) {
 
-	auto rect = Rect{ col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+	auto rect = Rect{ col * TILE_SIZE/2, row * TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2 };
 
 	auto* src = &tileset;
 
@@ -178,16 +178,21 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
-	//auto& dstt = *DisplayUi->GetDisplaySurface();
+	Transform xform = Transform::Scale(2, 2);
+	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+
+	auto& dstt = *DisplayUi->GetDisplaySurface();
 	auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
-		dstt.BlitFast(x, y, *src, rect, 255);
+		dstt.BlitFast(x/2, y/2, *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	} else {
-		dstt.Blit(x, y, *src, rect, 255);
+		dstt.Blit(x/2, y/2, *src, rect, 255);
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
+
+	pixman_image_set_transform(src.bitmap.get(), nullptr);
 }
 
 static uint32_t MakeFTileHash(int id) {
