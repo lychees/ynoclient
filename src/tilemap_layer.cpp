@@ -690,11 +690,11 @@ void TilemapSubLayer::Draw(Bitmap& dst) {
 		return;
 	}
 
-	Transform xform = Transform::Scale(1, 2);
+	Transform xform = Transform::Scale(2, 1);
     pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 	tilemap->Draw(dst, GetZ());
-	xform = Transform::Scale(1, 2);
-    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	// xform = Transform::Scale(1, 2);
+    // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
 
 void TilemapLayer::SetTone(Tone tone) {
