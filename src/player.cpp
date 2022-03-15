@@ -409,11 +409,6 @@ void Player::Update(bool update_scene) {
 void Player::Draw() {
 	Graphics::Update();
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
-
-	auto &dst = *DisplayUi->GetDisplaySurface();
-	Transform xform = Transform::Scale(0.5, 0.5);
-	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
-
 	DisplayUi->UpdateDisplay();
 }
 
