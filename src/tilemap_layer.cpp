@@ -179,7 +179,7 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	}
 
 	Transform xform = Transform::Scale(2, 2);
-	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
 
 	auto& dstt = *DisplayUi->GetDisplaySurface();
 	auto& dstt = *DisplayUi->GetMapSurface();
@@ -192,7 +192,7 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		//dstt.ZoomOpacityBlit(x, y, 0, 0, *src, rect, 0.5, 0.5, 255);
 	}
 
-	pixman_image_set_transform(src.bitmap.get(), nullptr);
+	pixman_image_set_transform(src->bitmap.get(), nullptr);
 }
 
 static uint32_t MakeFTileHash(int id) {
