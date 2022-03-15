@@ -101,8 +101,8 @@ void Sprite_Picture::Draw(Bitmap& dst) {
 		y -= Main_Data::game_screen->GetShakeOffsetY();
 	}
 
-	SetX(x);
-	SetY(y);
+	SetX(int(x/1.25));
+	SetY(int(y/1.25));
 	SetZoomX(data.current_magnify / 100.0);
 	SetZoomY(data.current_magnify / 100.0);
 
