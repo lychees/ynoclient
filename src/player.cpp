@@ -414,7 +414,7 @@ void Player::Draw() {
 	//pixman_image_set_transform(dstt.bitmap.get(), &xform.matrix);
 
 	auto &src = *DisplayUi->GetMapSurface();
-	auto &dst = *DisplayUi->GetMainSurface();
+	auto &dst = *DisplayUi->GetDisplaySurface();
 	//Transform xform = Transform::Scale(1, 2);
 	//pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
 	// &&1
