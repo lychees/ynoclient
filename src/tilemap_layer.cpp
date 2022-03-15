@@ -222,7 +222,7 @@ static uint32_t MakeAbTileHash(int id, int anim_step) {
 void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 
 	auto &src = *DisplayUi->GetMapSurface();
-	src.Clear();
+
 
 	// Get the number of tiles that can be displayed on window
 	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
@@ -373,9 +373,7 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 						DrawTile(dst, *chipset, *chipset_effect, map_draw_x, map_draw_y, row, col, tone_hash);
 					}
 				}
-				Transform xform = Transform::Scale(ZOOM, ZOOM);
-				pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
-				dst.Blit(0,0,src,src.GetRect(),255);
+
 			}
 		}
 	}
@@ -710,9 +708,14 @@ void TilemapSubLayer::Draw(Bitmap& dst) {
 	if (!tilemap->GetChipset()) {
 		return;
 	}
-
-
+	auto &src = *DisplayUi->GetMapSurface();
+	src.Clear();
 	tilemap->Draw(dst, GetZ());
+
+	Transform xform = Transform::Scale(ZOOM, ZOOM);
+	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+	dst.Blit(0,0,src,src.GetRect(),255);
+
 	// Tilemap Scale
 	// Transform xform = Transform::Scale(1, 2);
     // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
