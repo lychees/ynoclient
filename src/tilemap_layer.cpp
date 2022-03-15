@@ -221,6 +221,9 @@ static uint32_t MakeAbTileHash(int id, int anim_step) {
 
 void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 
+	auto &src = *DisplayUi->GetMapSurface();
+	src.Clear();
+
 	// Get the number of tiles that can be displayed on window
 	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
 	int tiles_y = (int)ceil(SCREEN_TARGET_HEIGHT / (float)TILE_SIZE);
@@ -370,6 +373,9 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 						DrawTile(dst, *chipset, *chipset_effect, map_draw_x, map_draw_y, row, col, tone_hash);
 					}
 				}
+				Transform xform = Transform::Scale(ZOOM, ZOOM);
+				pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
+				dst.Blit(0,0,src,src.GetRect(),255);
 			}
 		}
 	}
@@ -378,11 +384,9 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	//Transform xform = Transform::Scale(2, 2);
     //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 
-	auto &src = *DisplayUi->GetMapSurface();
+
 	//auto &dst = *DisplayUi->GetDisplaySurface();
-	Transform xform = Transform::Scale(ZOOM, ZOOM);
-	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
-	dst.Blit(0,0,src,src.GetRect(),255);
+
 }
 
 TilemapLayer::TileXY TilemapLayer::GetCachedAutotileAB(short ID, short animID) {
