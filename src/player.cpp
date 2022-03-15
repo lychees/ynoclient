@@ -413,8 +413,7 @@ void Player::Draw() {
 	//Transform xform = Transform::Scale(1, 2);
 	//pixman_image_set_transform(dstt.bitmap.get(), &xform.matrix);
 
-	auto &src = *DisplayUi->GetMapSurface();
-	auto &dst = *DisplayUi->GetDisplaySurface();
+
 	//Transform xform = Transform::Scale(1, 2);
 	//pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
 	// &&1
@@ -424,11 +423,13 @@ void Bitmap::Blit(int x, int y, Bitmap const& src, Rect const& src_rect, Opacity
 	if (opacity.IsTransparent()) {
 		return;
 	}*/
-	dst.Blit(0,0,src,src.GetRect(),255);
+
 
 	Graphics::Draw(*DisplayUi->GetDisplaySurface());
 
-
+auto &src = *DisplayUi->GetMapSurface();
+	auto &dst = *DisplayUi->GetDisplaySurface();
+	dst.Blit(0,0,src,src.GetRect(),255);
 
 	DisplayUi->UpdateDisplay();
 
