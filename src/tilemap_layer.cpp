@@ -692,8 +692,9 @@ void TilemapSubLayer::Draw(Bitmap& dst) {
 
 
 	tilemap->Draw(dst, GetZ());
-	Transform xform = Transform::Scale(1, 2);
-    pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
+	// Tilemap Scale
+	// Transform xform = Transform::Scale(1, 2);
+    // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 	// xform = Transform::Scale(1, 2);
     // pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 }
