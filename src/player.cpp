@@ -89,6 +89,7 @@
 #include "baseui.h"
 #include "game_clock.h"
 #include "chat_multiplayer.h"
+#include "transform.h"
 
 #ifndef EMSCRIPTEN
 // This is not used on Emscripten.
