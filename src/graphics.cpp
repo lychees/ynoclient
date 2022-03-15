@@ -124,7 +124,7 @@ void Graphics::Draw(Bitmap& dst) {
 	LocalDraw(dst, min_z, max_z);
 	// Output::Debug("Draw");
 
-	Transform xform = Transform::Scale(2, 2);
+	Transform xform = Transform::Scale(0.5, 0.5);
 	pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 	// ?
 
