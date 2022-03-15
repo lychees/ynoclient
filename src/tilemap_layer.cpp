@@ -379,7 +379,7 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
     //pixman_image_set_transform(dst.bitmap.get(), &xform.matrix);
 
 	auto &src = *DisplayUi->GetMapSurface();
-	auto &dst = *DisplayUi->GetDisplaySurface();
+	//auto &dst = *DisplayUi->GetDisplaySurface();
 	Transform xform = Transform::Scale(ZOOM, ZOOM);
 	pixman_image_set_transform(src.bitmap.get(), &xform.matrix);
 	dst.Blit(0,0,src,src.GetRect(),255);
