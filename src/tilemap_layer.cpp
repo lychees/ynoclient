@@ -182,7 +182,7 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 	pixman_image_set_transform(src->bitmap.get(), &xform.matrix);
 
 	auto& dstt = *DisplayUi->GetDisplaySurface();
-	auto& dstt = *DisplayUi->GetMapSurface();
+	//auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
 		dstt.BlitFast(x/2, y/2, *src, rect, 255);
