@@ -82,9 +82,9 @@ void FpsOverlay::Draw(Bitmap& dst) {
 			fps_dirty = false;
 		}
 
-		Transform xform = Transform::Scale(0.25, 0.25);
-		//pixman_image_set_transform(fps_bitmap->bitmap.get(), &xform.matrix);
-		//dst.Blit(1, 2, *fps_bitmap, fps_rect, 255);
+		Transform xform = Transform::Scale(2, 2);
+		pixman_image_set_transform(fps_bitmap->bitmap.get(), &xform.matrix);
+		dst.Blit(1, 2, *fps_bitmap, fps_rect, 255);
 
 
 	}
