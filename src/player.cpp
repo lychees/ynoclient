@@ -408,11 +408,14 @@ void Player::Update(bool update_scene) {
 
 void Player::Draw() {
 	Graphics::Update();
-	Graphics::Draw(*DisplayUi->GetDisplaySurface());
 
 auto &dstt = *DisplayUi->GetDisplaySurface();
 	Transform xform = Transform::Scale(1, 2);
 	pixman_image_set_transform(dstt.bitmap.get(), &xform.matrix);
+
+	Graphics::Draw(*DisplayUi->GetDisplaySurface());
+
+
 
 	DisplayUi->UpdateDisplay();
 

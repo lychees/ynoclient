@@ -178,7 +178,8 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 		src = &tone_tileset;
 	}
 
-	auto& dstt = *DisplayUi->GetDisplaySurface();
+	//auto& dstt = *DisplayUi->GetDisplaySurface();
+	auto& dstt = *DisplayUi->GetMapSurface();
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
 		dstt.BlitFast(x, y, *src, rect, 255);
