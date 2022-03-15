@@ -120,9 +120,7 @@ void Graphics::Draw(Bitmap& dst) {
 	}
 
 
-	auto &dstt = *DisplayUi->GetDisplaySurface();
-	Transform xform = Transform::Scale(2, 2);
-	pixman_image_set_transform(dstt.bitmap.get(), &xform.matrix);
+
 
 	LocalDraw(dst, min_z, max_z);
 	// Output::Debug("Draw");
