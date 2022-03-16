@@ -22,6 +22,8 @@
 #include "output.h"
 #include "player.h"
 #include "map_data.h"
+#include "game_map.h"
+#include "uminouta/roguelike.h"
 #include "main_data.h"
 #include "bitmap.h"
 #include "compiler.h"
@@ -179,10 +181,17 @@ void TilemapLayer::DrawTileImpl(Bitmap& dst, Bitmap& tileset, Bitmap& tone_tiles
 
 	bool use_fast_blit = fast_blit && allow_fast_blit;
 	if (op == ImageOpacity::Opaque || use_fast_blit) {
+		// if (rand() & 1) dst.BlitFast(x, y, *src, rect, 255);
+		// else dst.BlitFast(x, y, *src, rect, 127);
 		dst.BlitFast(x, y, *src, rect, 255);
 	} else {
+		// if (rand() & 1) dst.Blit(x, y, *src, rect, 255);
+		// else dst.Blit(x, y, *src, rect, 127);
 		dst.Blit(x, y, *src, rect, 255);
 	}
+
+
+
 }
 
 static uint32_t MakeFTileHash(int id) {
@@ -250,14 +259,23 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	const int mod_ox = mod(ox, TILE_SIZE);
 	const int mod_oy = mod(oy, TILE_SIZE);
 
+	// auto &shadow = Roguelike::get_shadow();
+	Roguelike::UpdateFOV();
+
 	for (int y = 0; y < tiles_y; y++) {
 		for (int x = 0; x < tiles_x; x++) {
+
+
+
 
 			// Get the real maps tile coordinates
 			int map_x = div_ox + x;
 			int map_y = div_oy + y;
 			if (loop_h) map_x = mod(map_x, width);
 			if (loop_v) map_y = mod(map_y, height);
+
+
+
 
 			int map_draw_x = x * TILE_SIZE - mod_ox;
 			int map_draw_y = y * TILE_SIZE - mod_oy;
@@ -267,6 +285,23 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				map_y < 0 || map_y >= height;
 
 			if (out_of_bounds) {
+				continue;
+			}
+
+			//int my_x = Main_Data::game_player->GetX();
+			//int my_y = Main_Data::game_player->GetY();
+
+			/*int d = abs(map_x - my_x) + abs(map_y - my_y);
+			if (d >= 10) {
+				continue;
+			}*/
+
+			/*
+			if (shadow.size() >= map_y*width+map_x && shadow[map_y*width+map_x]) {
+				continue;
+			}
+			*/
+			if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
 				continue;
 			}
 

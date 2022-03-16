@@ -17,6 +17,7 @@
 #include "compiler.h"
 #include "game_multiplayer_my_data.h"
 #include "game_map.h"
+#include "uminouta/roguelike.h"
 
 using namespace Game_Multiplayer;
 
@@ -886,6 +887,8 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	// TODO(minakokojima): Only resolve cmd from other player
 	bool from_me = Game_Multiplayer::MyData::username == name.substr(0, name.rfind('#'));
 
+	if (Roguelike::isCmd(msg)) return;
+
 	std::string cmd;
 	cmd = ".fire";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
@@ -923,18 +926,6 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 		auto& ce = Game_Map::GetCommonEvents()[id];
 		Game_Map::GetInterpreter().Push(&ce);
 		Scene::PopUntil(Scene::Map);
-		return;
-	}
-
-	cmd = ".gen";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Game_Map::Gen();
-		return;
-	}
-
-	cmd = ".roll";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Game_Map::Roll();
 		return;
 	}
 

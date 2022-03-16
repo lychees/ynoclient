@@ -54,9 +54,9 @@
 #include "game_multiplayer_main_loop.h"
 #include "game_multiplayer_other_player.h"
 #include "scene_map.h"
-#include "libtcod.h"
 
 namespace {
+
 	lcf::rpg::SaveMapInfo map_info;
 	lcf::rpg::SavePanorama panorama;
 
@@ -1618,262 +1618,8 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 	return AsyncHandler::RequestFile(Game_Map::ConstructMapName(map_id, false));
 }
 
-
-
-namespace Roguelike {
-
-	static const int ROOM_MAX_SIZE = 24;
-	static const int ROOM_MIN_SIZE = 12;
-	static const int dx[4] = {1,0,-1,0};
-	static const int dy[4] = {0,1,0,-1};
-	std::vector<int> A, _A; int w, h;
-	std::vector<std::pair<int, int>> empty_grids;
-
-	void dig(int x1, int y1, int x2, int y2) {
-		if ( x2 < x1 ) std::swap(x1, x2);
-		if ( y2 < y1 ) std::swap(y1, y2);
-		for (int x=x1; x <= x2; ++x) {
-			for (int y=y1; y <= y2; ++y) {
-				A[x+y*w] = 1;
-			}
-		}
-	}
-
-	class BspListener : public ITCODBspCallback {
-	private :
-		int rr; // room number
-		int xx, yy; // center of the last room
-	public :
-		BspListener() : rr(0) {}
-		bool visitNode(TCODBsp *node, void *userData) {
-			if (node->isLeaf()) {
-				int x,y,w,h;
-				// dig a room
-				TCODRandom *rng=TCODRandom::getInstance();
-				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
-				h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
-				x=rng->getInt(node->x+1, node->x+node->w-w-1);
-				y=rng->getInt(node->y+1, node->y+node->h-h-1);
-				dig(x, y, x+w-1, y+h-1);
-
-
-				/*
-				for (int i=h-1;i>=0;--i) {
-					for (int j=0;j<w;++j) {
-						if (Roguelike::_A[i*w+j]) {
-							auto tt = TeleportTarget::eForegroundTeleport;
-							Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-							break;
-						}
-					}
-				}
-				*/
-
-
-				for (int i=0;i<w;++i) {
-					for (int j=0;j<h;++j) {
-						empty_grids.push_back({y+j,x+i});
-					}
-				}
-
-				x += w/2; y += h/2;
-				if (rr) {
-					// dig a corridor from last room
-					dig(xx,yy,x,yy);
-					dig(x,yy,x,y);
-				}
-				xx = x; yy = y; ++rr;
-			}
-			return true;
-		}
-	};
-
-	bool inBound(int x, int y) {
-		return 0 <= x && x < h && 0 <= y && y < w;
-	}
-
-	bool check(int x, int y) {
-		return inBound(x, y) && !_A[x*w + y];
-	}
-
-	void Automatize() {
-
-		_A = A;
-
-		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) {
-
-				int &a = A[i*w+j];
-
-				//if (i < 12 && j <= 50) {
-				if (false) {
-					A[i*w+j] = 4000 + i*50 + j;
-				} else {
-					if (!_A[i*w+j]) {
-						a += 4000 + 1*50;
-
-						int x = i, y = j;
-
-						bool lf = !check(x, y-1);
-						bool up = !check(x-1, y);
-						bool rt = !check(x, y+1);
-						bool dn = !check(x+1, y);
-
-						bool lu = !check(x-1, y-1);
-						bool ru = !check(x-1, y+1);
-						bool rd = !check(x+1, y+1);
-						bool ld = !check(x+1, y-1);
-
-						int cnt = int(lf) + int(up) + int(rt) + int(dn);
-
-						if (cnt == 0) {
-							if (lu) a += 1 << 0;
-							if (ru) a += 1 << 1;
-							if (rd) a += 1 << 2;
-							if (ld) a += 1 << 3;
-						} else if (cnt == 1) {
-							if (lf) {
-								a += (1 << 4) + 0;
-								if (ru) a += 1;
-								if (rd) a += 2;
-							} else if (up) {
-								a += (1 << 4) + 4;
-								if (rd) a += 1;
-								if (ld) a += 2;
-							} else if (rt) {
-								a += (1 << 4) + 8;
-								if (ld) a += 1;
-								if (lu) a += 2;
-							} else { // dn
-								a += (1 << 4) + 12;
-								if (lu) a += 1;
-								if (ru) a += 2;
-							}
-						} else if (cnt == 2) {
-
-							a += (1 << 4) + 16;
-
-							if (lf && rt) {
-								a += 0;
-							} else if (up && dn) {
-								a += 1;
-							} else if (up) {
-								if (lf) {
-									a += 2;
-									if (rd) a += 1;
-								} else { // rt
-									a += 4;
-									if (ld) a += 1;
-								}
-							} else { // dn
-								if (rt) {
-									a += 6;
-									if (lu) a += 1;
-								} else { // lt
-									a += 8;
-									if (ru) a += 1;
-								}
-							}
-						} else if (cnt == 3) {
-
-							a += (1 << 4) + 26;
-
-							if (!dn) {
-								a += 0;
-							} else if (!rt) {
-								a += 1;
-							} else if (!up) {
-								a += 2;
-							} else { // up
-								a += 3;
-							}
-						} else { // cnt == 4
-							a += (1 << 4) + 30;
-						}
-					} else {
-						a = 5000 + 24*2 + 6;
-					}
-
-
-					/*if (!_A[i*w+j]) {
-						A[i*w+j] = 4000 + 1*50;
-						for (int d=0;d<4;++d) {
-							int x = i+dx[d];
-							int y = j+dy[d];
-							if (inBound(x, y) && _A[x*w+y]) {
-								A[i*w+j] += 1<<(d+4);
-							}
-						}
-					} else {
-						A[i*w+j] = 5000 + 24*2 + 6;
-					}*/
-				}
-			}
-		}
-	}
-
-	void AddWall() {
-		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) {
-			}
-		}
-	}
-
-	void Gen() {
-		empty_grids.clear();
-		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
-		TCODBsp bsp(0,0,w,h);
-		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
-    	BspListener listener;
-    	bsp.traverseInvertedLevelOrder(&listener,NULL);
-		Automatize();
-		AddWall();
-	}
-};
-
 void Game_Map::Roll() {
-	auto h = GetHeight();
-	auto w = GetWidth();
-	/*
-	Output::Debug("height x width: {} {}", h, w);
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
-		}
-	} */
-
-	/*
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
-		}
-	}
-	*/
-	Roguelike::Gen();
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			// map->lower_layer[i*w+j] = 5000 + 24*2 + 6; //4000 + 1*50; // Roguelike::A[i*w+j];
-			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
-		}
-	}
-
-	/*for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
-				empty_grids.push_back({j, i});
-			}
-		}
-	}*/
-
-	for (int i=h-1;i>=0;--i) {
-		for (int j=0;j<w;++j) {
-			if (Roguelike::_A[i*w+j]) {
-				auto tt = TeleportTarget::eForegroundTeleport;
-				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-				break;
-			}
-		}
-	}
+	Gen(4000 + 1*50, 5000 + 24*2 + 6);
 
 	// Randomize box position
 	/*
@@ -1891,16 +1637,6 @@ void Game_Map::Roll() {
 		}
 	} */
 
-	for (auto& ev : events) {
-		int id = rand() % Roguelike::empty_grids.size();
-		int xx = Roguelike::empty_grids[id].first;
-		int yy = Roguelike::empty_grids[id].second;
-		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
-
-		ev.SetX(yy); ev.SetY(xx);
-		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
-	}
-
 	/*
 	for (const auto& ev : map->events) {
 		for (int i=0;i<1;++i) {
@@ -1909,41 +1645,46 @@ void Game_Map::Roll() {
 				events.pop_back();
 			} else {
 				auto& t = events.back();
-
-
 				t.SetX(xx);
 				t.SetY(yy);
 				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
-
-
 			}
 		}
 	}
 	*/
 
-	Refresh();
-	GetInterpreter().CommandRefreshTileset();
+	//Refresh();
+	//GetInterpreter().CommandRefreshTileset();
 }
 
-void Game_Map::Gen() {
+void Game_Map::Gen(int c0, int c1) {
+
 	auto h = GetHeight();
 	auto w = GetWidth();
-	Output::Debug("height x width: {} {}", h, w);
+
+	Roguelike::Gen(c0, c1);
+	auto &_A = Roguelike::get__A();
+	auto &A = Roguelike::get_A();
+	auto &empty_grids = Roguelike::get_empty_grids();
 
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
+			map->lower_layer[i*w+j] = A[i*w+j];
 		}
 	}
 
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
-			// map->lower_layer[i*w+j] = 0;
-		}
+	// Randomize All Map Event
+	for (auto& ev : events) {
+		int id = rand() % empty_grids.size();
+		int xx = empty_grids[id].first;
+		int yy = empty_grids[id].second;
+		empty_grids.erase(empty_grids.begin() + id);
+		ev.SetX(yy); ev.SetY(xx);
+		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
 	}
 
+	Refresh();
 	GetInterpreter().CommandRefreshTileset();
 }
 

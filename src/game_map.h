@@ -35,6 +35,7 @@
 #include <lcf/rpg/savepartylocation.h>
 #include <lcf/rpg/savevehiclelocation.h>
 #include <lcf/rpg/savecommonevent.h>
+#include "uminouta/roguelike.h"
 #include "async_op.h"
 
 class FileRequestAsync;
@@ -609,7 +610,7 @@ namespace Game_Map {
 	bool UpdateMessage(MapUpdateAsyncContext& actx);
 	bool UpdateForegroundEvents(MapUpdateAsyncContext& actx);
 
-	void Gen();
+	void Gen(int c0, int c1);
 	void Roll();
 
 	/**
