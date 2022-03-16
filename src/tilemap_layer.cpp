@@ -258,7 +258,7 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 	const int mod_ox = mod(ox, TILE_SIZE);
 	const int mod_oy = mod(oy, TILE_SIZE);
 
-	auto &shadow = Roguelike::get_shadow();
+	// auto &shadow = Roguelike::get_shadow();
 	Roguelike::UpdateFOV();
 
 	for (int y = 0; y < tiles_y; y++) {
