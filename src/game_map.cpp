@@ -1633,6 +1633,7 @@ namespace Roguelike {
 	std::vector<int> A, _A; int w, h;
 	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
+	std::vector<std::vector<bool>> explored;
 
 	std::vector<bool>& get_shadow() {
 		return shadow;
@@ -1850,21 +1851,14 @@ namespace Roguelike {
 		shadow.clear();
 		shadow.resize(w*h);
 
+		delete tcod_map;
 		tcod_map = new TCODMap(h, w);
-		/*
-		for (int x=x1; x <= x2; ++x) {
-			for (int y=y1; y <= y2; ++y) {
-				A[x+y*w] = 1;
-			}
-		}
-		*/
 
-	/*
-					for (int i=0;i<w;++i) {
-					for (int j=0;j<h;++j) {
-						empty_grids.push_back({y+j,x+i});
-					}
-				}*/
+		explored.clear();
+		explored.resize(h);
+		for (int i=0;i<h;++i) {
+			explored[i].resize(w);
+		}
 
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
@@ -1874,8 +1868,6 @@ namespace Roguelike {
 				} else {
 					tcod_map->setProperties(i,j,false,false);
 				}
-				//map._A[i*w+j]
-				 //= _A[i*w+j];
 			}
 		}
 	}
@@ -1886,8 +1878,13 @@ namespace Roguelike {
 		tcod_map->computeFov(my_x,my_y,20);
 	}
 
-	bool inFOV(int x, int y) {
-		return tcod_map->isInFov(y,x);
+	bool isInFOV(int x, int y) {
+		bool z = tcod_map->isInFov(y,x);
+		if (z) explored[y][x] = true;
+		return z;
+	}
+	bool isExplored(int x, int y) {
+		return explored[y][x];
 	}
 };
 

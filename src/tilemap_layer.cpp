@@ -300,10 +300,9 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				continue;
 			}
 			*/
-			if (!Roguelike::get_A().empty() && !Roguelike::inFOV(map_x, map_y)) {
+			if (!Roguelike::get_A().empty() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
 				continue;
 			}
-
 
 			// Get the tile data
 			TileData &tile = GetDataCache(map_x, map_y);
