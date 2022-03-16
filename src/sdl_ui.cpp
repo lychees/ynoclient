@@ -322,13 +322,13 @@ bool SdlUi::RefreshDisplayMode() {
 
 	if (zoom_available && current_display_mode.zoom == 2) {
 		// Create a non zoomed surface as drawing surface
-		main_surface = Bitmap::Create(current_display_mode.width * 2,
-											  current_display_mode.height * 2,
+		main_surface = Bitmap::Create(current_display_mode.width * 4,
+											  current_display_mode.height * 4,
 											  false,
 											  current_display_mode.bpp);
 
-		map_surface = Bitmap::Create(current_display_mode.width * 2,
-											  current_display_mode.height * 2,
+		map_surface = Bitmap::Create(current_display_mode.width * 4,
+											  current_display_mode.height * 4,
 											  false,
 											  current_display_mode.bpp);
 
@@ -339,9 +339,9 @@ bool SdlUi::RefreshDisplayMode() {
 		void *pixels = (uint8_t*) sdl_surface->pixels;
 		// Drawing surface will be the window itself
 		main_surface = Bitmap::Create(
-			pixels, sdl_surface->w, sdl_surface->h, sdl_surface->pitch, format);
+			pixels, sdl_surface->w * 2, sdl_surface->h * 2, sdl_surface->pitch, format);
 		map_surface = Bitmap::Create(
-			pixels, sdl_surface->w, sdl_surface->h, sdl_surface->pitch, format);
+			pixels, sdl_surface->w * 2, sdl_surface->h * 2, sdl_surface->pitch, format);
 	}
 
 	return true;
