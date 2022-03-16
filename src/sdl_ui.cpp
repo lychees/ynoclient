@@ -326,6 +326,7 @@ bool SdlUi::RefreshDisplayMode() {
 											  current_display_mode.height,
 											  false,
 											  current_display_mode.bpp);
+
 		map_surface = Bitmap::Create(current_display_mode.width * 2,
 											  current_display_mode.height * 2,
 											  false,
