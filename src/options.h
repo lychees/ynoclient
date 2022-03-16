@@ -25,7 +25,8 @@
 #define SCREEN_TARGET_WIDTH 320
 
 /** Targeted screen default height. */
-#define SCREEN_TARGET_HEIGHT 240
+// #define SCREEN_TARGET_HEIGHT 240
+#define SCREEN_TARGET_HEIGHT 480
 
 /** ingame chat */
 #if USE_SDL==2
