@@ -72,6 +72,14 @@ class MapUpdateAsyncContext {
 		bool message = false;
 };
 
+namespace Roguelike {
+	std::vector<bool>& get_shadow();
+	std::vector<int>& get__A();
+	std::vector<int>& get_A();
+	void UpdateFOV();
+	bool inFOV(int x, int y);
+}
+
 /**
  * Game_Map namespace
  */

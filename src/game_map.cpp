@@ -57,6 +57,8 @@
 #include "libtcod.h"
 
 namespace {
+	TCODMap *tcod_map;
+
 	lcf::rpg::SaveMapInfo map_info;
 	lcf::rpg::SavePanorama panorama;
 
@@ -1622,12 +1624,27 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 
 namespace Roguelike {
 
+	//TCODMap tcod_map;
+
 	static const int ROOM_MAX_SIZE = 24;
 	static const int ROOM_MIN_SIZE = 12;
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h;
+	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
+
+	std::vector<bool>& get_shadow() {
+		return shadow;
+	}
+
+	std::vector<int>& get_A() {
+		return A;
+	}
+
+	std::vector<int>& get__A() {
+		return _A;
+	}
 
 	void dig(int x1, int y1, int x2, int y2) {
 		if ( x2 < x1 ) std::swap(x1, x2);
@@ -1826,8 +1843,51 @@ namespace Roguelike {
 		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
+
 		Automatize();
 		AddWall();
+
+		shadow.clear();
+		shadow.resize(w*h);
+
+		tcod_map = new TCODMap(h, w);
+		/*
+		for (int x=x1; x <= x2; ++x) {
+			for (int y=y1; y <= y2; ++y) {
+				A[x+y*w] = 1;
+			}
+		}
+		*/
+
+	/*
+					for (int i=0;i<w;++i) {
+					for (int j=0;j<h;++j) {
+						empty_grids.push_back({y+j,x+i});
+					}
+				}*/
+
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				//shadow[i*w+j] = bool(rand() & 1);
+				if (_A[i*w+j]) {
+					tcod_map->setProperties(i,j,true,true);
+				} else {
+					tcod_map->setProperties(i,j,false,false);
+				}
+				//map._A[i*w+j]
+				 //= _A[i*w+j];
+			}
+		}
+	}
+
+	void UpdateFOV() {
+		int my_y = Main_Data::game_player->GetX();
+		int my_x = Main_Data::game_player->GetY();
+		tcod_map->computeFov(my_x,my_y,20);
+	}
+
+	bool inFOV(int x, int y) {
+		return tcod_map->isInFov(y,x);
 	}
 };
 
