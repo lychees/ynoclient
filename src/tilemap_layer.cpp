@@ -225,8 +225,8 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 
 
 	// Get the number of tiles that can be displayed on window
-	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE);
-	int tiles_y = (int)ceil(SCREEN_TARGET_HEIGHT / (float)TILE_SIZE);
+	int tiles_x = (int)ceil(SCREEN_TARGET_WIDTH / (float)TILE_SIZE) * 2;
+	int tiles_y = (int)ceil(SCREEN_TARGET_HEIGHT / (float)TILE_SIZE) * 2;
 
 	// If ox or oy are not equal to the tile size draw the next tile too
 	// to prevent black (empty) tiles at the borders
