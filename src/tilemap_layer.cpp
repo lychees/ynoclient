@@ -284,10 +284,10 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				map_x < 0 || map_x >= width ||
 				map_y < 0 || map_y >= height;
 
-			/*
+
 			if (out_of_bounds) {
 				continue;
-			}*/
+			}
 
 			// Get the tile data
 			TileData &tile = GetDataCache(map_x, map_y);
