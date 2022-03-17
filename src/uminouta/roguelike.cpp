@@ -16,7 +16,7 @@ namespace Roguelike {
 	std::vector<std::vector<bool>> explored;
 	bool fov_switch = false;
 
-	bool isFOV() {
+	bool isFOVon() {
 		return fov_switch;
 	}
 	void turnon_FOV() {

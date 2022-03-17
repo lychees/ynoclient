@@ -9,7 +9,7 @@ namespace Roguelike {
 	std::vector<std::pair<int, int>>& get_empty_grids();
 	void UpdateFOV();
 
-	bool isFOV();
+	bool isFOVon();
 	void turnon_FOV();
 	void turnoff_FOV();
 

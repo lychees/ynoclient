@@ -17,6 +17,7 @@
 #include "compiler.h"
 #include "game_multiplayer_my_data.h"
 #include "game_map.h"
+#include "uminouta/roguelike.h"
 
 using namespace Game_Multiplayer;
 
@@ -923,6 +924,18 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 		auto& ce = Game_Map::GetCommonEvents()[id];
 		Game_Map::GetInterpreter().Push(&ce);
 		Scene::PopUntil(Scene::Map);
+		return;
+	}
+
+	cmd = ".turnon_FOV";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		Roguelike::turnon_FOV(c0, c1);
+		return;
+	}
+
+	cmd = ".turnoff_FOV";
+	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+		Roguelike::turnoff_FOV(c0, c1);
 		return;
 	}
 

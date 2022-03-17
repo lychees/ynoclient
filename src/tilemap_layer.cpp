@@ -301,7 +301,7 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				continue;
 			}
 			*/
-			if (!Roguelike::get_A().empty() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
+			if (!Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
 				continue;
 			}
 
