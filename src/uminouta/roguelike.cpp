@@ -29,6 +29,7 @@ namespace Roguelike {
 	}
 
 	void teleport_to(std::string who, int xx, int yy) {
+		Output::Debug("teleport_to {} {} {}", who, xx, yy);
 
 		if (who == "player") {
 			auto tt = TeleportTarget::eForegroundTeleport;
@@ -341,8 +342,6 @@ namespace Roguelike {
 			Game_Map::Roll();
 			return true;
 		}
-
-		Output::Debug("Teleport To {} {}", lu_x, lu_y);
 
 		cmd = ".teleport_to_lu";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
