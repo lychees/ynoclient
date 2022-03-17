@@ -80,118 +80,95 @@ namespace Roguelike {
 		return inBound(x, y) && !_A[x*w + y];
 	}
 
+	int autotile_offset(int x, int y) {
+		int a = 0, x = i, y = j;
+		bool lf = !check(x, y-1);
+		bool up = !check(x-1, y);
+		bool rt = !check(x, y+1);
+		bool dn = !check(x+1, y);
+
+		bool lu = !check(x-1, y-1);
+		bool ru = !check(x-1, y+1);
+		bool rd = !check(x+1, y+1);
+		bool ld = !check(x+1, y-1);
+
+		int cnt = int(lf) + int(up) + int(rt) + int(dn);
+
+		if (cnt == 0) {
+			if (lu) a += 1 << 0;
+			if (ru) a += 1 << 1;
+			if (rd) a += 1 << 2;
+			if (ld) a += 1 << 3;
+		} else if (cnt == 1) {
+			if (lf) {
+				a += (1 << 4) + 0;
+				if (ru) a += 1;
+				if (rd) a += 2;
+			} else if (up) {
+				a += (1 << 4) + 4;
+				if (rd) a += 1;
+				if (ld) a += 2;
+			} else if (rt) {
+				a += (1 << 4) + 8;
+				if (ld) a += 1;
+				if (lu) a += 2;
+			} else { // dn
+				a += (1 << 4) + 12;
+				if (lu) a += 1;
+				if (ru) a += 2;
+			}
+		} else if (cnt == 2) {
+
+			a += (1 << 4) + 16;
+
+			if (lf && rt) {
+				a += 0;
+			} else if (up && dn) {
+				a += 1;
+			} else if (up) {
+				if (lf) {
+					a += 2;
+					if (rd) a += 1;
+				} else { // rt
+					a += 4;
+					if (ld) a += 1;
+				}
+			} else { // dn
+				if (rt) {
+					a += 6;
+					if (lu) a += 1;
+				} else { // lt
+					a += 8;
+					if (ru) a += 1;
+				}
+			}
+		} else if (cnt == 3) {
+
+			a += (1 << 4) + 26;
+
+			if (!dn) {
+				a += 0;
+			} else if (!rt) {
+				a += 1;
+			} else if (!up) {
+				a += 2;
+			} else { // up
+				a += 3;
+			}
+		} else { // cnt == 4
+			a += (1 << 4) + 30;
+		}
+		return a;
+	}
+
 	void Automatize() {
 
 		_A = A;
 
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
-
-				int &a = A[i*w+j];
-
-				//if (i < 12 && j <= 50) {
-				if (false) {
-					A[i*w+j] = 4000 + i*50 + j;
-				} else {
-					if (!_A[i*w+j]) {
-						a = c0;
-
-						int x = i, y = j;
-
-						bool lf = !check(x, y-1);
-						bool up = !check(x-1, y);
-						bool rt = !check(x, y+1);
-						bool dn = !check(x+1, y);
-
-						bool lu = !check(x-1, y-1);
-						bool ru = !check(x-1, y+1);
-						bool rd = !check(x+1, y+1);
-						bool ld = !check(x+1, y-1);
-
-						int cnt = int(lf) + int(up) + int(rt) + int(dn);
-
-						if (cnt == 0) {
-							if (lu) a += 1 << 0;
-							if (ru) a += 1 << 1;
-							if (rd) a += 1 << 2;
-							if (ld) a += 1 << 3;
-						} else if (cnt == 1) {
-							if (lf) {
-								a += (1 << 4) + 0;
-								if (ru) a += 1;
-								if (rd) a += 2;
-							} else if (up) {
-								a += (1 << 4) + 4;
-								if (rd) a += 1;
-								if (ld) a += 2;
-							} else if (rt) {
-								a += (1 << 4) + 8;
-								if (ld) a += 1;
-								if (lu) a += 2;
-							} else { // dn
-								a += (1 << 4) + 12;
-								if (lu) a += 1;
-								if (ru) a += 2;
-							}
-						} else if (cnt == 2) {
-
-							a += (1 << 4) + 16;
-
-							if (lf && rt) {
-								a += 0;
-							} else if (up && dn) {
-								a += 1;
-							} else if (up) {
-								if (lf) {
-									a += 2;
-									if (rd) a += 1;
-								} else { // rt
-									a += 4;
-									if (ld) a += 1;
-								}
-							} else { // dn
-								if (rt) {
-									a += 6;
-									if (lu) a += 1;
-								} else { // lt
-									a += 8;
-									if (ru) a += 1;
-								}
-							}
-						} else if (cnt == 3) {
-
-							a += (1 << 4) + 26;
-
-							if (!dn) {
-								a += 0;
-							} else if (!rt) {
-								a += 1;
-							} else if (!up) {
-								a += 2;
-							} else { // up
-								a += 3;
-							}
-						} else { // cnt == 4
-							a += (1 << 4) + 30;
-						}
-					} else {
-						a = c1; //;
-					}
-
-
-					/*if (!_A[i*w+j]) {
-						A[i*w+j] = 4000 + 1*50;
-						for (int d=0;d<4;++d) {
-							int x = i+dx[d];
-							int y = j+dy[d];
-							if (inBound(x, y) && _A[x*w+y]) {
-								A[i*w+j] += 1<<(d+4);
-							}
-						}
-					} else {
-						A[i*w+j] = 5000 + 24*2 + 6;
-					}*/
-				}
+				int &a = A[i*w+j]; a = _A[i*w+j] ? c1 : c0;
+				if (4000 <= a && a <= 4550) a += autotile_offset(i,j);
 			}
 		}
 	}
