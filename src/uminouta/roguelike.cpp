@@ -14,6 +14,17 @@ namespace Roguelike {
 	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
+	bool fov_switch = false;
+
+	bool isFOV() {
+		return fov_switch;
+	}
+	void turnon_FOV() {
+		fov_switch = on;
+	}
+	void turnoff_FOV() {
+		fov_switch = false;
+	}
 
 	std::vector<std::pair<int, int>>& get_empty_grids() {
 		return empty_grids;
