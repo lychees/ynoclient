@@ -35,6 +35,7 @@
 #include <lcf/rpg/savepartylocation.h>
 #include <lcf/rpg/savevehiclelocation.h>
 #include <lcf/rpg/savecommonevent.h>
+#include "uminouta/roguelike.h"
 #include "async_op.h"
 
 class FileRequestAsync;

@@ -58,7 +58,6 @@
 #include "uminouta/roguelike.h"
 
 namespace {
-	TCODMap *tcod_map;
 
 	lcf::rpg::SaveMapInfo map_info;
 	lcf::rpg::SavePanorama panorama;
