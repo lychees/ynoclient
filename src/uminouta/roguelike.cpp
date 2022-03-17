@@ -13,8 +13,8 @@ namespace Roguelike {
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
 
-	std::vector<bool>& get_shadow() {
-		return shadow;
+	std::vector<std::pair<int, int>>& get_empty_grids() {
+		return empty_grids;
 	}
 
 	std::vector<int>& get_A() {

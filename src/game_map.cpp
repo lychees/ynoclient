@@ -1666,15 +1666,19 @@ void Game_Map::Gen(int c0, int c1) {
 	auto w = GetWidth();
 
 	Roguelike::Gen(c0, c1);
+	auto &_A = Roguelike::get__A();
+	auto &A = Roguelike::get_A();
+	auto &empty_grids = Roguelike::get_empty_grids();
+
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
+			map->lower_layer[i*w+j] = A[i*w+j];
 		}
 	}
 
 	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
-			if (Roguelike::_A[i*w+j]) {
+			if (_A[i*w+j]) {
 				auto tt = TeleportTarget::eForegroundTeleport;
 				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
 				break;
@@ -1684,10 +1688,10 @@ void Game_Map::Gen(int c0, int c1) {
 
 	// Randomize All Map Event
 	for (auto& ev : events) {
-		int id = rand() % Roguelike::empty_grids.size();
-		int xx = Roguelike::empty_grids[id].first;
-		int yy = Roguelike::empty_grids[id].second;
-		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
+		int id = rand() % empty_grids.size();
+		int xx = empty_grids[id].first;
+		int yy = empty_grids[id].second;
+		empty_grids.erase(empty_grids.begin() + id);
 		ev.SetX(yy); ev.SetY(xx);
 		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
 	}
