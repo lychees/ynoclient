@@ -44,13 +44,13 @@ namespace Roguelike {
 	void teleport_to_lu(std::string who) {
 		teleport_to(who, lu_x, lu_y);
 	}
-	void teleport_to_ld() {
+	void teleport_to_ld(std::string who) {
 		teleport_to(who, ld_x, ld_y);
 	}
-	void teleport_to_ru() {
+	void teleport_to_ru(std::string who) {
 		teleport_to(who, ru_x, ru_y);
 	}
-	void teleport_to_rd() {
+	void teleport_to_rd(std::string who) {
 		teleport_to(who, rd_x, rd_y);
 	}
 
@@ -320,13 +320,13 @@ namespace Roguelike {
 
 		cmd = ".turnon_FOV";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Roguelike::turnon_FOV();
+			turnon_FOV();
 			return true;
 		}
 
 		cmd = ".turnoff_FOV";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Roguelike::turnoff_FOV();
+			turnoff_FOV();
 			return true;
 		}
 
@@ -343,6 +343,39 @@ namespace Roguelike {
 			Game_Map::Roll();
 			return true;
 		}
+
+		cmd = ".teleport_to_lu";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::istringstream iss(msg);
+			std::string _, who; iss >> _ >> who;
+			teleport_to_lu(who);
+			return true;
+		}
+
+		cmd = ".teleport_to_ru";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::istringstream iss(msg);
+			std::string _, who; iss >> _ >> who;
+			teleport_to_ru(who);
+			return true;
+		}
+
+		cmd = ".teleport_to_ld";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::istringstream iss(msg);
+			std::string _, who; iss >> _ >> who;
+			teleport_to_ld(who);
+			return true;
+		}
+
+		cmd = ".teleport_to_rd";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::istringstream iss(msg);
+			std::string _, who; iss >> _ >> who;
+			teleport_to_rd(who);
+			return true;
+		}
+
 		return false;
 	}
 };
