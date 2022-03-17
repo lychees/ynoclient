@@ -30,7 +30,7 @@ namespace Roguelike {
 
 	void teleport_to(std::string who, int xx, int yy) {
 
-		Output::Debug("Teleport To {} {] {}", who, xx, yy);
+		Output::Debug("Teleport To {} {] {}", who.c_str(), xx, yy);
 
 		if (who == "player") {
 			auto tt = TeleportTarget::eForegroundTeleport;
