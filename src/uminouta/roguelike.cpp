@@ -12,11 +12,11 @@ namespace Roguelike {
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h, c0, c1;
-	int lu_x, lu_y, ld_x, ld_y;
-	int ru_x, ru_y, rd_x, rd_y;
+	int lu_x = 0, lu_y = 0, ld_x = 0, ld_y = 0;
+	int ru_x = 0, ru_y = 0, rd_x = 0, rd_y = 0;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
-	bool fov_switch;
+	bool fov_switch = false;
 
 	bool isFOVon() {
 		return fov_switch;
@@ -316,7 +316,6 @@ namespace Roguelike {
 	}
 
 	bool isCmd(std::string msg) {
-		return false;
 		std::string cmd;
 
 		cmd = ".turnon_FOV";
