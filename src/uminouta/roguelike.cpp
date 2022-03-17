@@ -14,7 +14,7 @@ namespace Roguelike {
 	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
-	bool fov_switch = false;
+	bool fov_switch;
 
 	bool isFOVon() {
 		return fov_switch;
@@ -233,7 +233,7 @@ namespace Roguelike {
 	}
 
 	bool isInFOV(int x, int y) {
-		// return true;
+		return true;
 		bool z = tcod_map->isInFov(y,x);
 		if (z) explored[y][x] = true;
 		return z;
