@@ -244,6 +244,8 @@ namespace Roguelike {
 	}
 
 	bool isCmd(std::string msg) {
+		std::string cmd;
+
 		cmd = ".turnon_FOV";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			Roguelike::turnon_FOV();
