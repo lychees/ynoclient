@@ -33,7 +33,7 @@ namespace Roguelike {
 			auto tt = TeleportTarget::eForegroundTeleport;
 			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
 		} else {
-			for (const auto& ev : Game_Map::GetEvents) {
+			for (auto& ev : Game_Map::GetEvents()) {
 				if (ev.GetName() == who) {
 					ev.SetX(xx); ev.SetY(yy);
 				}
