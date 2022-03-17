@@ -318,7 +318,6 @@ namespace Roguelike {
 	bool isCmd(std::string msg) {
 		std::string cmd;
 
-		/*
 		cmd = ".turnon_FOV";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			turnon_FOV();
@@ -329,7 +328,7 @@ namespace Roguelike {
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			turnoff_FOV();
 			return true;
-		} */
+		}
 
 		cmd = ".gen";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
