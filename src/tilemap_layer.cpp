@@ -23,6 +23,7 @@
 #include "player.h"
 #include "map_data.h"
 #include "game_map.h"
+#include "uminouta/roguelike.h"
 #include "main_data.h"
 #include "bitmap.h"
 #include "compiler.h"
