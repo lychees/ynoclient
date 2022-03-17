@@ -1630,7 +1630,7 @@ namespace Roguelike {
 	static const int ROOM_MIN_SIZE = 12;
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
-	std::vector<int> A, _A; int w, h;
+	std::vector<int> A, _A; int w, h, c0, c1;
 	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
@@ -1674,20 +1674,6 @@ namespace Roguelike {
 				y=rng->getInt(node->y+1, node->y+node->h-h-1);
 				dig(x, y, x+w-1, y+h-1);
 
-
-				/*
-				for (int i=h-1;i>=0;--i) {
-					for (int j=0;j<w;++j) {
-						if (Roguelike::_A[i*w+j]) {
-							auto tt = TeleportTarget::eForegroundTeleport;
-							Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-							break;
-						}
-					}
-				}
-				*/
-
-
 				for (int i=0;i<w;++i) {
 					for (int j=0;j<h;++j) {
 						empty_grids.push_back({y+j,x+i});
@@ -1728,7 +1714,7 @@ namespace Roguelike {
 					A[i*w+j] = 4000 + i*50 + j;
 				} else {
 					if (!_A[i*w+j]) {
-						a += 4000 + 1*50;
+						a += c0;
 
 						int x = i, y = j;
 
@@ -1809,7 +1795,7 @@ namespace Roguelike {
 							a += (1 << 4) + 30;
 						}
 					} else {
-						a = 5000 + 24*2 + 6;
+						a = c1; //;
 					}
 
 
@@ -1837,7 +1823,8 @@ namespace Roguelike {
 		}
 	}
 
-	void Gen() {
+	void Gen(int _c0, int _c1) {
+		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
@@ -1846,7 +1833,7 @@ namespace Roguelike {
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 
 		Automatize();
-		AddWall();
+		// AddWall();
 
 		shadow.clear();
 		shadow.resize(w*h);
@@ -1862,7 +1849,6 @@ namespace Roguelike {
 
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
-				//shadow[i*w+j] = bool(rand() & 1);
 				if (_A[i*w+j]) {
 					tcod_map->setProperties(i,j,true,true);
 				} else {
@@ -1889,48 +1875,7 @@ namespace Roguelike {
 };
 
 void Game_Map::Roll() {
-	auto h = GetHeight();
-	auto w = GetWidth();
-	/*
-	Output::Debug("height x width: {} {}", h, w);
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
-		}
-	} */
-
-	/*
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
-		}
-	}
-	*/
-	Roguelike::Gen();
-	for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			// map->lower_layer[i*w+j] = 5000 + 24*2 + 6; //4000 + 1*50; // Roguelike::A[i*w+j];
-			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
-		}
-	}
-
-	/*for (int i=0;i<h;++i) {
-		for (int j=0;j<w;++j) {
-			if (map->lower_layer[i*w+j] == 5000 + 24*2 + 6) {
-				empty_grids.push_back({j, i});
-			}
-		}
-	}*/
-
-	for (int i=h-1;i>=0;--i) {
-		for (int j=0;j<w;++j) {
-			if (Roguelike::_A[i*w+j]) {
-				auto tt = TeleportTarget::eForegroundTeleport;
-				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-				break;
-			}
-		}
-	}
+	Gen(4000 + 1*50, 5000 + 24*2 + 6);
 
 	// Randomize box position
 	/*
@@ -1948,16 +1893,6 @@ void Game_Map::Roll() {
 		}
 	} */
 
-	for (auto& ev : events) {
-		int id = rand() % Roguelike::empty_grids.size();
-		int xx = Roguelike::empty_grids[id].first;
-		int yy = Roguelike::empty_grids[id].second;
-		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
-
-		ev.SetX(yy); ev.SetY(xx);
-		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
-	}
-
 	/*
 	for (const auto& ev : map->events) {
 		for (int i=0;i<1;++i) {
@@ -1966,41 +1901,52 @@ void Game_Map::Roll() {
 				events.pop_back();
 			} else {
 				auto& t = events.back();
-
-
 				t.SetX(xx);
 				t.SetY(yy);
 				t.SetId(events.size());
 				Output::Debug("map event: {} {} {}", t.GetId(), t.GetX(), t.GetY());
-
-
 			}
 		}
 	}
 	*/
 
-	Refresh();
-	GetInterpreter().CommandRefreshTileset();
+	//Refresh();
+	//GetInterpreter().CommandRefreshTileset();
 }
 
-void Game_Map::Gen() {
+void Game_Map::Gen(int c0, int c1) {
+
 	auto h = GetHeight();
 	auto w = GetWidth();
-	Output::Debug("height x width: {} {}", h, w);
 
+	Roguelike::Gen(c0, c1);
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
-			if (i < 20 && j < 20) Output::Debug("map {} {}: {}", i, j, map->lower_layer[i*w+j]);
+			map->lower_layer[i*w+j] = Roguelike::A[i*w+j];
 		}
 	}
 
-	for (int i=0;i<h;++i) {
+	for (int i=h-1;i>=0;--i) {
 		for (int j=0;j<w;++j) {
-			map->lower_layer[i*w+j] = (rand() & 1) ? 5014 : 4000;
-			// map->lower_layer[i*w+j] = 0;
+			if (Roguelike::_A[i*w+j]) {
+				auto tt = TeleportTarget::eForegroundTeleport;
+				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
+				break;
+			}
 		}
 	}
 
+	// Randomize All Map Event
+	for (auto& ev : events) {
+		int id = rand() % Roguelike::empty_grids.size();
+		int xx = Roguelike::empty_grids[id].first;
+		int yy = Roguelike::empty_grids[id].second;
+		Roguelike::empty_grids.erase(Roguelike::empty_grids.begin() + id);
+		ev.SetX(yy); ev.SetY(xx);
+		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
+	}
+
+	Refresh();
 	GetInterpreter().CommandRefreshTileset();
 }
 
