@@ -283,7 +283,6 @@ namespace Roguelike {
 						ld_x = j; ld_y = i;
 					}
 					rd_x = j; rd_y = i;
-					break;
 				}
 			}
 		}
