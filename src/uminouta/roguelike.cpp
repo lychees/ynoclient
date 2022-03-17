@@ -20,7 +20,7 @@ namespace Roguelike {
 		return fov_switch;
 	}
 	void turnon_FOV() {
-		fov_switch = on;
+		fov_switch = true;
 	}
 	void turnoff_FOV() {
 		fov_switch = false;
