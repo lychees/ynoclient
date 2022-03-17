@@ -28,6 +28,9 @@ namespace Roguelike {
 	}
 
 	void teleport_to(std::string who, int xx, int yy) {
+
+		Output::Debug("Teleport To {} {] {}", who, xx, yy);
+
 		if (who == "player") {
 			auto tt = TeleportTarget::eForegroundTeleport;
 			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
