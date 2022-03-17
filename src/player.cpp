@@ -1420,6 +1420,7 @@ bool Player::IsBig5() {
 
 bool Player::IsCP936() {
 	return (encoding == "windows-936-2000" ||
+			encoding == "windows-936" ||
 			encoding == "936");
 }
 

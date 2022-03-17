@@ -1714,7 +1714,7 @@ namespace Roguelike {
 					A[i*w+j] = 4000 + i*50 + j;
 				} else {
 					if (!_A[i*w+j]) {
-						a += c0;
+						a = c0;
 
 						int x = i, y = j;
 
