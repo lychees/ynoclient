@@ -304,6 +304,7 @@ namespace Roguelike {
 	}
 
 	bool isInFOV(int x, int y) {
+		return true;
 		if (tcod_map == nullptr) return true;
 		bool z = tcod_map->isInFov(y,x);
 		if (z) explored[y][x] = true;
