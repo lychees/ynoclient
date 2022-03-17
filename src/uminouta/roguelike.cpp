@@ -30,8 +30,6 @@ namespace Roguelike {
 
 	void teleport_to(std::string who, int xx, int yy) {
 
-		Output::Debug("Teleport To {] {}", xx, yy);
-	/*
 		if (who == "player") {
 			auto tt = TeleportTarget::eForegroundTeleport;
 			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
@@ -41,7 +39,7 @@ namespace Roguelike {
 					ev.SetX(xx); ev.SetY(yy);
 				}
 			}
-		} */
+		}
 	}
 
 	void teleport_to_lu(std::string who) {
@@ -344,8 +342,8 @@ namespace Roguelike {
 			return true;
 		}
 
-		// Output::Debug("Teleport To {] {}", lu_x, lu_y);
-		/*
+		Output::Debug("Teleport To {} {}", lu_x, lu_y);
+
 		cmd = ".teleport_to_lu";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			std::istringstream iss(msg);
@@ -376,7 +374,7 @@ namespace Roguelike {
 			std::string _, who; iss >> _ >> who;
 			teleport_to_rd(who);
 			return true;
-		}*/
+		}
 
 		return false;
 	}
