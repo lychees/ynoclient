@@ -929,13 +929,13 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 	cmd = ".turnon_FOV";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Roguelike::turnon_FOV(c0, c1);
+		Roguelike::turnon_FOV();
 		return;
 	}
 
 	cmd = ".turnoff_FOV";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Roguelike::turnoff_FOV(c0, c1);
+		Roguelike::turnoff_FOV();
 		return;
 	}
 
