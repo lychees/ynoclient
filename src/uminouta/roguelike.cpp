@@ -1,4 +1,5 @@
 #include "roguelike.h"
+#include "../game_map.h"
 
 namespace Roguelike {
 
