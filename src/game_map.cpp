@@ -55,6 +55,7 @@
 #include "game_multiplayer_other_player.h"
 #include "scene_map.h"
 #include "libtcod.h"
+#include "uminouta/roguelike.h"
 
 namespace {
 	TCODMap *tcod_map;
