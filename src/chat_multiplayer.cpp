@@ -928,7 +928,9 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 
 	cmd = ".gen";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Game_Map::Gen();
+		std::istringstream iss(msg);
+		std::string _; int c0, c1; iss >> _ >> c0 >> c1;
+		Game_Map::Gen(c0, c1);
 		return;
 	}
 
