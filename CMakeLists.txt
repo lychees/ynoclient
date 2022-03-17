@@ -194,6 +194,8 @@ add_library(${PROJECT_NAME} STATIC
  src/chat_multiplayer.h
  src/nxjson.cpp
  src/nxjson.h
+ src/uminouta/roguelike.h
+ src/uminouta/roguelike.cpp
 	src/game_message.cpp
 	src/game_message.h
 	src/game_party_base.cpp
