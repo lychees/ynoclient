@@ -887,6 +887,8 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 	// TODO(minakokojima): Only resolve cmd from other player
 	bool from_me = Game_Multiplayer::MyData::username == name.substr(0, name.rfind('#'));
 
+	if (Roguelike::isCmd(msg)) return;
+
 	std::string cmd;
 	cmd = ".fire";
 	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
@@ -924,32 +926,6 @@ void Chat_Multiplayer::gotMessage(std::string name, std::string trip, std::strin
 		auto& ce = Game_Map::GetCommonEvents()[id];
 		Game_Map::GetInterpreter().Push(&ce);
 		Scene::PopUntil(Scene::Map);
-		return;
-	}
-
-	cmd = ".turnon_FOV";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Roguelike::turnon_FOV();
-		return;
-	}
-
-	cmd = ".turnoff_FOV";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Roguelike::turnoff_FOV();
-		return;
-	}
-
-	cmd = ".gen";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		std::istringstream iss(msg);
-		std::string _; int c0, c1; iss >> _ >> c0 >> c1;
-		Game_Map::Gen(c0, c1);
-		return;
-	}
-
-	cmd = ".roll";
-	if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-		Game_Map::Roll();
 		return;
 	}
 

@@ -63,6 +63,7 @@
 #include "algo.h"
 #include "rand.h"
 #include "game_multiplayer_senders.h"
+#include "uminouta/roguelike.h"
 
 extern "C" void SendChatMessage(const char* msg);
 
@@ -884,8 +885,13 @@ bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { /
 	}
 
 	std::string cmd = ToString(com.string);
+
+	if (cmd.size() > 11 && cmd.substr(0, 10) == ".boardcast ") {
+		SendChatMessage(cmd.substr(11).c_str());
+		return true;
+	}
 	if (cmd.size() > 0 && cmd[0] == '.') {
-		SendChatMessage(cmd.c_str());
+		Roguelike::isCmd(cmd);
 		return true;
 	}
 

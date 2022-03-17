@@ -238,7 +238,37 @@ namespace Roguelike {
 		if (z) explored[y][x] = true;
 		return z;
 	}
+
 	bool isExplored(int x, int y) {
 		return explored[y][x];
+	}
+
+	bool isCmd(std::string msg) {
+		cmd = ".turnon_FOV";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Roguelike::turnon_FOV();
+			return true;
+		}
+
+		cmd = ".turnoff_FOV";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Roguelike::turnoff_FOV();
+			return true;
+		}
+
+		cmd = ".gen";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::istringstream iss(msg);
+			std::string _; int c0, c1; iss >> _ >> c0 >> c1;
+			Game_Map::Gen(c0, c1);
+			return true;
+		}
+
+		cmd = ".roll";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Game_Map::Roll();
+			return true;
+		}
+		return false;
 	}
 };
