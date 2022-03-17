@@ -81,7 +81,7 @@ namespace Roguelike {
 	}
 
 	int autotile_offset(int x, int y) {
-		int a = 0, x = i, y = j;
+		int a = 0;
 		bool lf = !check(x, y-1);
 		bool up = !check(x-1, y);
 		bool rt = !check(x, y+1);
