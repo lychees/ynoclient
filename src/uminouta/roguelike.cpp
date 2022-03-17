@@ -11,6 +11,8 @@ namespace Roguelike {
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
 	std::vector<int> A, _A; int w, h, c0, c1;
+	int lu_x, lu_y, ld_x, ld_y;
+	int ru_x, ru_y, rd_x, rd_y;
 	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
@@ -24,6 +26,52 @@ namespace Roguelike {
 	}
 	void turnoff_FOV() {
 		fov_switch = false;
+	}
+
+	void teleport_to(std::string who, int xx, int yy) {
+		if (who == "player") {
+			auto tt = TeleportTarget::eForegroundTeleport;
+			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
+		} else {
+			for (const auto& ev : Game_Map::GetEvents) {
+				if (ev.GetName() == who) {
+					ev.SetX(xx); ev.SetY(yy);
+				}
+			}
+		}
+	}
+
+	void teleport_to_lu(std::string who) {
+		teleport_to(who, lu_x, lu_y);
+	}
+	void teleport_to_ld() {
+		teleport_to(who, ld_x, ld_y);
+	}
+	void teleport_to_ru() {
+		teleport_to(who, ru_x, ru_y);
+	}
+	void teleport_to_rd() {
+		teleport_to(who, rd_x, rd_y);
+	}
+
+	void teleport_to(std::string map_event_name) {
+
+		/*for (const auto& ev : Game_Map::GetEvents) {
+			if (ev.GetName() == "map_event_name") {
+
+				return;
+			}
+		}*/
+
+		/*for (int i=h-1;i>=0;--i) {
+			for (int j=0;j<w;++j) {
+				if (_A[i*w+j]) {
+					auto tt = TeleportTarget::eForegroundTeleport;
+					Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
+					break;
+				}
+			}
+		}*/
 	}
 
 	std::vector<std::pair<int, int>>& get_empty_grids() {
@@ -200,6 +248,40 @@ namespace Roguelike {
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j]) {
+					tcod_map->setProperties(i,j,true,true);
+				} else {
+					tcod_map->setProperties(i,j,false,false);
+				}
+			}
+		}
+
+
+		lu_x = -1; lu_y = -1;
+		ld_x = -1; ld_y = -1;
+		ru_x = -1; ru_y = -1;
+		rd_x = -1; rd_y = -1;
+
+		for (int i=h-1;i>=0;--i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j]) {
+					if (lu_x == -1) {
+						lu_x = j; lu_y = i;
+					}
+					if (ru_x == -1 || ru_x == j) {
+						ru_x = j; ru_y = i;
+					}
+					if (ld_y == -1 || j > ld_y) {
+						ld_x = j; ld_y = i;
+					}
+					rd_x = j; rd_y = i;
+					break;
+				}
+			}
+		}
+
 		Automatize();
 		// AddWall();
 
@@ -213,16 +295,6 @@ namespace Roguelike {
 		explored.resize(h);
 		for (int i=0;i<h;++i) {
 			explored[i].resize(w);
-		}
-
-		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) {
-				if (_A[i*w+j]) {
-					tcod_map->setProperties(i,j,true,true);
-				} else {
-					tcod_map->setProperties(i,j,false,false);
-				}
-			}
 		}
 	}
 

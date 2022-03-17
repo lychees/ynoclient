@@ -1674,16 +1674,6 @@ void Game_Map::Gen(int c0, int c1) {
 		}
 	}
 
-	for (int i=h-1;i>=0;--i) {
-		for (int j=0;j<w;++j) {
-			if (_A[i*w+j]) {
-				auto tt = TeleportTarget::eForegroundTeleport;
-				Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-				break;
-			}
-		}
-	}
-
 	// Randomize All Map Event
 	for (auto& ev : events) {
 		int id = rand() % empty_grids.size();
