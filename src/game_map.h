@@ -618,7 +618,7 @@ namespace Game_Map {
 	bool UpdateMessage(MapUpdateAsyncContext& actx);
 	bool UpdateForegroundEvents(MapUpdateAsyncContext& actx);
 
-	void Gen();
+	void Gen(int c0, int c1);
 	void Roll();
 
 	/**
