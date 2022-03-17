@@ -13,7 +13,6 @@ namespace Roguelike {
 	std::vector<int> A, _A; int w, h, c0, c1;
 	int lu_x, lu_y, ld_x, ld_y;
 	int ru_x, ru_y, rd_x, rd_y;
-	std::vector<bool> shadow;
 	std::vector<std::pair<int, int>> empty_grids;
 	std::vector<std::vector<bool>> explored;
 	bool fov_switch;
@@ -248,6 +247,9 @@ namespace Roguelike {
     	BspListener listener;
     	bsp.traverseInvertedLevelOrder(&listener,NULL);
 
+		delete tcod_map;
+		tcod_map = new TCODMap(h, w);
+
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
 				if (A[i*w+j]) {
@@ -284,12 +286,6 @@ namespace Roguelike {
 
 		Automatize();
 		// AddWall();
-
-		shadow.clear();
-		shadow.resize(w*h);
-
-		delete tcod_map;
-		tcod_map = new TCODMap(h, w);
 
 		explored.clear();
 		explored.resize(h);
