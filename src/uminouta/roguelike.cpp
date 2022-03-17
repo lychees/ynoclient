@@ -2,7 +2,7 @@
 
 namespace Roguelike {
 
-	//TCODMap tcod_map;
+	TCODMap tcod_map;
 
 	static const int ROOM_MAX_SIZE = 24;
 	static const int ROOM_MIN_SIZE = 12;
