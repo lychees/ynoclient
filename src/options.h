@@ -22,12 +22,12 @@
 #define GAME_TITLE "EasyRPG Player"
 
 /** Targeted screen default width. */
-// #define SCREEN_TARGET_WIDTH 320
-#define SCREEN_TARGET_WIDTH 640
+#define SCREEN_TARGET_WIDTH 320
+// #define SCREEN_TARGET_WIDTH 640
 
 /** Targeted screen default height. */
-// #define SCREEN_TARGET_HEIGHT 240
-#define SCREEN_TARGET_HEIGHT 480
+#define SCREEN_TARGET_HEIGHT 240
+// #define SCREEN_TARGET_HEIGHT 480
 
 /** ingame chat */
 #if USE_SDL==2
