@@ -11,7 +11,7 @@ namespace Roguelike {
 	static const int ROOM_MIN_SIZE = 12;
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
-	std::vector<int> A, _A; int w, h, c0, c1;
+	std::vector<int> A, _A; int w, h, wh, c0, c1;
 	int lu_x = 0, lu_y = 0, ld_x = 0, ld_y = 0;
 	int ru_x = 0, ru_y = 0, rd_x = 0, rd_y = 0;
 	std::vector<std::pair<int, int>> empty_grids;
@@ -77,6 +77,13 @@ namespace Roguelike {
 		}*/
 	}
 
+	int get_c0() {
+		return c0;
+	}
+	int get_c1() {
+		return c1;
+	}
+
 	std::vector<std::pair<int, int>>& get_empty_grids() {
 		return empty_grids;
 	}
@@ -109,7 +116,9 @@ namespace Roguelike {
 			if (node->isLeaf()) {
 				int x,y,w,h;
 				// dig a room
-				TCODRandom *rng=TCODRandom::getInstance();
+				TCODRandom *rng = TCODRandom::getInstance();
+				// rng = new TCODRandom::TCODRandom(100, TCOD_RNG_CMWC);
+				rng = new TCODRandom(100, TCOD_RNG_CMWC);
 				w=rng->getInt(ROOM_MIN_SIZE, node->w-2);
 				h=rng->getInt(ROOM_MIN_SIZE, node->h-2);
 				x=rng->getInt(node->x+1, node->x+node->w-w-1);
@@ -223,21 +232,68 @@ namespace Roguelike {
 		return a;
 	}
 
+	int automatize(int i, int j) {
+		int z = _A[i*w+j] ? c1 : c0;
+		if (4000 <= z && z <= 4550) z += autotile_offset(i,j);
+		return z;
+	}
+
 	void Automatize() {
 
 		_A = A;
 
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
-				int &a = A[i*w+j]; a = _A[i*w+j] ? c1 : c0;
-				if (4000 <= a && a <= 4550) a += autotile_offset(i,j);
+				A[i*w+j] = automatize(i,j);
 			}
 		}
 	}
 
+	bool isWallCorner(int x,int y) {
+		if (!_A[x*w+y]) return 0;
+		for (int i=1;i<=wh;++i) {
+			if (_A[(x-i)*w+y]) return 0;
+		}
+		return 1;
+	}
+
 	void AddWall() {
-		for (int i=0;i<h;++i) {
+		for (int i=wh+1;i<h;++i) {
 			for (int j=0;j<w;++j) {
+				if (isWallCorner(i,j)) {
+					int l = j, r = j+1;
+					while (r<w && isWallCorner(i,r)) ++r;
+					for (int jj=l;jj<r;++jj) {
+						for (int k=1;k<=wh;++k) {
+							A[(i-k)*w+jj] = 5114 - 6*(k-1);
+							_A[(i-k)*w+jj] = 1;
+						}
+					}
+
+					for (int k=1;k<=wh+1;++k) {
+						if (!_A[(i-k)*w+(l-1)]) A[(i-k)*w+(l-1)] = automatize(i-k,l-1);
+						if (!_A[(i-k)*w+r]) A[(i-k)*w+r] = automatize(i-k,r);
+					}
+					for (int jj=l;jj<r;++jj) {
+						A[(i-wh-1)*w+jj] = automatize(i-wh-1,jj);
+					}
+					j = r;
+				}
+			}
+		}
+
+		for (int i=wh;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				if (isWallCorner(i,j)) {
+					int l = j, r = j+1;
+					while (r<w && isWallCorner(i,r)) ++r;
+					for (int jj=l;jj<r;++jj) {
+						for (int k=1;k<=wh;++k) {
+							_A[(i-k)*w+jj] = 0;
+						}
+					}
+					j = r;
+				}
 			}
 		}
 	}
@@ -286,7 +342,14 @@ namespace Roguelike {
 		}
 	}
 
+	void init() {
+		/*if (!TCODRandom::instance) {
+			TCODRandom::instance =
+		} */
+	}
+
 	void Gen(int _c0, int _c1) {
+		init();
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
@@ -314,7 +377,7 @@ namespace Roguelike {
 		init_ld();
 
 		Automatize();
-		// AddWall();
+		wh = 4; AddWall();
 
 		explored.clear();
 		explored.resize(h);
@@ -326,14 +389,41 @@ namespace Roguelike {
 	void UpdateFOV() {
 		int my_y = Main_Data::game_player->GetX();
 		int my_x = Main_Data::game_player->GetY();
-		tcod_map->computeFov(my_x,my_y,20);
+		tcod_map->computeFov(my_x,my_y,10);
 	}
 
 	bool isInFOV(int x, int y) {
 		// return true;
 		if (tcod_map == nullptr) return true;
+
+		//if (isWallCorner(y-wh, x)) return false;
 		bool z = tcod_map->isInFov(y,x);
-		if (z) explored[y][x] = true;
+
+		if (z) {
+			explored[y][x] = true;
+			if (y >= wh+1) {
+				if (isWallCorner(y-wh, x)) {
+					for (int i=1;i<=wh+1;++i) {
+						explored[y-i][x] = true;
+					}
+				}
+				if (x+1 < w) {
+					if (!isWallCorner(y-wh, x+1)) {
+						for (int i=1;i<=wh+1;++i) {
+							explored[y-i][x+1] = true;
+						}
+					}
+				}
+				if (x - 1 >= 0) {
+					if (!isWallCorner(y-wh, x-1)) {
+						for (int i=1;i<=wh+1;++i) {
+							explored[y-i][x-1] = true;
+						}
+					}
+				}
+			}
+
+		}
 		return z;
 	}
 

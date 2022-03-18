@@ -301,15 +301,22 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 				continue;
 			}
 			*/
-			if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
-				continue;
-			}
 
 			// Get the tile data
 			TileData &tile = GetDataCache(map_x, map_y);
-
 			// Draw the sublayer if its z is being draw now
 			if (z_order == tile.z) {
+
+				bool not_in_fov = false;
+				short original_data_cache;
+
+				if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
+					not_in_fov = true;
+					original_data_cache = data_cache_vec[map_x + map_y * width].ID;
+					data_cache_vec[map_x + map_y * width].ID = Roguelike::get_c0();
+					// continue;
+				}
+
 				if (layer == 0) {
 					// If lower layer
 					bool allow_fast_blit = (tile.z == Priority_TilesetBelow);
@@ -388,6 +395,10 @@ void TilemapLayer::Draw(Bitmap& dst, int z_order) {
 						auto tone_hash = MakeFTileHash(id);
 						DrawTile(dst, *chipset, *chipset_effect, map_draw_x, map_draw_y, row, col, tone_hash);
 					}
+				}
+
+				if (not_in_fov) {
+					 data_cache_vec[map_x + map_y * width].ID = original_data_cache;
 				}
 			}
 		}
