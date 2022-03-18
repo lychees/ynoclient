@@ -242,8 +242,8 @@ namespace Roguelike {
 	}
 
 	void init_ru() {
-		for (int i=h-1;i>=0;--i) {
-			for (int j=0;j<w;++j) {
+		for (int i=0;i<h;++i) {
+			for (int j=w-1;j>=0;--j) {
 				if (A[i*w+j]) {
 					ru_x = j; ru_y = i;
 					return;
@@ -253,8 +253,8 @@ namespace Roguelike {
 	}
 
 	void init_lu() {
-		for (int i=h-1;i>=0;--i) {
-			for (int j=w-1;j>=0;--j) {
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
 				if (A[i*w+j]) {
 					lu_x = j; lu_y = i;
 					return;
@@ -264,8 +264,8 @@ namespace Roguelike {
 	}
 
 	void init_rd() {
-		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) {
+		for (int i=h-1;i>=0;--i) {
+			for (int j=w-1;j>=0;--j) {
 				if (A[i*w+j]) {
 					rd_x = j; rd_y = i;
 					return;
@@ -275,8 +275,8 @@ namespace Roguelike {
 	}
 
 	void init_ld() {
-		for (int i=0;i<h;++i) {
-			for (int j=w-1;j>=0;--j) {
+		for (int i=h-1;i>=0;--i) {
+			for (int j=0;j<w;++j) {
 				if (A[i*w+j]) {
 					ld_x = j; ld_y = i;
 					return;
