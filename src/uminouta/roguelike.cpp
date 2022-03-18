@@ -29,6 +29,7 @@ namespace Roguelike {
 	}
 
 	void teleport_to(std::string who, int xx, int yy) {
+		Output::Debug("fov {}", fov_switch);
 		Output::Debug("teleport_to {} {} {}", who, xx, yy);
 
 		if (who == "player") {
