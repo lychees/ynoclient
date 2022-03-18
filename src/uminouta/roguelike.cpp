@@ -312,23 +312,6 @@ namespace Roguelike {
 		init_rd();
 		init_ld();
 
-		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) {
-				if (A[i*w+j]) {
-					if (lu_x == -1) {
-						lu_x = j; lu_y = i;
-					}
-					if (ru_x == -1 || ru_x == j) {
-						ru_x = j; ru_y = i;
-					}
-					if (ld_x == -1 || i > ld_x) {
-						ld_x = j; ld_y = i;
-					}
-					rd_x = j; rd_y = i;
-				}
-			}
-		}
-
 		Automatize();
 		// AddWall();
 
