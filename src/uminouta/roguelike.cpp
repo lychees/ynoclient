@@ -241,6 +241,50 @@ namespace Roguelike {
 		}
 	}
 
+	void init_ru() {
+		for (int i=h-1;i>=0;--i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j]) {
+					ru_x = j; ru_y = i;
+					return;
+				}
+			}
+		}
+	}
+
+	void init_lu() {
+		for (int i=h-1;i>=0;--i) {
+			for (int j=w-1;j>=0;--j) {
+				if (A[i*w+j]) {
+					lu_x = j; lu_y = i;
+					return;
+				}
+			}
+		}
+	}
+
+	void init_rd() {
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j]) {
+					rd_x = j; rd_y = i;
+					return;
+				}
+			}
+		}
+	}
+
+	void init_ld() {
+		for (int i=0;i<h;++i) {
+			for (int j=w-1;j>=0;--j) {
+				if (A[i*w+j]) {
+					ld_x = j; ld_y = i;
+					return;
+				}
+			}
+		}
+	}
+
 	void Gen(int _c0, int _c1) {
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
@@ -263,13 +307,12 @@ namespace Roguelike {
 			}
 		}
 
+		init_ru();
+		init_lu();
+		init_rd();
+		init_ld();
 
-		lu_x = -1; lu_y = -1;
-		ld_x = -1; ld_y = -1;
-		ru_x = -1; ru_y = -1;
-		rd_x = -1; rd_y = -1;
-
-		for (int i=h-1;i>=0;--i) {
+		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
 				if (A[i*w+j]) {
 					if (lu_x == -1) {
@@ -278,7 +321,7 @@ namespace Roguelike {
 					if (ru_x == -1 || ru_x == j) {
 						ru_x = j; ru_y = i;
 					}
-					if (ld_y == -1 || j > ld_y) {
+					if (ld_x == -1 || i > ld_x) {
 						ld_x = j; ld_y = i;
 					}
 					rd_x = j; rd_y = i;
