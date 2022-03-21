@@ -5,16 +5,7 @@
 
 namespace Roguelike {
 
-	struct Actor {
-		int str, dex, con;
-		int inT, wis, cha;
-		int evil, chaos;
-		std::string alignments() {
-			return "守序善良";
-		}
-	} Player;
-
-
+	struct Creature;
 	std::vector<int>& get__A();
 	std::vector<int>& get_A();
 	std::vector<std::pair<int, int>>& get_empty_grids();

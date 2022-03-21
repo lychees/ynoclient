@@ -5,6 +5,15 @@
 
 namespace Roguelike {
 
+	struct Creature {
+		int str, dex, con;
+		int inT, wis, cha;
+		int evil, chaos;
+		std::string alignments() {
+			return "守序善良";
+		}
+	} Player;
+
 	TCODMap *tcod_map;
 
 	static const int ROOM_MAX_SIZE = 24;
