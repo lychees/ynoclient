@@ -84,7 +84,9 @@ void Scene_Menu::CreateCommandWindow() {
 		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
-		command_options.push_back(CRPG_Status);
+		if (Player::game_title == "Demo") {
+			command_options.push_back(CRPG_Status);
+		}
 	} else {
 		for (std::vector<int16_t>::iterator it = lcf::Data::system.menu_commands.begin();
 			it != lcf::Data::system.menu_commands.end(); ++it) {
@@ -95,7 +97,9 @@ void Scene_Menu::CreateCommandWindow() {
 		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
-		command_options.push_back(CRPG_Status);
+		if (Player::game_title == "Demo") {
+			command_options.push_back(CRPG_Status);
+		}
 	}
 
 	// Add all menu items
