@@ -30,7 +30,6 @@
 #include "bitmap.h"
 #include "player.h"
 #include "drawable_list.h"
-#include "uminouta/roguelike.h"
 
 // Constructor
 Spriteset_Map::Spriteset_Map() {
@@ -49,9 +48,6 @@ Spriteset_Map::Spriteset_Map() {
 
 	// Output::Debug("Create Spriteset");
 	for (Game_Event& ev : Game_Map::GetEvents()) {
-		if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y)) {
-			continue;
-		}
 		CreateSprite(&ev, need_x_clone, need_y_clone);
 	}
 
