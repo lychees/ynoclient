@@ -18,6 +18,7 @@
 // Headers
 #include <iomanip>
 #include <sstream>
+#include "roguelike.h"
 #include "../game_actors.h"
 #include "window_crpg_status.h"
 #include "../bitmap.h"

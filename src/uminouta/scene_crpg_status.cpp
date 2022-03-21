@@ -29,6 +29,8 @@ Scene_Crpg_Status::Scene_Crpg_Status(int actor_index) :
 }
 
 void Scene_Crpg_Status::Start() {
+	int actor = Main_Data::game_party->GetActors()[actor_index]->GetId();
+	crpg_status_window = (new Window_Crpg_Status(0, 0, 196, 96, actor));
 }
 
 void Scene_Crpg_Status::Update() {
@@ -38,7 +40,10 @@ void Scene_Crpg_Status::Update() {
 		Scene::Pop();
 	} else if (Main_Data::game_party->GetActors().size() > 1 && Input::IsTriggered(Input::RIGHT)) {
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cursor));
+		actor_index = (actor_index + 1) % Main_Data::game_party->GetActors().size();
+		Scene::Push(std::make_shared<Scene_Crpg_Status>(actor_index), true);
 	} else if (Main_Data::game_party->GetActors().size() > 1 && Input::IsTriggered(Input::LEFT)) {
-		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cursor));
+		actor_index = (actor_index + Main_Data::game_party->GetActors().size() - 1) % Main_Data::game_party->GetActors().size();
+		Scene::Push(std::make_shared<Scene_Crpg_Status>(actor_index), true);
 	}
 }

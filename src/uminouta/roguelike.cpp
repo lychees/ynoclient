@@ -342,14 +342,17 @@ namespace Roguelike {
 		}
 	}
 
+
 	void init() {
+		Player.str = 6; Player.dex = 16; Player.con = 7;
+		Player.inT = 16; Player.wis = 14; Player.cha = 16;
+		Player.evil = -6; Player.chaos = -6;
 		/*if (!TCODRandom::instance) {
 			TCODRandom::instance =
 		} */
 	}
 
 	void Gen(int _c0, int _c1) {
-		init();
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
 		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
