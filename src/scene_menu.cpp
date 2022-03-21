@@ -84,7 +84,10 @@ void Scene_Menu::CreateCommandWindow() {
 		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
-		if (Player::game_title == "Demo") {
+		if (Player::game_title == "Untitled" ||
+			Player::game_title == "海之歌" ||
+			Player::game_title == "Song of the Sea" ||
+			Player::game_title == "海のうた") {
 			command_options.push_back(CRPG_Status);
 		}
 	} else {
@@ -97,7 +100,10 @@ void Scene_Menu::CreateCommandWindow() {
 		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
-		if (Player::game_title == "Demo") {
+		if (Player::game_title == "Untitled" ||
+			Player::game_title == "海之歌" ||
+			Player::game_title == "Song of the Sea" ||
+			Player::game_title == "海のうた") {
 			command_options.push_back(CRPG_Status);
 		}
 	}
