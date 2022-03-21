@@ -68,7 +68,8 @@ public:
 		Quit,
 		// EasyRPG extra
 		Debug = 100,
-		Multiplayer = 101
+		Multiplayer = 101,
+		CRPG_Status = 102
 	};
 
 private:

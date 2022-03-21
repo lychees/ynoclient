@@ -129,6 +129,9 @@ void Scene_Menu::CreateCommandWindow() {
 		case Multiplayer:
 			options.push_back(Player::IsCP936() ? "通信设置" : (Player::IsBig5() ? "通信設置" : (Player::IsCP932() ? "通信設定" : "Multiplayer")));
 			break;
+		case CRPG_Status:
+			options.push_back(Player::IsCP936() ? "属性" : (Player::IsBig5() ? "属性" : (Player::IsCP932() ? "属性" : "属性")));
+			break;
 		default:
 			options.push_back(ToString(lcf::Data::terms.menu_quit));
 			break;
@@ -253,6 +256,10 @@ void Scene_Menu::UpdateActorSelection() {
 			Scene::Push(std::make_shared<Scene_Equip>(*menustatus_window->GetActor()));
 			break;
 		case Status:
+			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
+			Scene::Push(std::make_shared<Scene_Status>(menustatus_window->GetIndex()));
+			break;
+		case CRPG_Status:
 			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
 			Scene::Push(std::make_shared<Scene_Status>(menustatus_window->GetIndex()));
 			break;
