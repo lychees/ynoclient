@@ -86,6 +86,10 @@ namespace Roguelike {
 		}*/
 	}
 
+	Creature get_Player() {
+		return Player;
+	}
+
 	int get_c0() {
 		return c0;
 	}

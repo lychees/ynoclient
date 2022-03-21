@@ -6,6 +6,8 @@
 namespace Roguelike {
 
 	struct Creature;
+
+	Creature& get_Player();
 	std::vector<int>& get__A();
 	std::vector<int>& get_A();
 	std::vector<std::pair<int, int>>& get_empty_grids();

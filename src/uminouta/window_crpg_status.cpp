@@ -48,7 +48,12 @@ void Window_Crpg_Status::Refresh() {
 	};
 
 	int y = 2;
-	y = draw(y, "STR", 1);
-	y = draw(y, "DEX", 1);
+	auto player = Roguelike::get_player();
+	y = draw(y, "STR", player.str);
+	y = draw(y, "DEX", player.dex);
+	y = draw(y, "CON", player.con);
+	y = draw(y, "INT", player.inT);
+	y = draw(y, "WIS", player.wis);
+	y = draw(y, "CHR", player.chr);
 }
 
