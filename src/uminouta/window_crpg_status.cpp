@@ -39,11 +39,12 @@ void Window_Crpg_Status::Refresh() {
 
 	auto* actor = Main_Data::game_actors->GetActor(actor_id);
 
-	void draw = [this](int x, int y, StringView name, int value) {
+	auto draw = [this](int x, int y, StringView name, int value) {
 		// Draw Term
 		contents->TextDraw(x+0, y, 1, name);
 		// Draw Value
 		contents->TextDraw(x+45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
+		return;
 	};
 
 	int y = 2;
