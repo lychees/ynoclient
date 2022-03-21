@@ -78,21 +78,23 @@ void Scene_Menu::CreateCommandWindow() {
 		command_options.push_back(Skill);
 		command_options.push_back(Equipment);
 		command_options.push_back(Save);
-		if (Player::debug_flag) {
+		//if (Player::debug_flag) {
 			command_options.push_back(Debug);
-		}
+		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
+		command_options.push_back(CRPG_Status);
 	} else {
 		for (std::vector<int16_t>::iterator it = lcf::Data::system.menu_commands.begin();
 			it != lcf::Data::system.menu_commands.end(); ++it) {
 				command_options.push_back((CommandOptionType)*it);
 		}
-		if (Player::debug_flag) {
+		//if (Player::debug_flag) {
 			command_options.push_back(Debug);
-		}
+		//}
 		command_options.push_back(Multiplayer);
 		command_options.push_back(Quit);
+		command_options.push_back(CRPG_Status);
 	}
 
 	// Add all menu items
