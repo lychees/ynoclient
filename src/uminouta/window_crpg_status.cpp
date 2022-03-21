@@ -54,6 +54,6 @@ void Window_Crpg_Status::Refresh() {
 	y = draw(y, "CON", player.con);
 	y = draw(y, "INT", player.inT);
 	y = draw(y, "WIS", player.wis);
-	y = draw(y, "CHR", player.chr);
+	y = draw(y, "CHA", player.cha);
 }
 
