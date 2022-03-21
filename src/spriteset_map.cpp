@@ -49,6 +49,8 @@ Spriteset_Map::Spriteset_Map() {
 
 	// Output::Debug("Create Spriteset");
 	for (Game_Event& ev : Game_Map::GetEvents()) {
+		int map_x = ev.GetX();
+		int map_y = ev.GetY();
 		if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y)) {
 			continue;
 		}
