@@ -5,14 +5,8 @@
 
 namespace Roguelike {
 
-	struct Creature {
-		int str, dex, con;
-		int inT, wis, cha;
-		int evil, chaos;
-		std::string alignments() {
-			return "守序善良";
-		}
-	} Player;
+
+	Creature Player;
 
 	TCODMap *tcod_map;
 

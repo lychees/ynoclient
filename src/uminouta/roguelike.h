@@ -5,7 +5,14 @@
 
 namespace Roguelike {
 
-	struct Creature;
+	struct Creature {
+		int str, dex, con;
+		int inT, wis, cha;
+		int evil, chaos;
+		std::string alignments() {
+			return "守序善良";
+		}
+	};
 
 	Creature& get_Player();
 	std::vector<int>& get__A();
