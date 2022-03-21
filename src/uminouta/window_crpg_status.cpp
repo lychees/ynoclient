@@ -42,14 +42,13 @@ void Window_Crpg_Status::Refresh() {
 	auto draw = [this](int y, StringView name, int value) {
 		// Draw Term
 		contents->TextDraw(0, y, 1, name);
-
 		// Draw Value
-		contents->TextDraw(90, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
+		contents->TextDraw(45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
 		return y + 16;
 	};
 
 	int y = 2;
-	y = draw(y, lcf::Data::terms.spirit, actor->GetSpi());
-	y = draw(y, lcf::Data::terms.agility, actor->GetAgi());
+	y = draw(y, "STR", 1);
+	y = draw(y, "DEX", 1);
 }
 
