@@ -34,6 +34,7 @@
 #include "scene_status.h"
 #include "bitmap.h"
 #include "game_multiplayer_settings_scene.h"
+#include "uminouta/scene_crpg_status.h"
 
 Scene_Menu::Scene_Menu(int menu_index) :
 	menu_index(menu_index) {
@@ -234,6 +235,11 @@ void Scene_Menu::UpdateCommand() {
 			Scene::Push(std::make_shared<Game_Multiplayer::Scene_MultiplayerSettings>());
 			break;
 		}
+		case CRPG_Status:
+			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
+			Scene::Push(std::make_shared<Scene_Crpg_Status>());
+			break;
+		}
 	}
 }
 
@@ -263,7 +269,7 @@ void Scene_Menu::UpdateActorSelection() {
 			break;
 		case CRPG_Status:
 			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
-			Scene::Push(std::make_shared<Scene_Status>(menustatus_window->GetIndex()));
+			Scene::Push(std::make_shared<Scene_Crpg_Status>(menustatus_window->GetIndex()));
 			break;
 		case Row:
 		{
