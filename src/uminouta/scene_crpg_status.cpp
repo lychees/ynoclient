@@ -28,10 +28,10 @@ Scene_Crpg_Status::Scene_Crpg_Status(int actor_index) :
 	type = Scene::Status;
 }
 
-void Scene_Crpg_Statu::Start() {
+void Scene_Crpg_Status::Start() {
 }
 
-void Scene_Crpg_Statu::Update() {
+void Scene_Crpg_Status::Update() {
 
 	if (Input::IsTriggered(Input::CANCEL)) {
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cancel));
