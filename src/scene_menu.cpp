@@ -191,6 +191,7 @@ void Scene_Menu::UpdateCommand() {
 		case Equipment:
 		case Status:
 		case Row:
+		case CRPG_Status:
 			if (Main_Data::game_party->GetActors().empty()) {
 				Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Buzzer));
 			} else {
@@ -233,11 +234,6 @@ void Scene_Menu::UpdateCommand() {
 		case Multiplayer:
 			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
 			Scene::Push(std::make_shared<Game_Multiplayer::Scene_MultiplayerSettings>());
-			break;
-		}
-		case CRPG_Status:
-			Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
-			Scene::Push(std::make_shared<Scene_Crpg_Status>());
 			break;
 		}
 	}
