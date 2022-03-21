@@ -34,7 +34,7 @@ void Scene_Status::Start() {
     actorinfo_window.reset(new Window_ActorInfo(0, 0, 124, 208, actor));
 	actorstatus_window.reset(new Window_ActorStatus(124, 0, 196, 64, actor));
 	gold_window.reset(new Window_Gold(0, 208, 124, 32));
-	// paramstatus_window.reset(new Window_ParamStatus(124, 64, 196, 80, actor));
+	paramstatus_window.reset(new Window_ParamStatus(124, 64, 196, 80, actor));
 	equip_window.reset(new Window_Equip(124, 144, 196, 96, actor));
 
 	equip_window->SetActive(false);

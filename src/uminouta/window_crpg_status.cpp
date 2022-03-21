@@ -39,21 +39,21 @@ void Window_Crpg_Status::Refresh() {
 
 	auto* actor = Main_Data::game_actors->GetActor(actor_id);
 
-	auto draw = [this](int y, StringView name, int value) {
+	void draw = [this](int x, int y, StringView name, int value) {
 		// Draw Term
-		contents->TextDraw(0, y, 1, name);
+		contents->TextDraw(x+0, y, 1, name);
 		// Draw Value
-		contents->TextDraw(45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
-		return y + 16;
+		contents->TextDraw(x+45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
 	};
 
 	int y = 2;
 	auto player = Roguelike::get_Player();
-	y = draw(y, "STR", player.str);
-	y = draw(y, "DEX", player.dex);
-	y = draw(y, "CON", player.con);
-	y = draw(y, "INT", player.inT);
-	y = draw(y, "WIS", player.wis);
-	y = draw(y, "CHA", player.cha);
+	draw(0, y, "STR", player.str);
+	draw(60, y, "DEX", player.dex);
+	draw(120, y, "CON", player.con);
+	y += 16;
+	draw(0, y, "INT", player.inT);
+	draw(60, y, "WIS", player.wis);
+	draw(120, y, "CHA", player.cha);
 }
 
