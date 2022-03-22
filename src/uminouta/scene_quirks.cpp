@@ -22,8 +22,8 @@
 #include "../transition.h"
 #include "../main_data.h"
 
-Scene_Item::Scene_Item(int item_index) :
-	item_index(item_index) {
+Scene_Quirks::Scene_Quirks(int actor_index, int quirk_index) :
+	item_index(quirk_index) {
 	Scene::type = Scene::Item;
 }
 
