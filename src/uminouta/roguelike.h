@@ -20,10 +20,10 @@ namespace Roguelike {
 				// ..
 			} else if (race == "Elf") {
 				str -= 1; dex += 1; con -= 1;
-				int += 1; wis += 0; cha += 0;
+				inT += 1; wis += 0; cha += 0;
 			} else if (race == "Half Orc") {
 				str += 2; dex -= 1; con += 2;
-				int -= 1; wis -= 1; cha -= 1;
+				inT -= 1; wis -= 1; cha -= 1;
 			}
 		}
 	};
