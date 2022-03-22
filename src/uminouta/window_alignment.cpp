@@ -35,6 +35,14 @@ Window_Alignment::Window_Alignment(int ix, int iy, int iwidth, int iheight, int 
 }
 
 void Window_Alignment::Refresh() {
+
+
+	data.clear();
+	CreateContents();
+	SetIndex(index);
+
+	contents->Clear();
+
 	auto* actor = Main_Data::game_actors->GetActor(actor_id);
 
 	auto draw = [this](int x, int y, StringView name) {
@@ -48,14 +56,8 @@ void Window_Alignment::Refresh() {
 	};
 
 
-
-
 	auto player = Roguelike::get_Player();
-
-
-
 	int x = 0, y = 2;
-
 	draw(x, y, player.alignments());
 	y += 16;
 

@@ -25,7 +25,7 @@
  * Window_Alignment class.
  * Displays alignment stats of the hero.
  */
-class Window_Alignment : public Window_Base {
+class Window_Alignment : public Window_Selectable {
 
 public:
 	/**
