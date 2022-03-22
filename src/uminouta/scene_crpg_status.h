@@ -22,6 +22,7 @@
 #include "../scene.h"
 #include "window_crpg_status.h"
 #include "../window_gold.h"
+#include "../window_actorinfo.h"
 
 /**
  * Scene Crpg Status class.
@@ -44,6 +45,7 @@ private:
 
 	std::unique_ptr<Window_Crpg_Status> crpg_status_window;
 	std::unique_ptr<Window_Gold> gold_window;
+	std::unique_ptr<Window_ActorInfo> actorinfo_window;
 };
 
 #endif
