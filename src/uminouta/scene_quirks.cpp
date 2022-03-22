@@ -20,6 +20,7 @@
 #include "../input.h"
 #include "../output.h"
 #include "../transition.h"
+#include "../main_data.h"
 
 Scene_Item::Scene_Item(int item_index) :
 	item_index(item_index) {
