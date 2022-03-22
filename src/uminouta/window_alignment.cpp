@@ -36,8 +36,6 @@ Window_Alignment::Window_Alignment(int ix, int iy, int iwidth, int iheight, int 
 
 void Window_Alignment::Refresh() {
 
-
-	data.clear();
 	CreateContents();
 	SetIndex(index);
 
