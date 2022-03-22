@@ -39,7 +39,7 @@ void Window_Alignment::Refresh() {
 
 	auto draw = [this](int x, int y, StringView name) {
 		// Draw Term
-		contents->TextDraw(x+0, y, 1, name);
+		contents->TextDraw(x+0, y, Font::ColorDefault, name);
 		/*
 		// Draw Value
 		contents->TextDraw(x+45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
@@ -47,10 +47,21 @@ void Window_Alignment::Refresh() {
 		return;
 	};
 
-	int y = 2;
+
+
+
 	auto player = Roguelike::get_Player();
+
+
+
+	int x = 0, y = 2;
+
+	draw(x, y, player.alignments());
+	y += 16;
+
 	for (auto b: player.buffs) {
-		draw(0, y, b);
-		y += 16;
+		draw(x, y, b);
+		if (x == 0) x += 90;
+		else x = 0, y += 16;
 	}
 }

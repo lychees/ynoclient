@@ -12,7 +12,21 @@ namespace Roguelike {
 		std::vector<std::string> buffs;
 		std::string race;
 		std::string alignments() {
-			return "守序善良";
+			std::string z;
+			if (chaos > 0) {
+				z += "混乱: "; z += std::to_string(chaos);
+			} else {
+				z += "守序: "; z += std::to_string(-chaos);
+			}
+
+			if (evil > 0) {
+				z += " 邪恶: "; z += std::to_string(evil);
+			} else {
+				z += " 善良: "; z += std::to_string(-evil);
+			}
+
+			z += " 阵营: 守序善良";
+			return z;
 		}
 		void set_race(std::string _race) {
 			race = _race;
