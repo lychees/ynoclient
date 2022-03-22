@@ -31,10 +31,13 @@ Scene_Crpg_Status::Scene_Crpg_Status(int actor_index) :
 void Scene_Crpg_Status::Start() {
 	int actor = Main_Data::game_party->GetActors()[actor_index]->GetId();
 	crpg_status_window.reset(new Window_Crpg_Status(0, 0, 196, 96, actor));
+	gold_window.reset(new Window_Gold(0, 208, 124, 32));
 
 }
 
 void Scene_Crpg_Status::Update() {
+
+	gold_window->Update();
 
 	if (Input::IsTriggered(Input::CANCEL)) {
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cancel));
