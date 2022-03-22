@@ -19,7 +19,7 @@
 #define EP_WINDOW_ALIGNMENT_H
 
 // Headers
-#include "../window_base.h"
+#include "../window_selectable.h"
 
 /**
  * Window_Alignment class.
