@@ -22,6 +22,7 @@
 #include "../game_party.h"
 #include "../game_system.h"
 #include "../input.h"
+#include "../window_gold.h"
 
 Scene_Crpg_Status::Scene_Crpg_Status(int actor_index) :
 	actor_index(actor_index) {
