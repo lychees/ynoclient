@@ -9,7 +9,7 @@ namespace Roguelike {
 		int str, dex, con;
 		int inT, wis, cha;
 		int evil, chaos;
-		vector<std::string> buffs;
+		std::vector<std::string> buffs;
 		std::string race;
 		std::string alignments() {
 			return "守序善良";
