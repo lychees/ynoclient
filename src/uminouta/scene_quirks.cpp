@@ -20,7 +20,7 @@
 #include "../input.h"
 #include "../output.h"
 #include "../transition.h"
-#include "../main_data.h"
+#include "../game_system.h"
 
 Scene_Quirks::Scene_Quirks(int actor_index, int quirk_index) :
 	item_index(quirk_index) {
