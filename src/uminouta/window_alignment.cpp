@@ -20,11 +20,11 @@
 #include <sstream>
 #include "roguelike.h"
 #include "../game_actors.h"
-#include "window_crpg_status.h"
+#include "window_alignment.h"
 #include "../bitmap.h"
 #include "../font.h"
 
-Window_Crpg_Status::Window_Crpg_Status(int ix, int iy, int iwidth, int iheight, int actor_id) :
+Window_Alignment::Window_Alignments(int ix, int iy, int iwidth, int iheight, int actor_id) :
 	Window_Base(ix, iy, iwidth, iheight),
 	actor_id(actor_id)
 {
@@ -34,6 +34,6 @@ Window_Crpg_Status::Window_Crpg_Status(int ix, int iy, int iwidth, int iheight, 
 	Refresh();
 }
 
-void Window_Crpg_Status::Refresh() {
+void Window_Alignment::Refresh() {
 
 }

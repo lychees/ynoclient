@@ -21,6 +21,7 @@
 // Headers
 #include "../scene.h"
 #include "window_crpg_status.h"
+#include "window_alignment.h"
 #include "../window_gold.h"
 #include "../window_actorinfo.h"
 
@@ -46,6 +47,7 @@ private:
 	std::unique_ptr<Window_Crpg_Status> crpg_status_window;
 	std::unique_ptr<Window_Gold> gold_window;
 	std::unique_ptr<Window_ActorInfo> actorinfo_window;
+	std::unique_ptr<Window_Alignment> window_alignment;
 };
 
 #endif

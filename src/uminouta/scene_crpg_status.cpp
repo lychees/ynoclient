@@ -34,7 +34,7 @@ void Scene_Crpg_Status::Start() {
 	actorinfo_window.reset(new Window_ActorInfo(0, 0, 124, 208, actor));
 	crpg_status_window.reset(new Window_Crpg_Status(124, 0, 196, 45, actor));
 	gold_window.reset(new Window_Gold(0, 208, 124, 32));
-
+	window_alignment.reset(new Window_Alignment(124, 45, 196, 195, actor));
 }
 
 void Scene_Crpg_Status::Update() {
