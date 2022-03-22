@@ -24,7 +24,7 @@
 #include "../bitmap.h"
 #include "../font.h"
 
-Window_Alignment::Window_Alignments(int ix, int iy, int iwidth, int iheight, int actor_id) :
+Window_Alignment::Window_Alignment(int ix, int iy, int iwidth, int iheight, int actor_id) :
 	Window_Base(ix, iy, iwidth, iheight),
 	actor_id(actor_id)
 {
