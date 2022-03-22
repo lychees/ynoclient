@@ -16,7 +16,7 @@
  */
 
 #ifndef EP_SCENE_QUIRKS_H
-#define EP_SCENE_QUIRKS_h
+#define EP_SCENE_QUIRKS_H
 
 // Headers
 #include "../scene.h"
