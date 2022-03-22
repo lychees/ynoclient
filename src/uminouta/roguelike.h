@@ -50,7 +50,7 @@ namespace Roguelike {
 	bool isExplored(int x, int y);
 	void Gen(int c0, int c1);
 
-
+	void init();
 	bool isCmd(std::string cmd);
 }
 #endif
