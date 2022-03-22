@@ -16,7 +16,7 @@
  */
 
 // Headers
-#include "scene_item.h"
+#include "scene_quirks.h"
 #include "../input.h"
 #include "../output.h"
 #include "../transition.h"
@@ -27,7 +27,7 @@ Scene_Quirks::Scene_Quirks(int actor_index, int quirk_index) :
 	Scene::type = Scene::Item;
 }
 
-void Scene_Item::Start() {
+void Scene_Quirks::Start() {
 	// Create the windows
 	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
 	item_window.reset(new Window_Item(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
@@ -36,11 +36,11 @@ void Scene_Item::Start() {
 	item_window->SetIndex(item_index);
 }
 
-void Scene_Item::Continue(SceneType /* prev_scene */) {
+void Scene_Quirks::Continue(SceneType /* prev_scene */) {
 	item_window->Refresh();
 }
 
-void Scene_Item::Update() {
+void Scene_Quirks::Update() {
 	help_window->Update();
 	item_window->Update();
 
@@ -55,16 +55,6 @@ void Scene_Item::Update() {
 	}
 }
 
-void Scene_Item::TransitionOut(Scene::SceneType next_scene) {
-	const auto* item = item_window->GetItem();
-	const lcf::rpg::Skill* skill = nullptr;
-	if (item && item->type == lcf::rpg::Item::Type_special && item->skill_id > 0) {
-		skill = lcf::ReaderUtil::GetElement(lcf::Data::skills, item->skill_id);
-	}
-
-	if (next_scene == Map && skill && skill->type == lcf::rpg::Skill::Type_escape) {
-		Transition::instance().InitErase(Transition::TransitionFadeOut, this);
-	} else {
-		Scene::TransitionOut(next_scene);
-	}
+void Scene_Quirks::TransitionOut(Scene::SceneType next_scene) {
+	Scene::TransitionOut(next_scene);
 }
