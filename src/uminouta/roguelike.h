@@ -9,6 +9,7 @@ namespace Roguelike {
 		int str, dex, con;
 		int inT, wis, cha;
 		int evil, chaos;
+		vector<std::string> buffs;
 		std::string race;
 		std::string alignments() {
 			return "守序善良";
@@ -24,6 +25,26 @@ namespace Roguelike {
 			} else if (race == "Half Orc") {
 				str += 2; dex -= 1; con += 2;
 				inT -= 1; wis -= 1; cha -= 1;
+			}
+		}
+
+		void add_buff(std::string buff) {
+			buffs.push_back(buff);
+			std::string cmd;
+			cmd = "体弱多病";
+			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
+				str -= 1; con -= 1;
+				return;
+			}
+			cmd = "天资聪颖";
+			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
+				inT += 1;
+				return;
+			}
+			cmd = "身手敏捷";
+			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
+				dex += 1;
+				return;
 			}
 		}
 	};

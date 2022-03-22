@@ -35,5 +35,22 @@ Window_Alignment::Window_Alignment(int ix, int iy, int iwidth, int iheight, int 
 }
 
 void Window_Alignment::Refresh() {
+	auto* actor = Main_Data::game_actors->GetActor(actor_id);
 
+	auto draw = [this](int x, int y, StringView name) {
+		// Draw Term
+		contents->TextDraw(x+0, y, 1, name);
+		/*
+		// Draw Value
+		contents->TextDraw(x+45, y, Font::ColorDefault, std::to_string(value), Text::AlignRight);
+		*/
+		return;
+	};
+
+	int y = 2;
+	auto player = Roguelike::get_Player();
+	for (auto b: player.buffs) {
+		draw(0, y, b);
+		y += 16;
+	}
 }

@@ -351,8 +351,11 @@ namespace Roguelike {
 
 	void init() {
 		Player.set_race("Elf");
-		Player.str -= 1; Player.dex += 1; Player.con -= 1;
-		Player.inT += 2; Player.wis += 1; Player.cha += 1;
+		Player.add_buff("天资聪颖 Lv1");
+		Player.add_buff("身手敏捷 Lv1");
+		Player.add_buff("体弱多病 Lv1");
+		/*Player.str -= 1; Player.dex += 1; Player.con -= 1;
+		Player.inT += 2; Player.wis += 1; Player.cha += 1;*/
 		Player.evil -= 6; Player.chaos -= 6;
 		/*if (!TCODRandom::instance) {
 			TCODRandom::instance =
