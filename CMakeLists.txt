@@ -202,6 +202,8 @@ add_library(${PROJECT_NAME} STATIC
  src/uminouta/window_alignment.cpp
  src/uminouta/scene_crpg_status.h
  src/uminouta/scene_crpg_status.cpp
+ src/uminouta/scene_quirks.h
+ src/uminouta/scene_quirks.cpp
 	src/game_message.cpp
 	src/game_message.h
 	src/game_party_base.cpp
