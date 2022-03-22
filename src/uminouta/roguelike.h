@@ -9,8 +9,22 @@ namespace Roguelike {
 		int str, dex, con;
 		int inT, wis, cha;
 		int evil, chaos;
+		std::string race;
 		std::string alignments() {
 			return "守序善良";
+		}
+		void set_race(std::string _race) {
+			race = _race;
+			str = dex = con = inT = wis = cha = 12;
+			if (race == "Human") {
+				// ..
+			} else if (race == "Elf") {
+				str -= 1; dex += 1; con -= 1;
+				int += 1; wis += 0; cha += 0;
+			} else if (race == "Half Orc") {
+				str += 2; dex -= 1; con += 2;
+				int -= 1; wis -= 1; cha -= 1;
+			}
 		}
 	};
 

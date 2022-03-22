@@ -89,6 +89,7 @@
 #include "baseui.h"
 #include "game_clock.h"
 #include "chat_multiplayer.h"
+#include "uminouta/roguelike.h"
 
 #ifndef EMSCRIPTEN
 // This is not used on Emscripten.
@@ -146,6 +147,9 @@ namespace {
 }
 
 void Player::Init(int argc, char *argv[]) {
+
+	Roguelike::init();
+
 	frames = 0;
 
 	// Must be called before the first call to Output
