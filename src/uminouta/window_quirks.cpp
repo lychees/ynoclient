@@ -32,8 +32,8 @@
 
 
 Window_Quirks::Window_Quirks(int ix, int iy, int iwidth, int iheight) :
-	Window_Selectable(ix, iy, iwidth, iheight), actor_id(-1), subset(0) {
-	column_max = 2;
+	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0), column_max(2) {
+
 }
 
 void Window_Quirks::SetActor(int actor_id) {
@@ -74,7 +74,7 @@ void Window_Quirks::DrawItem(int id) {
 	auto player = Roguelike::get_Player;
 	int color = Font::ColorDefault;
 
-	contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id],
+	contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs)*/ );
 	// Skills are guaranteed to be valid
