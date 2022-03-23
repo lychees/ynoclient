@@ -31,9 +31,10 @@ void Scene_Quirks::Start() {
 	// Create the windows
 	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
 	quirks_window.reset(new Window_Quirks(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
-	//item_window->SetHelpWindow(help_window.get());
-	quirks_window->Refresh();
+
 	quirks_window->SetIndex(item_index);
+	quirks_window->SetHelpWindow(help_window.get());
+	quirks_window->Refresh();
 }
 
 void Scene_Quirks::Continue(SceneType /* prev_scene */) {
