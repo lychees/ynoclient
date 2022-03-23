@@ -67,8 +67,8 @@ void Window_Quirks::Refresh() {
 		DrawItem(i);
 	}
 
-	// SetIndex(index);
-	SetIndex(1);
+	SetIndex(index);
+	// SetIndex(1);
 }
 
 void Window_Quirks::DrawItem(int id) {
@@ -89,7 +89,8 @@ void Window_Quirks::DrawItem(int id) {
 }
 
 void Window_Quirks::UpdateHelp() {
-	Output::Debug("Update Help: 233");
+	// Output::Debug("Update Help: 233");
 	//help_window->SetText(GetSkill() == nullptr ? "" : ToString(GetSkill()->description));
-	help_window->SetText("233");
+	auto player = Roguelike::get_Player();
+	help_window->SetText(player.get_quirk_info(index));
 }
