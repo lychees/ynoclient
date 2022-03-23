@@ -29,6 +29,7 @@
 #include "../output.h"
 #include <lcf/reader_util.h>
 #include "../game_battle.h"
+#include "../output.h"
 
 
 Window_Quirks::Window_Quirks(int ix, int iy, int iwidth, int iheight) :
@@ -78,8 +79,8 @@ void Window_Quirks::DrawItem(int id) {
 	int color = Font::ColorDefault;
 
 	// contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
-	contents->TextDraw(rect.x, rect.y, color, player.quirks[id].first);
-	contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second), Text::AlignCenter);
+	contents->TextDraw(rect.x, rect.y, color, player.quirks[id].first + " Lv " + std::to_string(player.quirks[id].second));
+	// contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second));
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
 	// Skills are guaranteed to be valid
@@ -88,6 +89,7 @@ void Window_Quirks::DrawItem(int id) {
 }
 
 void Window_Quirks::UpdateHelp() {
+	Output::Debug("Update Help: 233");
 	//help_window->SetText(GetSkill() == nullptr ? "" : ToString(GetSkill()->description));
 	help_window->SetText("233");
 }
