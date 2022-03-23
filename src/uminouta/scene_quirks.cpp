@@ -30,28 +30,28 @@ Scene_Quirks::Scene_Quirks(int actor_index, int quirk_index) :
 void Scene_Quirks::Start() {
 	// Create the windows
 	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
-	item_window.reset(new Window_Item(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
-	item_window->SetHelpWindow(help_window.get());
-	item_window->Refresh();
-	item_window->SetIndex(item_index);
+	quirks_window.reset(new Window_Quirks(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
+	//item_window->SetHelpWindow(help_window.get());
+	quirks_window->Refresh();
+	quirks_window->SetIndex(item_index);
 }
 
 void Scene_Quirks::Continue(SceneType /* prev_scene */) {
-	item_window->Refresh();
+	quirks_window->Refresh();
 }
 
 void Scene_Quirks::Update() {
 	help_window->Update();
-	item_window->Update();
+	quirks_window->Update();
 
 	if (Input::IsTriggered(Input::CANCEL)) {
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cancel));
 		Scene::Pop();
 	} else if (Input::IsTriggered(Input::DECISION)) {
-		int item_id = item_window->GetItem() == NULL ? 0 : item_window->GetItem()->ID;
+		//int item_id = quirks_window->GetItem() == NULL ? 0 : item_window->GetItem()->ID;
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
 //		Scene::Push(std::make_shared<Scene_ActorTarget>(item_id));
-		item_index = item_window->GetIndex();
+		item_index = quirks_window->GetIndex();
 	}
 }
 
