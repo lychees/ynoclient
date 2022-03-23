@@ -354,6 +354,10 @@ namespace Roguelike {
 		Player.add_buff("天资聪颖 Lv1");
 		Player.add_buff("身手敏捷 Lv1");
 		Player.add_buff("体弱多病 Lv1");
+		Player.add_quirk("灵巧", 1);
+		Player.add_quirk("聪明", 1);
+		Player.add_quirk("绵软", 1);
+		Player.add_quirk("体弱", 1);
 		/*Player.str -= 1; Player.dex += 1; Player.con -= 1;
 		Player.inT += 2; Player.wis += 1; Player.cha += 1;*/
 		Player.evil -= 6; Player.chaos -= 6;

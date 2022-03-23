@@ -56,7 +56,7 @@ void Window_Quirks::Refresh() {
 		data.push_back(0);
 	}*/
 
-	item_max = player.buffs.size();
+	item_max = player.quirks.size();
 
 	CreateContents();
 
@@ -75,7 +75,8 @@ void Window_Quirks::DrawItem(int id) {
 	int color = Font::ColorDefault;
 
 	// contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
-	contents->TextDraw(rect.x, rect.y, color, player.buffs[id]);
+	contents->TextDraw(rect.x, rect.y, color, player.quirks[id].first);
+	contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second), Text::AlignLeft);
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
 	// Skills are guaranteed to be valid

@@ -10,6 +10,7 @@ namespace Roguelike {
 		int inT, wis, cha;
 		int evil, chaos;
 		std::vector<std::string> buffs;
+		std::vector<pair<std::string, int>> quirk;
 		std::string race;
 		std::string alignments() {
 			std::string z;
@@ -42,22 +43,66 @@ namespace Roguelike {
 			}
 		}
 
+		void get_quirk_info() {
+
+		}
+
 		void add_buff(std::string buff) {
-			buffs.push_back(buff);
-			std::string cmd;
-			cmd = "体弱多病";
-			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
-				str -= 1; con -= 1;
+
+		}
+
+		void add_quirk(std::string quirk, int lv) {
+			quirks.push_back({quirk, lv});
+			//std::string cmd;
+			//cmd = "体弱多病";
+			//if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
+
+			if (quirk == "力大") {
+				str += lv;
 				return;
 			}
-			cmd = "天资聪颖";
-			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
-				inT += 1;
+			if (quirk == "绵软") {
+				str -= lv;
 				return;
 			}
-			cmd = "身手敏捷";
-			if (std::equal(cmd.begin(), cmd.end(), buff.begin())) {
-				dex += 1;
+			if (quirk == "灵巧") {
+				dex += lv;
+				return;
+			}
+			if (quirk == "迟钝") {
+				dex -= lv;
+				return;
+			}
+			if (quirk == "结实") {
+				con += lv;
+				return;
+			}
+			if (quirk == "体弱") {
+				con -= lv;
+				return;
+			}
+			if (quirk == "聪明") {
+				inT += lv;
+				return;
+			}
+			if (quirk == "愚蠢") {
+				inT -= lv;
+				return;
+			}
+			if (quirk == "聪慧") {
+				wis += lv;
+				return;
+			}
+			if (quirk == "愚昧") {
+				wis -= lv;
+				return;
+			}
+			if (quirk == "优雅") {
+				cha += lv;
+				return;
+			}
+			if (quirk == "粗鲁") {
+				cha -= lv;
 				return;
 			}
 		}
