@@ -55,9 +55,12 @@ namespace Roguelike {
 			if (id < 0 || quirks.size() <= id) {
 				return "out of bound";
 			}
-			auto q = quirks[id];
-			std::string qk = q.first;
-			std::string lv = q.first;
+			//auto q = quirks[id];
+			//std::string qk = q.first;
+			// int lv = q.second;
+
+			auto [qk, lv] = quirks[id];
+
 			if (qk == "力大") {
 				return "力量 + " + std::to_string(lv);
 			}
