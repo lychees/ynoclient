@@ -76,7 +76,7 @@ void Window_Quirks::DrawItem(int id) {
 
 	contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
 
-	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs)*/ );
+	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
 	// Skills are guaranteed to be valid
 	//DrawSkillName(, rect.x, rect.y, enabled);
 	//}
