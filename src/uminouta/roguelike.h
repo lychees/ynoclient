@@ -10,7 +10,7 @@ namespace Roguelike {
 		int inT, wis, cha;
 		int evil, chaos;
 		std::vector<std::string> buffs;
-		std::vector<pair<std::string, int>> quirks;
+		std::vector<std::pair<std::string, int>> quirks;
 		std::string race;
 		std::string alignments() {
 			std::string z;
