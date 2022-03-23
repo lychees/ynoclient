@@ -59,22 +59,22 @@ namespace Roguelike {
 			std::string qk = q.first;
 			std::string lv = q.first;
 			if (qk == "力大") {
-				return "力量 + " = std::to_string(lv);
+				return "力量 + " + std::to_string(lv);
 			}
 			if (qk == "绵软") {
-				return "力量 - " = std::to_string(lv);
+				return "力量 - " + std::to_string(lv);
 			}
 			if (qk == "灵巧") {
-				return "敏捷 + " = std::to_string(lv);
+				return "敏捷 + " + std::to_string(lv);
 			}
 			if (qk == "迟钝") {
-				return "敏捷 - " = std::to_string(lv);
+				return "敏捷 - " + std::to_string(lv);
 			}
 			if (qk == "结实") {
-				return "体质 + " = std::to_string(lv);
+				return "体质 + " + std::to_string(lv);
 			}
 			if (qk == "体弱") {
-				return "体质 - " = std::to_string(lv);
+				return "体质 - " + std::to_string(lv);
 			}
 			return "no info";
 		}
