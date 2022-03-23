@@ -32,8 +32,8 @@
 
 
 Window_Quirks::Window_Quirks(int ix, int iy, int iwidth, int iheight) :
-	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0), column_max(2) {
-
+	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0) {
+	column_max = 2;
 }
 
 void Window_Quirks::SetActor(int actor_id) {
@@ -71,7 +71,7 @@ void Window_Quirks::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
-	auto player = Roguelike::get_Player;
+	auto player = Roguelike::get_Player();
 	int color = Font::ColorDefault;
 
 	contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
