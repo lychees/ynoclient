@@ -145,7 +145,7 @@ void Scene_Menu::CreateCommandWindow() {
 			break;
 		case CRPG_Status:
 //			options.push_back(Player::IsCP936() ? "属性" : (Player::IsBig5() ? "属性" : (Player::IsCP932() ? "属性" : "属性")));
-			options.push_back(Player::IsCP936() ? "特性" : (Player::IsBig5() ? "特性" : (Player::IsCP932() ? "特性" : "特性")));			
+			options.push_back(Player::IsCP936() ? "特性" : (Player::IsBig5() ? "特性" : (Player::IsCP932() ? "特性" : "特性")));
 			break;
 		default:
 			options.push_back(ToString(lcf::Data::terms.menu_quit));
