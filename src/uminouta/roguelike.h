@@ -55,9 +55,6 @@ namespace Roguelike {
 			if (id < 0 || quirks.size() <= id) {
 				return "out of bound";
 			}
-			//auto q = quirks[id];
-			//std::string qk = q.first;
-			// int lv = q.second;
 
 			auto [qk, lv] = quirks[id];
 
@@ -76,8 +73,26 @@ namespace Roguelike {
 			if (qk == "结实") {
 				return "体质 + " + std::to_string(lv);
 			}
-			if (qk == "体弱") {
+			if (qk == "不足") {
 				return "体质 - " + std::to_string(lv);
+			}
+			if (qk == "聪明") {
+				return "智力 + " + std::to_string(lv);
+			}
+			if (qk == "笨拙") {
+				return "智力 - " + std::to_string(lv);
+			}
+			if (qk == "敏锐") {
+				return "感知 + " + std::to_string(lv);
+			}
+			if (qk == "涣散") {
+				return "感知 - " + std::to_string(lv);
+			}
+			if (qk == "优雅") {
+				return "魅力 + " + std::to_string(lv);
+			}
+			if (qk == "粗鲁") {
+				return "魅力 - " + std::to_string(lv);
 			}
 			return "no info";
 		}
@@ -108,7 +123,7 @@ namespace Roguelike {
 				con += lv;
 				return;
 			}
-			if (quirk == "体弱") {
+			if (quirk == "不足") {
 				con -= lv;
 				return;
 			}
@@ -116,15 +131,15 @@ namespace Roguelike {
 				inT += lv;
 				return;
 			}
-			if (quirk == "愚蠢") {
+			if (quirk == "笨拙") {
 				inT -= lv;
 				return;
 			}
-			if (quirk == "聪慧") {
+			if (quirk == "敏锐") {
 				wis += lv;
 				return;
 			}
-			if (quirk == "愚昧") {
+			if (quirk == "涣散") {
 				wis -= lv;
 				return;
 			}
