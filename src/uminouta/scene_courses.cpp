@@ -22,7 +22,7 @@
 #include "../transition.h"
 #include "../game_system.h"
 
-Scene_Courses::Scene_Quirks(int index) :
+Scene_Courses::Scene_Courses(int index) :
 	item(index) {
 	Scene::type = Scene::Item;
 }
