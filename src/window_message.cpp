@@ -141,7 +141,7 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 
 	int num_lines = 0;
 	auto append = [&](const std::string& line) {
-		Output::Debug("Lines: ", line);
+		Output::Debug(line.c_str());
 		bool force_page_break = (!line.empty() && line.back() == '\f');
 
 		text.append(line, 0, line.size() - force_page_break);
@@ -164,8 +164,8 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 			/* TODO: don't take commands like \> \< into account when word-wrapping */
 			Game_Message::WordWrap(
 					line,
-					// width - 24,
-					width - 48,
+					width - 24,
+					//width - 48,
 					[&](StringView wrapped_line) {
 						append(std::string(wrapped_line));
 					}
