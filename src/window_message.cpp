@@ -156,7 +156,9 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 	};
 
 	if (pending_message.IsWordWrapped()) {
+		Output::Debug("Wrapped???");
 		for (const std::string& line : lines) {
+			Output::Debug("Lines: ", line);
 			/* TODO: don't take commands like \> \< into account when word-wrapping */
 			Game_Message::WordWrap(
 					line,
