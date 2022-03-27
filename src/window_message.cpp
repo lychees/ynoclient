@@ -181,6 +181,8 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 
 	text_index = text.data();
 
+	Output::Debug("{}: MSG TEXT \n{}", text);
+
 	DebugLog("{}: MSG TEXT \n{}", text);
 
 	auto open_frames = (!IsVisible() && !Game_Battle::IsBattleRunning()) ? message_animation_frames : 0;
