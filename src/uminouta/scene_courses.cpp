@@ -23,6 +23,6 @@
 #include "../game_system.h"
 
 Scene_Courses::Scene_Courses(int index) :
-	item(index) {
+	index(index) {
 	Scene::type = Scene::Item;
 }

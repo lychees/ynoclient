@@ -451,6 +451,12 @@ namespace Roguelike {
 	bool isCmd(std::string msg) {
 		std::string cmd;
 
+		cmd = ".openTestMenu";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Scene::instance->SetRequestedScene(std::make_shared<Scene_Courses>());
+			return true;
+		}
+
 		cmd = ".openCrpgMenu";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
 			Scene::instance->SetRequestedScene(std::make_shared<Scene_Courses>());
