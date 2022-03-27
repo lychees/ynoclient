@@ -141,6 +141,7 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 
 	int num_lines = 0;
 	auto append = [&](const std::string& line) {
+		Output::Debug("Lines: ", line);
 		bool force_page_break = (!line.empty() && line.back() == '\f');
 
 		text.append(line, 0, line.size() - force_page_break);
