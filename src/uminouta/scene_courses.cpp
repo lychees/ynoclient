@@ -26,3 +26,36 @@ Scene_Courses::Scene_Courses(int index) :
 	index(index) {
 	Scene::type = Scene::Item;
 }
+
+void Scene_Courses::Start() {
+	// Create the windows
+	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
+	quirks_window.reset(new Window_Quirks(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
+
+	quirks_window->SetIndex(index);
+	quirks_window->SetHelpWindow(help_window.get());
+	quirks_window->Refresh();
+}
+
+void Scene_Courses::Continue(SceneType /* prev_scene */) {
+	quirks_window->Refresh();
+}
+
+void Scene_Courses::Update() {
+	help_window->Update();
+	quirks_window->Update();
+
+	if (Input::IsTriggered(Input::CANCEL)) {
+		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cancel));
+		Scene::Pop();
+	} else if (Input::IsTriggered(Input::DECISION)) {
+		//int item_id = quirks_window->GetItem() == NULL ? 0 : item_window->GetItem()->ID;
+		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
+//		Scene::Push(std::make_shared<Scene_ActorTarget>(item_id));
+		index = quirks_window->GetIndex();
+	}
+}
+
+void Scene_Courses::TransitionOut(Scene::SceneType next_scene) {
+	Scene::TransitionOut(next_scene);
+}
