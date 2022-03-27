@@ -780,7 +780,8 @@ Scene_Battle_Rpg2k::SceneActionReturn Scene_Battle_Rpg2k::ProcessSceneActionVict
 		auto pm = PendingMessage();
 		pm.SetEnableFace(false);
 
-		pm.SetWordWrapped(Player::IsRPG2kE());
+		// pm.SetWordWrapped(Player::IsRPG2kE());
+		pm.SetWordWrapped(true);
 		pm.PushLine(ToString(lcf::Data::terms.victory) + Player::escape_symbol + "|");
 
 		std::stringstream ss;
@@ -837,7 +838,8 @@ Scene_Battle_Rpg2k::SceneActionReturn Scene_Battle_Rpg2k::ProcessSceneActionDefe
 		auto pm = PendingMessage();
 		pm.SetEnableFace(false);
 
-		pm.SetWordWrapped(Player::IsRPG2kE());
+		// pm.SetWordWrapped(Player::IsRPG2kE());
+		pm.SetWordWrapped(true);
 
 		pm.PushLine(ToString(lcf::Data::terms.defeat));
 

@@ -141,6 +141,7 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 
 	int num_lines = 0;
 	auto append = [&](const std::string& line) {
+		Output::Debug(line.c_str());
 		bool force_page_break = (!line.empty() && line.back() == '\f');
 
 		text.append(line, 0, line.size() - force_page_break);
@@ -155,12 +156,16 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 		}
 	};
 
-	if (pending_message.IsWordWrapped()) {
+	// if (pending_message.IsWordWrapped()) {
+	if (true || pending_message.IsWordWrapped()) {
+		Output::Debug("Wrapped???");
 		for (const std::string& line : lines) {
+			Output::Debug("Lines: ", line);
 			/* TODO: don't take commands like \> \< into account when word-wrapping */
 			Game_Message::WordWrap(
 					line,
-					width - 24,
+					50,
+					//width - 24,
 					[&](StringView wrapped_line) {
 						append(std::string(wrapped_line));
 					}
@@ -179,6 +184,8 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 	item_max = min(4, pending_message.GetNumChoices());
 
 	text_index = text.data();
+
+	Output::Debug("Text: {}", text);
 
 	DebugLog("{}: MSG TEXT \n{}", text);
 
