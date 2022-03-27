@@ -33,7 +33,7 @@ public:
 	 *
 	 * @param quirk_index index to select.
 	 */
-	Scene_Quirks(int actor_index, int quirk_index = 0);
+	Scene_Quirks(int actor_index = 0, int quirk_index = 0);
 
 	void Start() override;
 	void Continue(SceneType prev_scene) override;
