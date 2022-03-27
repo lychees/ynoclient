@@ -84,8 +84,7 @@ int Game_Message::WordWrap(StringView line, const int limit, const WordWrapCallb
 	int line_count = 0;
 	FontRef font = Font::Default();
 
-	Output::Debug("WordWrap:");
-	Output::Debug(line.c_str());
+
 
 	do {
 		int next = start;
@@ -113,6 +112,8 @@ int Game_Message::WordWrap(StringView line, const int limit, const WordWrapCallb
 		}
 
 		auto wrapped = line.substr(start, (next - 1) - start);
+		Output::Debug("WordWrap:");
+		Output::Debug(wrapped);
 
 		callback(wrapped);
 		line_count++;
