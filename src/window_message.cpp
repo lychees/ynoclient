@@ -181,7 +181,7 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 
 	text_index = text.data();
 
-	Output::Debug("{}: MSG TEXT \n{}", text);
+	Output::Debug("Text: {}", text);
 
 	DebugLog("{}: MSG TEXT \n{}", text);
 
