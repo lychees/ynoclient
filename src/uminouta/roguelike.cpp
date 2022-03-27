@@ -2,6 +2,7 @@
 #include "../game_map.h"
 #include "../main_data.h"
 #include "../output.h"
+#include "scene_quirks.h"
 
 namespace Roguelike {
 
@@ -450,9 +451,9 @@ namespace Roguelike {
 	bool isCmd(std::string msg) {
 		std::string cmd;
 
-		cmd = ".openQuirkMenu";
+		cmd = ".openQuirksMenu";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Scene::instance->SetRequestedScene(std::make_shared<Scene_Menu>());
+			Scene::instance->SetRequestedScene(std::make_shared<Scene_Quirks>());
 			return true;
 		}
 
