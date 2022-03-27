@@ -85,7 +85,6 @@ int Game_Message::WordWrap(StringView line, const int limit, const WordWrapCallb
 	FontRef font = Font::Default();
 
 	Debug::Output("limit: ", limit);
-	limit -= 24 + 48;
 
 	do {
 		int next = start;
