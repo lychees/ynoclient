@@ -348,7 +348,6 @@ namespace Roguelike {
 		}
 	}
 
-
 	void init() {
 		Player.set_race("Elf");
 		//Player.add_buff("天资聪颖 Lv1");
@@ -450,6 +449,12 @@ namespace Roguelike {
 
 	bool isCmd(std::string msg) {
 		std::string cmd;
+
+		cmd = ".openQuirkMenu";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Scene::instance->SetRequestedScene(std::make_shared<Scene_Menu>());
+			return true;
+		}
 
 		cmd = ".turnon_FOV";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {

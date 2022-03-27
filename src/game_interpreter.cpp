@@ -895,7 +895,7 @@ bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { /
 		Roguelike::isCmd(cmd.substr(5).c_str());
 		return true;
 	}
-	if (cmd.size() > 1 && cmd[0] == '.') {
+	if (cmd.size() > 2 && cmd[0] == '.' && cmd[0] != '.') {
 		Roguelike::isCmd(cmd);
 		return true;
 	}
