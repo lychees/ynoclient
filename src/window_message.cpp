@@ -155,7 +155,8 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 		}
 	};
 
-	if (pending_message.IsWordWrapped()) {
+	// if (pending_message.IsWordWrapped()) {
+	if (true || pending_message.IsWordWrapped()) {
 		Output::Debug("Wrapped???");
 		for (const std::string& line : lines) {
 			Output::Debug("Lines: ", line);
