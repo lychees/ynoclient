@@ -160,7 +160,8 @@ void Window_Message::StartMessageProcessing(PendingMessage pm) {
 			/* TODO: don't take commands like \> \< into account when word-wrapping */
 			Game_Message::WordWrap(
 					line,
-					width - 24,
+					// width - 24,
+					width - 48,
 					[&](StringView wrapped_line) {
 						append(std::string(wrapped_line));
 					}
