@@ -85,7 +85,7 @@ int Game_Message::WordWrap(StringView line, const int limit, const WordWrapCallb
 	FontRef font = Font::Default();
 
 	Output::Debug("WordWrap:");
-	Output::Debug(line);
+	Output::Debug(line.c_str());
 
 	do {
 		int next = start;
