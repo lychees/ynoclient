@@ -98,7 +98,7 @@ void Window_Courses::DrawItem(int id) {
 
 	//Rect rect = GetItemRect(id);
 	//contents->ClearRect(rect);
-
+	int i = id;
 	contents->ClearRect(Rect(0, menu_item_height * i, contents->GetWidth() - 0, menu_item_height));
 	contents->TextDraw(0, menu_item_height * i + menu_item_height / 8, color, title);
 	contents->TextDraw(GetWidth() - 16, menu_item_height * i + menu_item_height / 8, color, "12321232123", Text::AlignRight);
