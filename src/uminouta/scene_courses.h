@@ -22,7 +22,7 @@
 #include "../scene.h"
 #include "../window_help.h"
 
-#include "window_quirks.h"
+#include "window_courses.h"
 
 /**
  * Scene_Courses courses menu class.

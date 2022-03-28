@@ -21,7 +21,7 @@
 // Headers
 #include "../scene.h"
 #include "../window_help.h"
-#include "window_courses.h"
+#include "window_quirks.h"
 
 /**
  * Scene_Quirks Status class.
