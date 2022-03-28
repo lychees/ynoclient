@@ -9,6 +9,7 @@ namespace Roguelike {
 		int str, dex, con;
 		int inT, wis, cha;
 		int evil, chaos;
+		int Course_Score[8];
 		std::vector<std::string> buffs;
 		std::vector<std::pair<std::string, int>> quirks;
 		std::string race;
@@ -158,7 +159,6 @@ namespace Roguelike {
 	};
 
 	struct Ariel : Elf {
-		int Courses_Skill[8];
 		/*
 			Literature,
 			Science,
