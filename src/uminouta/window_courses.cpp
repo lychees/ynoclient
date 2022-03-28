@@ -60,28 +60,6 @@ void Window_Courses::Refresh() {
 	// SetIndex(1);
 }
 
-const static std::string Courses_Title[16] = {
-	"文学",
-	"科学",
-	"史学",
-	"武学",
-	"魔法",
-	"兵法",
-	"礼法",
-	"历法",
-};
-
-const static std::string Courses_Help[16] = {
-	"文学应该预见未来。",
-	"科学的敌人，不比朋友少。",
-	"以史为鉴，可知兴替。",
-	"文講八法，武講八勢。",
-	"用魔法打败魔法。",
-	"知彼知己，百戰不殆",
-	"人無禮不立，事無禮不成，國無禮不寧。",
-	"脚踏实地，仰望星空。",
-};
-
 void Window_Courses::DrawItem(int id) {
 
 
@@ -99,7 +77,6 @@ void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
-
 	//Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
 
 	if (morning == id) title += "[上午]";
@@ -108,11 +85,6 @@ void Window_Courses::DrawItem(int id) {
 
 	contents->TextDraw(rect.x, rect.y, color, title);
 	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(player.Course_Score[id]), Text::AlignRight);
-
-	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
-	// Skills are guaranteed to be valid
-	//DrawSkillName(, rect.x, rect.y, enabled);
-	//}
 }
 
 void Window_Courses::UpdateHelp() {

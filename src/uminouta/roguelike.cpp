@@ -9,6 +9,8 @@ namespace Roguelike {
 
 	Ariel Player;
 
+	std::string cache_actor_name[3];
+
 	TCODMap *tcod_map;
 
 	static const int ROOM_MAX_SIZE = 24;
@@ -451,6 +453,31 @@ namespace Roguelike {
 
 	bool isCmd(std::string msg) {
 		std::string cmd;
+
+		cmd = ".get_courses_into_actor_names";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Game_Actor* actor0 = Main_Data::game_actors->GetActor(com.parameters[0]);
+			Game_Actor* actor1 = Main_Data::game_actors->GetActor(com.parameters[1]);
+			Game_Actor* actor2 = Main_Data::game_actors->GetActor(com.parameters[2]);
+			cache_actor_name[0] = actor0->GetName();
+			cache_actor_name[1] = actor1->GetName();
+			cache_actor_name[2] = actor2->GetName();
+			actor0->SetName("0");
+			actor1->SetName("1");
+			actor2->SetName("2");
+			return true;
+		}
+
+		cmd = ".rollback_actor_names";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			Game_Actor* actor0 = Main_Data::game_actors->GetActor(com.parameters[0]);
+			Game_Actor* actor1 = Main_Data::game_actors->GetActor(com.parameters[1]);
+			Game_Actor* actor2 = Main_Data::game_actors->GetActor(com.parameters[2]);
+			actor0->SetName(cache_actor_name[0]);
+			actor1->SetName(cache_actor_name[1]);
+			actor2->SetName(cache_actor_name[2]);
+			return true;
+		}
 
 		cmd = ".openTestMenu";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {

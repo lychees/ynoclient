@@ -28,6 +28,29 @@
 class Window_Courses : public Window_Selectable {
 
 public:
+
+	const static std::string Courses_Title[16] = {
+		"文学",
+		"科学",
+		"史学",
+		"武学",
+		"魔法",
+		"兵法",
+		"礼法",
+		"历法",
+	};
+
+	const static std::string Courses_Help[16] = {
+		"文学应该预见未来。",
+		"科学的敌人，不比朋友少。",
+		"以史为鉴，可知兴替。",
+		"文講八法，武講八勢。",
+		"用魔法打败魔法。",
+		"知彼知己，百戰不殆",
+		"人無禮不立，事無禮不成，國無禮不寧。",
+		"脚踏实地，仰望星空。",
+	};
+
 	/**
 	 * Constructor.
 	 */
