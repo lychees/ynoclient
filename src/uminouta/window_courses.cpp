@@ -102,9 +102,9 @@ void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
-	if (morning == id) title += '[上午]';
-	if (afternoon == id) title += '[下午]';
-	if (night == id) title += '[晚自习]';
+	if (morning == id) title += "[上午]";
+	if (afternoon == id) title += "[下午]";
+	if (night == id) title += "[晚自习]";
 
 	contents->TextDraw(rect.x, rect.y, color, title);
 	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(player.Course_Score[id]), Text::AlignRight);

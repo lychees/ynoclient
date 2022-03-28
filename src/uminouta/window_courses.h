@@ -56,6 +56,7 @@ public:
 	 * Updates the help window.
 	 */
 	void UpdateHelp() override;
+	void Update() override;
 
 	int morning, afternoon, night, stage;
 
