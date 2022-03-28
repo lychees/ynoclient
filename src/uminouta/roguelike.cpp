@@ -453,8 +453,26 @@ namespace Roguelike {
 		return explored[y][x];
 	}
 
+	void doStudy() {
+		int i = 4 + (rand() % 6);
+		int j = 4 + (rand() % 6);
+		int k = 4 + (rand() % 6);
+		Player.Course_Score[Player.morning_course] += i;
+		Player.Course_Score[Player.morning_course] += j;
+		Player.Course_Score[Player.morning_course] += k;
+		Main_Data::game_variables->Set(1, i);
+		Main_Data::game_variables->Set(2, j);
+		Main_Data::game_variables->Set(3, k);
+	}
+
 	bool isCmd(std::string msg) {
 		std::string cmd;
+
+		cmd = ".doStudy";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			doStudy();
+			return true;
+		}
 
 		cmd = ".get_courses_into_actor_names";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
