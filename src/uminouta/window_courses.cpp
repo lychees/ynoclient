@@ -84,8 +84,7 @@ const static std::string Courses_Help[16] = {
 };
 
 void Window_Courses::DrawItem(int id) {
-	Rect rect = GetItemRect(id);
-	contents->ClearRect(rect);
+
 
 	auto player = Roguelike::get_Player();
 	int color = Font::ColorDefault;
@@ -95,7 +94,14 @@ void Window_Courses::DrawItem(int id) {
 	std::string title = Courses_Title[id];
 
 	// contents->TextDraw(rect.x, rect.y, color, title + "1");
-	contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
+	//contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
+
+	//Rect rect = GetItemRect(id);
+	//contents->ClearRect(rect);
+
+	contents->ClearRect(Rect(0, menu_item_height * i, contents->GetWidth() - 0, menu_item_height));
+	contents->TextDraw(0, menu_item_height * i + menu_item_height / 8, color, title);
+	contents->TextDraw(GetWidth() - 16, menu_item_height * i + menu_item_height / 8, color, "12321232123", Text::AlignRight);
 	// contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second));
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
