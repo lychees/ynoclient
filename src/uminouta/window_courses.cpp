@@ -18,6 +18,7 @@
 // Headers
 #include <iomanip>
 #include <sstream>
+#include <lcf/reader_util.h>
 #include "window_courses.h"
 #include "roguelike.h"
 #include "../game_actor.h"
@@ -27,9 +28,9 @@
 #include "../font.h"
 #include "../player.h"
 #include "../output.h"
-#include <lcf/reader_util.h>
 #include "../game_battle.h"
 #include "../output.h"
+#include "../input.h"
 
 
 Window_Courses::Window_Courses(int ix, int iy, int iwidth, int iheight) :
@@ -120,7 +121,7 @@ void Window_Courses::UpdateHelp() {
 
 void Window_Courses::Update() {
 
-	Window_Selectable::Updte();
+	Window_Selectable::Update();
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
