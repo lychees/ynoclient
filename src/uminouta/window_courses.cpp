@@ -46,14 +46,10 @@ void Window_Courses::SetActor(int actor_id) {
 }
 
 void Window_Courses::Refresh() {
-	// data.clear();
 
 	auto player = Roguelike::get_Player();
-
 	item_max = 8;
-
 	CreateContents();
-
 	contents->Clear();
 
 	for (int i = 0; i < item_max; ++i) {
@@ -104,7 +100,7 @@ void Window_Courses::DrawItem(int id) {
 	contents->ClearRect(rect);
 
 
-	Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
+	//Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
 
 	if (morning == id) title += "[上午]";
 	if (afternoon == id) title += "[下午]";
@@ -136,5 +132,6 @@ void Window_Courses::Update() {
 			night = index;
 		}
 		++stage; if (stage == 3) stage = 0;
+		Refresh();
 	}
 }
