@@ -47,7 +47,7 @@ void Window_Courses::Refresh() {
 
 	auto player = Roguelike::get_Player();
 
-	item_max = 9;
+	item_max = 8;
 
 	CreateContents();
 
@@ -95,6 +95,7 @@ void Window_Courses::DrawItem(int id) {
 	std::string title = Courses_Title[id];
 
 	contents->TextDraw(rect.x, rect.y, color, title);
+	contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
 	// contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second));
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
