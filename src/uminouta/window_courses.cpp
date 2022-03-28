@@ -35,6 +35,7 @@
 Window_Courses::Window_Courses(int ix, int iy, int iwidth, int iheight) :
 	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0) {
 	column_max = 1;
+	moring = afternoon = night = -1;
 }
 
 void Window_Courses::SetActor(int actor_id) {
@@ -91,13 +92,19 @@ void Window_Courses::DrawItem(int id) {
 
 	// contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
 
-	std::string title = Courses_Title[id];
+
 
 	// contents->TextDraw(rect.x, rect.y, color, title + "1");
 	//contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
 
+	std::string title = Courses_Title[id];
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
+
+	if (morning == id) title += '[上午]';
+	if (afternoon == id) title += '[下午]';
+	if (night == id) title += '[晚自习]';
+
 	contents->TextDraw(rect.x, rect.y, color, title);
 	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(player.Course_Score[id]), Text::AlignRight);
 
@@ -108,10 +115,21 @@ void Window_Courses::DrawItem(int id) {
 }
 
 void Window_Courses::UpdateHelp() {
-	// Output::Debug("Update Help: 233");
-	//help_window->SetText(GetSkill() == nullptr ? "" : ToString(GetSkill()->description));
-	auto player = Roguelike::get_Player();
-	std::string help;
-
 	help_window->SetText(Courses_Help[index]);
+}
+
+void Window_Courses::Update() {
+
+	Window_Selectable::Updte();
+
+	if (Input::IsTriggered(Input::DECISION)) {
+		if (stage == 0) {
+			morning = index;
+		} else if (stage == 1) {
+			afternoon = index;
+		} else if (stage == 2) {
+			night = index;
+		}
+		++stage; if (stage == 3) stage = 0;
+	}
 }

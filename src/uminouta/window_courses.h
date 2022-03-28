@@ -57,6 +57,8 @@ public:
 	 */
 	void UpdateHelp() override;
 
+	int moring, afternoon, night, stage;
+
 protected:
 
 	int actor_id;
