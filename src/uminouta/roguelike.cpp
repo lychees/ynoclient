@@ -5,7 +5,6 @@
 #include "../main_data.h"
 #include "../output.h"
 #include "../game_actor.h"
-#include "../game_actors.h"
 
 
 namespace Roguelike {
@@ -459,9 +458,9 @@ namespace Roguelike {
 
 		cmd = ".get_courses_into_actor_names";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Game_Actor* actor0 = Main_Data::game_actors->GetActor(0);
-			Game_Actor* actor1 = Main_Data::game_actors->GetActor(1);
-			Game_Actor* actor2 = Main_Data::game_actors->GetActor(2);
+			Game_Actor* actor0 = Main_Data::game_actors->GetActor(1);
+			Game_Actor* actor1 = Main_Data::game_actors->GetActor(2);
+			Game_Actor* actor2 = Main_Data::game_actors->GetActor(3);
 			cache_actor_name[0] = ToString(actor0->GetName());
 			cache_actor_name[1] = ToString(actor1->GetName());
 			cache_actor_name[2] = ToString(actor2->GetName());
@@ -473,9 +472,9 @@ namespace Roguelike {
 
 		cmd = ".rollback_actor_names";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
-			Game_Actor* actor0 = Main_Data::game_actors->GetActor(0);
-			Game_Actor* actor1 = Main_Data::game_actors->GetActor(1);
-			Game_Actor* actor2 = Main_Data::game_actors->GetActor(2);
+			Game_Actor* actor0 = Main_Data::game_actors->GetActor(1);
+			Game_Actor* actor1 = Main_Data::game_actors->GetActor(2);
+			Game_Actor* actor2 = Main_Data::game_actors->GetActor(3);
 			actor0->SetName(cache_actor_name[0]);
 			actor1->SetName(cache_actor_name[1]);
 			actor2->SetName(cache_actor_name[2]);
