@@ -464,9 +464,9 @@ namespace Roguelike {
 			cache_actor_name[0] = ToString(actor0->GetName());
 			cache_actor_name[1] = ToString(actor1->GetName());
 			cache_actor_name[2] = ToString(actor2->GetName());
-			actor0->SetName("0");
-			actor1->SetName("1");
-			actor2->SetName("2");
+			actor0->SetName(Courses_Title[morning_course]);
+			actor1->SetName(Courses_Title[afternoon_course]);
+			actor2->SetName(Courses_Title[night_course]);
 			return true;
 		}
 

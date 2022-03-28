@@ -5,6 +5,10 @@
 
 namespace Roguelike {
 
+	int morning_course = 0;
+	int afternoon_course = 0;
+	int night_course = 0;
+
 	struct Creature {
 		int str, dex, con;
 		int inT, wis, cha;

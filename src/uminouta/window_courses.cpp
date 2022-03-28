@@ -36,7 +36,6 @@
 Window_Courses::Window_Courses(int ix, int iy, int iwidth, int iheight) :
 	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0) {
 	column_max = 1;
-	morning = afternoon = night = -1;
 	stage = 0;
 }
 
@@ -79,9 +78,9 @@ void Window_Courses::DrawItem(int id) {
 
 	//Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
 
-	if (morning == id) title += "[上午]";
-	if (afternoon == id) title += "[下午]";
-	if (night == id) title += "[晚自习]";
+	if (Roguelike::morning_course == id) title += "[上午]";
+	if (Roguelike::afternoon_course == id) title += "[下午]";
+	if (Roguelike::night_course == id) title += "[晚自习]";
 
 	contents->TextDraw(rect.x, rect.y, color, title);
 	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(player.Course_Score[id]), Text::AlignRight);
@@ -97,11 +96,11 @@ void Window_Courses::Update() {
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
-			morning = index;
+			Roguelike::morning_course = index;
 		} else if (stage == 1) {
-			afternoon = index;
+			Roguelike::afternoon_course = index;
 		} else if (stage == 2) {
-			night = index;
+			Roguelike::night_course = index;
 		}
 		++stage; if (stage == 3) stage = 0;
 		Refresh();
