@@ -5,6 +5,7 @@
 #include "../main_data.h"
 #include "../output.h"
 #include "../game_actors.h"
+#include "../game_variables.h"
 
 
 namespace Roguelike {
