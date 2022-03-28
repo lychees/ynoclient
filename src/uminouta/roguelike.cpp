@@ -459,8 +459,8 @@ namespace Roguelike {
 		int j = 4 + (rand() % 6);
 		int k = 4 + (rand() % 6);
 		Player.Course_Score[Player.morning_course] += i;
-		Player.Course_Score[Player.morning_course] += j;
-		Player.Course_Score[Player.morning_course] += k;
+		Player.Course_Score[Player.afternoon_course] += j;
+		Player.Course_Score[Player.night_course] += k;
 		Main_Data::game_variables->Set(1, i);
 		Main_Data::game_variables->Set(2, j);
 		Main_Data::game_variables->Set(3, k);

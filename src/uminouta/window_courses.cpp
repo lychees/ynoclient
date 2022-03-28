@@ -68,7 +68,7 @@ void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
-	Output::Debug("Update: {} {} {} {} {}", id, player.morning_course, player.afternoon_course, player.night_course, stage);
+	// Output::Debug("Update: {} {} {} {} {}", id, player.morning_course, player.afternoon_course, player.night_course, stage);
 
 	if (player.morning_course == id) title += "[上午]";
 	if (player.afternoon_course == id) title += "[下午]";
