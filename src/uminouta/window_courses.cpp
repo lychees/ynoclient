@@ -93,6 +93,7 @@ void Window_Courses::UpdateHelp() {
 void Window_Courses::Update() {
 
 	Window_Selectable::Update();
+	auto player = Roguelike::get_Player();
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
