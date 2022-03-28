@@ -57,7 +57,7 @@ public:
 	 */
 	void UpdateHelp() override;
 
-	int moring, afternoon, night, stage;
+	int morning, afternoon, night, stage;
 
 protected:
 
