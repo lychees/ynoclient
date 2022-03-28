@@ -103,6 +103,9 @@ void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
+
+	Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
+
 	if (morning == id) title += "[上午]";
 	if (afternoon == id) title += "[下午]";
 	if (night == id) title += "[晚自习]";
@@ -123,8 +126,6 @@ void Window_Courses::UpdateHelp() {
 void Window_Courses::Update() {
 
 	Window_Selectable::Update();
-
-	Output::Debug("Update: {} {} {} {}", morning, afternoon, night, stage);
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
