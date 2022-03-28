@@ -99,7 +99,7 @@ void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 	contents->TextDraw(rect.x, rect.y, color, title);
-	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(Course_Score[id]), Text::AlignRight);
+	contents->TextDraw(GetWidth() - 16, rect.y, color, std::to_string(player.Course_Score[id]), Text::AlignRight);
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
 	// Skills are guaranteed to be valid
