@@ -1,10 +1,12 @@
 #include "roguelike.h"
+#include "scene_quirks.h"
+#include "scene_courses.h"
 #include "../game_map.h"
 #include "../main_data.h"
 #include "../output.h"
+#include "../game_actor.h"
 
-#include "scene_quirks.h"
-#include "scene_courses.h"
+
 namespace Roguelike {
 
 	Ariel Player;
