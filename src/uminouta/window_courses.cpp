@@ -94,7 +94,7 @@ void Window_Courses::UpdateHelp() {
 
 	if (index == 0) {
 		help = "文学是一种艺术形式，或被认为具有艺术或智力价值的任何单一作品，通常是由于以不同于普通用途的方式部署语言。";
-	} if (index == 1) else {
+	} if (index == 1) {
 		help = "科学是一种系统性的知识体系，它积累和组织并可检验有关于宇宙的解释和预测。";
 	} else {
 		help = "??";
