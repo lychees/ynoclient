@@ -4,7 +4,7 @@
 #include "../game_map.h"
 #include "../main_data.h"
 #include "../output.h"
-#include "../game_actor.h"
+#include "../game_actors.h"
 
 
 namespace Roguelike {
