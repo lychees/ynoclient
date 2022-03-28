@@ -22,13 +22,7 @@
 #include <vector>
 #include "../window_selectable.h"
 
-/**
- * Window_Skill class.
- */
-class Window_Courses : public Window_Selectable {
-
-public:
-
+namespace Roguelike{
 	const static std::string Courses_Title[16] = {
 		"文学",
 		"科学",
@@ -50,6 +44,14 @@ public:
 		"人無禮不立，事無禮不成，國無禮不寧。",
 		"脚踏实地，仰望星空。",
 	};
+};
+
+/**
+ * Window_Skill class.
+ */
+class Window_Courses : public Window_Selectable {
+
+public:
 
 	/**
 	 * Constructor.

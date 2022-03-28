@@ -73,7 +73,7 @@ void Window_Courses::DrawItem(int id) {
 	// contents->TextDraw(rect.x, rect.y, color, title + "1");
 	//contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
 
-	std::string title = Courses_Title[id];
+	std::string title = Roguelike::Courses_Title[id];
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
@@ -88,7 +88,7 @@ void Window_Courses::DrawItem(int id) {
 }
 
 void Window_Courses::UpdateHelp() {
-	help_window->SetText(Courses_Help[index]);
+	help_window->SetText(Roguelike::Courses_Help[index]);
 }
 
 void Window_Courses::Update() {
