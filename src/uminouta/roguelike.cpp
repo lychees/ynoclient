@@ -5,6 +5,7 @@
 #include "../main_data.h"
 #include "../output.h"
 #include "../game_actor.h"
+#include "../game_actors.h"
 
 
 namespace Roguelike {
@@ -461,9 +462,9 @@ namespace Roguelike {
 			Game_Actor* actor0 = Main_Data::game_actors->GetActor(com.parameters[0]);
 			Game_Actor* actor1 = Main_Data::game_actors->GetActor(com.parameters[1]);
 			Game_Actor* actor2 = Main_Data::game_actors->GetActor(com.parameters[2]);
-			cache_actor_name[0] = actor0->GetName();
-			cache_actor_name[1] = actor1->GetName();
-			cache_actor_name[2] = actor2->GetName();
+			cache_actor_name[0] = std::string(actor0->GetName().c_str());
+			cache_actor_name[1] = std::string(actor1->GetName().c_str());
+			cache_actor_name[2] = std::string(actor2->GetName().c_str());
 			actor0->SetName("0");
 			actor1->SetName("1");
 			actor2->SetName("2");
