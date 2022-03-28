@@ -37,6 +37,7 @@ Window_Courses::Window_Courses(int ix, int iy, int iwidth, int iheight) :
 	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0) {
 	column_max = 1;
 	morning = afternoon = night = -1;
+	stage = 0;
 }
 
 void Window_Courses::SetActor(int actor_id) {
@@ -122,6 +123,8 @@ void Window_Courses::UpdateHelp() {
 void Window_Courses::Update() {
 
 	Window_Selectable::Update();
+
+	Output::Debug("Update: {} {} {} {}", morning, afternoon, night, stage);
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
