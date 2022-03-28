@@ -15,38 +15,51 @@
  * along with EasyRPG Player. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EP_SCENE_QUIRKS_H
-#define EP_SCENE_QUIRKS_H
+#ifndef EP_WINDOW_COURSES_H
+#define EP_WINDOW_COURSES_H
 
 // Headers
-#include "../scene.h"
-#include "../window_help.h"
-#include "window_courses.h"
+#include <vector>
+#include "../window_selectable.h"
 
 /**
- * Scene_Quirks Status class.
+ * Window_Skill class.
  */
-class Scene_Quirks : public Scene {
+class Window_Courses : public Window_Selectable {
+
 public:
 	/**
 	 * Constructor.
-	 *
-	 * @param quirk_index index to select.
 	 */
-	Scene_Quirks(int actor_index = 0, int quirk_index = 0);
+	Window_Courses(int ix, int iy, int iwidth, int iheight);
 
-	void Start() override;
-	void Continue(SceneType prev_scene) override;
-	void Update() override;
-	void TransitionOut(Scene::SceneType next_scene) override;
+	/**
+	 * Sets the actor whose courses are displayed.
+	 *
+	 * @param actor_id ID of the actor.
+	 */
+	void SetActor(int actor_id);
 
-private:
-	/** Displays description about the selected item. */
-	std::unique_ptr<Window_Help> help_window;
-	/** Displays available items. */
-	std::unique_ptr<Window_Courses> courses_window;
-	/** Index of item selected on startup. */
-	int item_index;
+	/**
+	 * Refreshes the skill list.
+	 */
+	virtual void Refresh();
+
+	/**
+	 * Draws a course together with the level.
+	 *
+	 * @param index index of skill to draw.
+	 */
+	void DrawItem(int index);
+
+	/**
+	 * Updates the help window.
+	 */
+	void UpdateHelp() override;
+
+protected:
+
+	int actor_id;
 };
 
 #endif
