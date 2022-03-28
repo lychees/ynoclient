@@ -35,7 +35,7 @@
 Window_Courses::Window_Courses(int ix, int iy, int iwidth, int iheight) :
 	Window_Selectable(ix, iy, iwidth, iheight), actor_id(0) {
 	column_max = 1;
-	moring = afternoon = night = -1;
+	morning = afternoon = night = -1;
 }
 
 void Window_Courses::SetActor(int actor_id) {
