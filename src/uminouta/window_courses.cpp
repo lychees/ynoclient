@@ -61,6 +61,43 @@ void Window_Courses::Refresh() {
 	// SetIndex(1);
 }
 
+const static std::string Courses_Title[9] = {
+	"诗",
+	"书",
+	"礼",
+	"易",
+	"琴",
+	"弈",
+	"舞",
+	"画",
+	"史",
+	"理",
+	"戎",
+	"御",
+	"骑",
+	"射",
+	"铳",
+	"兵",
+};
+
+const static std::string Courses_Help[9] = {
+	"诗歌被认为是文学最初的起源，其最初发生于尚未有文字的人类社会，以口语的形式流传，并与音乐、舞蹈结合。",
+	"书法是书写文字的艺术。",
+	"礼仪。",
+	"魔法相关的知识。",
+	"音乐理论与乐器相关的知识。",
+	"游戏相关的知识。",
+	"舞蹈相关的知识。",
+	"历史相关的知识。",
+	"物理相关的知识。",
+	"冷兵器相关的知识。",
+	"驾驶载具相关的知识。",
+	"骑马相关的知识。",
+	"射箭相关的知识。",
+	"火器相关的知识。",
+	"兵法。",
+};
+
 void Window_Courses::DrawItem(int id) {
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
@@ -70,12 +107,7 @@ void Window_Courses::DrawItem(int id) {
 
 	// contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
 
-	std::string title;
-	if (id == 0) {
-		title = "文学";
-	} else {
-		title = "科学";
-	}
+	std::string title = Courses_Title[id];
 
 	contents->TextDraw(rect.x, rect.y, color, title);
 	// contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second));
@@ -92,13 +124,5 @@ void Window_Courses::UpdateHelp() {
 	auto player = Roguelike::get_Player();
 	std::string help;
 
-	if (index == 0) {
-		help = "文学是一种艺术形式，或被认为具有艺术或智力价值的任何单一作品，通常是由于以不同于普通用途的方式部署语言。";
-	} if (index == 1) {
-		help = "科学是一种系统性的知识体系，它积累和组织并可检验有关于宇宙的解释和预测。";
-	} else {
-		help = "??";
-	}
-
-	help_window->SetText(help);
+	help_window->SetText(Courses_Help[index]);
 }
