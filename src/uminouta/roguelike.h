@@ -154,6 +154,23 @@ namespace Roguelike {
 		}
 	};
 
+	struct Elf : Creature {
+	};
+
+	struct Ariel : Elf {
+		int Courses_Skill[8];
+		/*
+			Literature,
+			Science,
+			Historiography,
+			Martial_Arts,
+			Magic,
+			Art_of_War,
+			Ritual,
+			Calendar;
+		*/
+	};
+
 	Creature& get_Player();
 	std::vector<int>& get__A();
 	std::vector<int>& get_A();

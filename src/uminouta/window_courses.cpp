@@ -96,13 +96,10 @@ void Window_Courses::DrawItem(int id) {
 	// contents->TextDraw(rect.x, rect.y, color, title + "1");
 	//contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
 
-	//Rect rect = GetItemRect(id);
-	//contents->ClearRect(rect);
-	int i = id;
-	contents->ClearRect(Rect(0, menu_item_height * i, contents->GetWidth() - 0, menu_item_height));
-	contents->TextDraw(0, menu_item_height * i + menu_item_height / 8, color, title);
-	contents->TextDraw(GetWidth() - 16, menu_item_height * i + menu_item_height / 8, color, "12321232123", Text::AlignRight);
-	// contents->TextDraw(rect.x, rect.y, color, "Lv " + std::to_string(player.quirks[id].second));
+	Rect rect = GetItemRect(id);
+	contents->ClearRect(rect);
+	contents->TextDraw(rect.x, rect.y, color, title);
+	contents->TextDraw(GetWidth() - 16, rect.y, color, player.Course_Score[id], Text::AlignRight);
 
 	/*fmt::format("{}{:3d}", lcf::rpg::Terms::TermOrDefault(lcf::Data::terms.easyrpg_skill_cost_separator, "-"), costs) );*/
 	// Skills are guaranteed to be valid

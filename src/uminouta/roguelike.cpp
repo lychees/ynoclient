@@ -2,11 +2,12 @@
 #include "../game_map.h"
 #include "../main_data.h"
 #include "../output.h"
+
 #include "scene_quirks.h"
 #include "scene_courses.h"
 namespace Roguelike {
 
-	Creature Player;
+	Ariel Player;
 
 	TCODMap *tcod_map;
 
