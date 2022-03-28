@@ -30,20 +30,20 @@ Scene_Courses::Scene_Courses(int index) :
 void Scene_Courses::Start() {
 	// Create the windows
 	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
-	quirks_window.reset(new Window_Quirks(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
+	courses_window.reset(new Window_Courses(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
 
-	quirks_window->SetIndex(index);
-	quirks_window->SetHelpWindow(help_window.get());
-	quirks_window->Refresh();
+	courses_window->SetIndex(index);
+	courses_window->SetHelpWindow(help_window.get());
+	courses_window->Refresh();
 }
 
 void Scene_Courses::Continue(SceneType /* prev_scene */) {
-	quirks_window->Refresh();
+	courses_window->Refresh();
 }
 
 void Scene_Courses::Update() {
 	help_window->Update();
-	quirks_window->Update();
+	courses_window->Update();
 
 	if (Input::IsTriggered(Input::CANCEL)) {
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Cancel));
@@ -52,7 +52,7 @@ void Scene_Courses::Update() {
 		//int item_id = quirks_window->GetItem() == NULL ? 0 : item_window->GetItem()->ID;
 		Main_Data::game_system->SePlay(Main_Data::game_system->GetSystemSE(Main_Data::game_system->SFX_Decision));
 //		Scene::Push(std::make_shared<Scene_ActorTarget>(item_id));
-		index = quirks_window->GetIndex();
+		index = courses_window->GetIndex();
 	}
 }
 

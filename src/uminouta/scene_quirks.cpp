@@ -30,7 +30,7 @@ Scene_Quirks::Scene_Quirks(int actor_index, int quirk_index) :
 void Scene_Quirks::Start() {
 	// Create the windows
 	help_window.reset(new Window_Help(0, 0, SCREEN_TARGET_WIDTH, 32));
-	courses_window.reset(new Window_Courses(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
+	quirks_window.reset(new Window_Quirks(0, 32, SCREEN_TARGET_WIDTH, SCREEN_TARGET_HEIGHT - 32));
 
 	quirks_window->SetIndex(item_index);
 	quirks_window->SetHelpWindow(help_window.get());

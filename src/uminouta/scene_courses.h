@@ -45,7 +45,7 @@ private:
 	/** Displays description about the selected item. */
 	std::unique_ptr<Window_Help> help_window;
 	/** Displays available items. */
-	std::unique_ptr<Window_Quirks> quirks_window;
+	std::unique_ptr<Window_Courses> courses_window;
 	/** Index of item selected on startup. */
 	int index;
 };
