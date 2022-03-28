@@ -61,22 +61,14 @@ void Window_Courses::Refresh() {
 
 void Window_Courses::DrawItem(int id) {
 
-
-	auto player = Roguelike::get_Player();
+	auto& player = Roguelike::get_Player();
 	int color = Font::ColorDefault;
-
-	// contents->TextDraw(rect.x + rect.width - 24, rect.y, color, player.buffs[id]);
-
-
-
-	// contents->TextDraw(rect.x, rect.y, color, title + "1");
-	//contents->TextDraw(rect.x, rect.y, color, "123232123", Text::AlignRight);
 
 	std::string title = Roguelike::Courses_Title[id];
 	Rect rect = GetItemRect(id);
 	contents->ClearRect(rect);
 
-	//Output::Debug("Update: {} {} {} {} {}", id, morning, afternoon, night, stage);
+	Output::Debug("Update: {} {} {} {} {}", id, player.morning_course, player.afternoon_course, player.night_course, stage);
 
 	if (player.morning_course == id) title += "[上午]";
 	if (player.afternoon_course == id) title += "[下午]";
@@ -93,7 +85,7 @@ void Window_Courses::UpdateHelp() {
 void Window_Courses::Update() {
 
 	Window_Selectable::Update();
-	auto player = Roguelike::get_Player();
+	auto& player = Roguelike::get_Player();
 
 	if (Input::IsTriggered(Input::DECISION)) {
 		if (stage == 0) {
