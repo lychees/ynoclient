@@ -5,15 +5,16 @@
 
 namespace Roguelike {
 
-	extern int morning_course = 0;
-	extern int afternoon_course = 0;
-	extern int night_course = 0;
+
 
 	struct Creature {
 		int str, dex, con;
 		int inT, wis, cha;
 		int evil, chaos;
 		int Course_Score[8];
+		int morning_course;
+		int afternoon_course;
+		int night_course;
 		std::vector<std::string> buffs;
 		std::vector<std::pair<std::string, int>> quirks;
 		std::string race;
