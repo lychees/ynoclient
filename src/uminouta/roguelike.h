@@ -5,9 +5,9 @@
 
 namespace Roguelike {
 
-	int morning_course = 0;
-	int afternoon_course = 0;
-	int night_course = 0;
+	extern int morning_course = 0;
+	extern int afternoon_course = 0;
+	extern int night_course = 0;
 
 	struct Creature {
 		int str, dex, con;
