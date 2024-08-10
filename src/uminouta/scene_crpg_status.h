@@ -29,6 +29,7 @@
  * Scene Crpg Status class.
  * Displays crpg status information about a party member.
  */
+class Scene_Crpg_Status : public Scene {
 public:
 	/**
 	 * Constructor.
@@ -38,7 +39,7 @@ public:
 	Scene_Crpg_Status(int actor_index);
 
 	void Start() override;
-	void Update() override;
+	void vUpdate() override;
 
 private:
 	int actor_index;

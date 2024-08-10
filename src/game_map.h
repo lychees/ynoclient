@@ -40,6 +40,8 @@
 #include <lcf/rpg/savecommonevent.h>
 #include "async_op.h"
 #include <player.h>
+//#include "cards/cards.h"
+#include "uminouta/roguelike.h"
 
 class FileRequestAsync;
 struct BattleArgs;
@@ -86,6 +88,12 @@ private:
  * Game_Map namespace
  */
 namespace Game_Map {
+
+	void Gen(int c0, int c1);
+	void Roll();
+	//void summon(Cards::monster c, int p_id, int x, int y);
+	//void newMapEvent(std::string title, int p_id, int x, int y);
+
 	/**
 	 * Initialize Game_Map.
 	 */

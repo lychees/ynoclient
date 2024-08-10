@@ -1762,6 +1762,40 @@ FileRequestAsync* Game_Map::RequestMap(int map_id) {
 	return AsyncHandler::RequestFile(Game_Map::ConstructMapName(map_id, false));
 }
 
+void Game_Map::Roll() {
+	Gen(4000 + 1*50, 5000 + 24*2 + 6);
+}
+
+void Game_Map::Gen(int c0, int c1) {
+
+	auto h = GetTilesY();
+	auto w = GetTilesX();
+
+	Roguelike::Gen(c0, c1);
+	auto &_A = Roguelike::get__A();
+	auto &A = Roguelike::get_A();
+	auto &empty_grids = Roguelike::get_empty_grids();
+
+	for (int i=0;i<h;++i) {
+		for (int j=0;j<w;++j) {
+			map->lower_layer[i*w+j] = A[i*w+j];
+		}
+	}
+
+	// Randomize All Map Event
+	for (auto& ev : events) {
+		int id = rand() % empty_grids.size();
+		int xx = empty_grids[id].first;
+		int yy = empty_grids[id].second;
+		empty_grids.erase(empty_grids.begin() + id);
+		ev.SetX(yy); ev.SetY(xx);
+		Output::Debug("map event: {} {} {}", ev.GetId(), ev.GetX(), ev.GetY());
+	}
+
+	Refresh();
+	GetInterpreter().CommandRefreshTileset();
+}
+
 // Parallax
 /////////////
 

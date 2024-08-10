@@ -40,8 +40,8 @@ namespace Roguelike {
 	void teleport_to(std::string who, int xx, int yy) {
 		Output::Debug("fov {}", fov_switch);
 		Output::Debug("teleport_to {} {} {}", who, xx, yy);
-
-		if (who == "player") {
+		std::string cmd = "player";
+		if (std::equal(cmd.begin(), cmd.end(), who.begin())) {
 			auto tt = TeleportTarget::eForegroundTeleport;
 			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
 		} else {
@@ -64,26 +64,6 @@ namespace Roguelike {
 	}
 	void teleport_to_rd(std::string who) {
 		teleport_to(who, rd_x, rd_y);
-	}
-
-	void teleport_to(std::string map_event_name) {
-
-		/*for (const auto& ev : Game_Map::GetEvents) {
-			if (ev.GetName() == "map_event_name") {
-
-				return;
-			}
-		}*/
-
-		/*for (int i=h-1;i>=0;--i) {
-			for (int j=0;j<w;++j) {
-				if (_A[i*w+j]) {
-					auto tt = TeleportTarget::eForegroundTeleport;
-					Main_Data::game_player->ReserveTeleport(GetMapId(), j, i, -1, tt);
-					break;
-				}
-			}
-		}*/
 	}
 
 	Creature& get_Player() {
@@ -375,7 +355,7 @@ namespace Roguelike {
 	void Gen(int _c0, int _c1) {
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
-		h = Game_Map::GetHeight(); w = Game_Map::GetWidth(); A.clear(); A.resize(w*h);
+		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
 		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
@@ -410,9 +390,9 @@ namespace Roguelike {
 	}
 
 	void UpdateFOV() {
-		int my_y = Main_Data::game_player->GetX();
-		int my_x = Main_Data::game_player->GetY();
-		tcod_map->computeFov(my_x,my_y,10);
+		//int my_y = Main_Data::game_player->GetX();
+		//int my_x = Main_Data::game_player->GetY();
+		//tcod_map->computeFov(my_x,my_y,10);
 	}
 
 	bool isInFOV(int x, int y) {
@@ -467,6 +447,7 @@ namespace Roguelike {
 	}
 
 	bool isCmd(std::string msg) {
+		msg.resize(100);
 		std::string cmd;
 
 		cmd = ".doStudy";

@@ -41,7 +41,7 @@ void Scene_Quirks::Continue(SceneType /* prev_scene */) {
 	quirks_window->Refresh();
 }
 
-void Scene_Quirks::Update() {
+void Scene_Quirks::vUpdate() {
 	help_window->Update();
 	quirks_window->Update();
 

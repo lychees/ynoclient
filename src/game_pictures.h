@@ -94,6 +94,7 @@ public:
 	void OnMapScrolled(int dx, int dy);
 
 	struct Picture {
+public:
 		explicit Picture(int id) { data.ID = id; }
 		explicit Picture(lcf::rpg::SavePicture data);
 

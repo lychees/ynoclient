@@ -29,6 +29,7 @@
 #include "game_system.h"
 #include "drawable_mgr.h"
 #include "baseui.h"
+#include "uminouta/roguelike.h"
 
 // Blocks subtiles IDs
 // Mess with this code and you will die in 3 days...
@@ -250,6 +251,8 @@ void TilemapLayer::Draw(Bitmap& dst, uint8_t z_order, int render_ox, int render_
 	const int mod_ox = mod(ox - render_ox, TILE_SIZE);
 	const int mod_oy = mod(oy - render_oy, TILE_SIZE);
 
+	Roguelike::UpdateFOV();
+
 	for (int y = 0; y < tiles_y; y++) {
 		for (int x = 0; x < tiles_x; x++) {
 
@@ -275,6 +278,17 @@ void TilemapLayer::Draw(Bitmap& dst, uint8_t z_order, int render_ox, int render_
 
 			// Draw the sublayer if its z is being draw now
 			if (z_order == tile.z) {
+
+				bool not_in_fov = false;
+				short original_data_cache;
+
+				/*if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
+					not_in_fov = true;
+					original_data_cache = data_cache_vec[map_x + map_y * width].ID;
+					data_cache_vec[map_x + map_y * width].ID = Roguelike::get_c0();
+					// continue;
+				}*/
+
 				if (layer == 0) {
 					// If lower layer
 					bool allow_fast_blit = (tile.z == TileBelow);

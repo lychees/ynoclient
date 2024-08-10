@@ -781,3 +781,8 @@ bool Game_Interpreter_Map::CommandEasyRpgTriggerEventAt(lcf::rpg::EventCommand c
 
 	return true;
 }
+
+void Game_Interpreter_Map::CommandRefreshTileset() {
+	Scene_Map* scene = (Scene_Map*)Scene::Find(Scene::Map).get();
+	scene->spriteset->ChipsetUpdated();
+}

@@ -41,7 +41,7 @@ void Scene_Courses::Continue(SceneType /* prev_scene */) {
 	courses_window->Refresh();
 }
 
-void Scene_Courses::Update() {
+void Scene_Courses::vUpdate() {
 	help_window->Update();
 	courses_window->Update();
 

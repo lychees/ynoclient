@@ -32,8 +32,6 @@ stamp-h1
 /output
 /utils
 /directorytree
-/.version-append
-/.version-git
 
 # cmake
 CMakeFiles/
@@ -56,13 +54,10 @@ install_manifest.txt
 *.user
 *.vsp*
 *.lib
-*.exe
+## *.exe
 *.exp
 *.ilk
 *.pdb
-/resources/player.rc
-.vs/
-vcpkg/
 
 # ninja
 .ninja_*
@@ -70,20 +65,17 @@ vcpkg/
 
 # IntelliJ
 .idea/
-cmake-build*/
 
 # VS Code
 .vscode/
-.cache/
 compile_commands.json
-build/
 
 # doxygen
 /resources/Doxyfile
 /doc/
 
 # manual
-/resources/unix/easyrpg-player.6
+/resources/easyrpg-player.6
 
 # test/run artifacts
 easyrpg_log.txt
@@ -95,15 +87,14 @@ Testing/
 easyrpg-player-*.tar.*
 *.zip
 
-# macos
+# osx
 __MACOSX
 .DS_Store
-/resources/macos/Info.plist
 
 # Xcode
 /*.xcodeproj
 /*.xcworkspace
-/Debug/
+## /Debug/
 /Release/
 /MinSizeRel/
 /RelWithDebInfo/
@@ -130,19 +121,16 @@ easyrpg_libretro.*
 *.cia
 
 # wii
-/resources/wii/meta.xml
 *.dol
 
 # psvita
-/resources/psvita/template.xml
 eboot.bin
 *.vpk
 *.velf
-
-# flatpak
-/.flatpak-builder
-
-# certificates / signing keys
-*.pem
-*.keystore
-*.jks
+*.obj
+*.recipe
+*.lastbuildstate
+*.tlog
+*.tlog
+*.res
+*.sln

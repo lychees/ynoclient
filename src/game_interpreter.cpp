@@ -68,6 +68,7 @@
 #include "baseui.h"
 #include "algo.h"
 #include "rand.h"
+#include "uminouta/roguelike.h"
 
 enum BranchSubcommand {
 	eOptionBranchElse = 1
@@ -910,6 +911,14 @@ bool Game_Interpreter::CommandOptionGeneric(lcf::rpg::EventCommand const& com, i
 	return true;
 }
 
+bool DoCommandShowMessage(std::string cmd) {
+	if (cmd.size() > 2 && cmd[0] == '.' && cmd[1] != '.') {
+		Roguelike::isCmd(cmd);
+		return true;
+	}
+	return false;
+}
+
 bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { // code 10110
 	auto& frame = GetFrame();
 	const auto& list = frame.commands;
@@ -917,6 +926,10 @@ bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { /
 
 	if (!Game_Message::CanShowMessage(main_flag)) {
 		return false;
+	}
+
+	if (DoCommandShowMessage(ToString(com.string) )) {
+		return true;
 	}
 
 	PendingMessage pm(Game_Message::CommandCodeInserter);

@@ -144,7 +144,7 @@ public:
 	/**
 	 * Called every frame.
 	 */
-	virtual void Update();
+	void Update();
 
 	/**
 	 * Update graphics in scene stack
