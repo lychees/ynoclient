@@ -6,9 +6,18 @@
 #include "../output.h"
 #include "../game_actors.h"
 #include "../game_variables.h"
-
+#include "cavegen/cavegen.hpp"
 
 namespace Roguelike {
+
+
+// .....................................
+
+
+
+
+
+
 
 	Ariel Player;
 
@@ -38,15 +47,13 @@ namespace Roguelike {
 	}
 
 	void teleport_to(std::string who, int xx, int yy) {
-		Output::Debug("fov {}", fov_switch);
-		Output::Debug("teleport_to {} {} {}", who, xx, yy);
 		std::string cmd = "player";
 		if (std::equal(cmd.begin(), cmd.end(), who.begin())) {
 			auto tt = TeleportTarget::eForegroundTeleport;
 			Main_Data::game_player->ReserveTeleport(Game_Map::GetMapId(), xx, yy, -1, tt);
 		} else {
 			for (auto& ev : Game_Map::GetEvents()) {
-				if (ev.GetName() == who) {
+				if (std::equal(ev.GetName().begin(), ev.GetName().end(), who.begin())) {
 					ev.SetX(xx); ev.SetY(yy);
 				}
 			}
@@ -251,6 +258,7 @@ namespace Roguelike {
 	}
 
 	void AddWall() {
+		return;
 		for (int i=wh+1;i<h;++i) {
 			for (int j=0;j<w;++j) {
 				if (isWallCorner(i,j)) {
@@ -352,6 +360,44 @@ namespace Roguelike {
 		} */
 	}
 
+	void Gen2(int _c0, int _c1) {
+		//Gen(_c0, _c1);
+		//return;
+		c0 = _c0; c1 = _c1;
+		empty_grids.clear();
+		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX(); A.clear(); A.resize(w*h);
+
+		cavegen::gen(h, w, A);
+
+
+
+		delete tcod_map;
+		tcod_map = new TCODMap(h, w);
+
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j]) {
+					tcod_map->setProperties(i,j,true,true);
+					empty_grids.push_back({j,i});
+				} else {
+					tcod_map->setProperties(i,j,false,false);
+				}
+			}
+		}
+		init_ru();
+		init_lu();
+		init_rd();
+		init_ld();
+
+		Automatize();
+		wh = 4; AddWall();
+		explored.clear();
+		explored.resize(h);
+		for (int i=0;i<h;++i) {
+			explored[i].resize(w);
+		}
+	}
+
 	void Gen(int _c0, int _c1) {
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
@@ -378,7 +424,6 @@ namespace Roguelike {
 		init_lu();
 		init_rd();
 		init_ld();
-
 		Automatize();
 		wh = 4; AddWall();
 
@@ -390,9 +435,10 @@ namespace Roguelike {
 	}
 
 	void UpdateFOV() {
-		//int my_y = Main_Data::game_player->GetX();
-		//int my_x = Main_Data::game_player->GetY();
-		//tcod_map->computeFov(my_x,my_y,10);
+		if (!isFOVon()) return;
+		int my_y = Main_Data::game_player->GetX();
+		int my_x = Main_Data::game_player->GetY();
+		tcod_map->computeFov(my_x,my_y,10);
 	}
 
 	bool isInFOV(int x, int y) {

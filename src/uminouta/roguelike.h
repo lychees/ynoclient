@@ -197,6 +197,7 @@ namespace Roguelike {
 	bool isInFOV(int x, int y);
 	bool isExplored(int x, int y);
 	void Gen(int c0, int c1);
+	void Gen2(int c0, int c1);
 
 	void init();
 	bool isCmd(std::string cmd);

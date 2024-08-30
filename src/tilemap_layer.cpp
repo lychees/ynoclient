@@ -282,12 +282,12 @@ void TilemapLayer::Draw(Bitmap& dst, uint8_t z_order, int render_ox, int render_
 				bool not_in_fov = false;
 				short original_data_cache;
 
-				/*if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
+				if (Roguelike::isFOVon() && !Roguelike::isInFOV(map_x, map_y) && !Roguelike::isExplored(map_x, map_y)) {
 					not_in_fov = true;
 					original_data_cache = data_cache_vec[map_x + map_y * width].ID;
 					data_cache_vec[map_x + map_y * width].ID = Roguelike::get_c0();
 					// continue;
-				}*/
+				}
 
 				if (layer == 0) {
 					// If lower layer
@@ -367,6 +367,9 @@ void TilemapLayer::Draw(Bitmap& dst, uint8_t z_order, int render_ox, int render_
 						auto tone_hash = MakeFTileHash(id);
 						DrawTile(dst, *chipset, *chipset_effect, map_draw_x, map_draw_y, row, col, tone_hash);
 					}
+				}
+				if (not_in_fov) {
+					 data_cache_vec[map_x + map_y * width].ID = original_data_cache;
 				}
 			}
 		}
