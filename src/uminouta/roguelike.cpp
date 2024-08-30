@@ -11,14 +11,6 @@
 namespace Roguelike {
 
 
-// .....................................
-
-
-
-
-
-
-
 	Ariel Player;
 
 	std::string cache_actor_name[3];
@@ -238,6 +230,13 @@ namespace Roguelike {
 		return z;
 	}
 
+	int automatize2(int i, int j) {
+		int z = A[i*w+j];
+		if (_A[i*w+j] == 0) z += autotile_offset(i,j);
+		return z;
+	}
+
+
 	void Automatize() {
 
 		_A = A;
@@ -245,6 +244,28 @@ namespace Roguelike {
 		for (int i=0;i<h;++i) {
 			for (int j=0;j<w;++j) {
 				A[i*w+j] = automatize(i,j);
+			}
+		}
+	}
+
+	void Automatize2() {
+
+		int c2 = 4000;
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				_A[i*w+j] = 1;
+				if (A[i*w+j] == c1) {
+					if (std::rand() < RAND_MAX/3) {
+						A[i*w+j] = c2;
+						_A[i*w+j] = 0;
+					}
+				}
+			}
+		}
+
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				if (A[i*w+j] == c2) A[i*w+j] = automatize2(i,j);
 			}
 		}
 	}
@@ -258,7 +279,7 @@ namespace Roguelike {
 	}
 
 	void AddWall() {
-		return;
+		//return;
 		for (int i=wh+1;i<h;++i) {
 			for (int j=0;j<w;++j) {
 				if (isWallCorner(i,j)) {
@@ -266,7 +287,7 @@ namespace Roguelike {
 					while (r<w && isWallCorner(i,r)) ++r;
 					for (int jj=l;jj<r;++jj) {
 						for (int k=1;k<=wh;++k) {
-							A[(i-k)*w+jj] = 5114 - 6*(k-1);
+							A[(i-k)*w+jj] = 5113 + std::min(r-jj, 4) - 6*(k-1);
 							_A[(i-k)*w+jj] = 1;
 						}
 					}
@@ -361,11 +382,21 @@ namespace Roguelike {
 	}
 
 	void Gen2(int _c0, int _c1) {
-		//Gen(_c0, _c1);
-		//return;
+		auto current_info = &Game_Map::GetMapInfo();
+		std::ostringstream ss;
+		ss << current_info->name;
+		auto name = ss.str();
+		Output::Debug("name {} {}", name, int(name.find("Cave")));
+		if (name.find("Cave") == std::string::npos) {
+			Gen(_c0, _c1);
+			return;
+		}
+
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
 		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX(); A.clear(); A.resize(w*h);
+
+
 
 		cavegen::gen(h, w, A);
 
@@ -378,7 +409,7 @@ namespace Roguelike {
 			for (int j=0;j<w;++j) {
 				if (A[i*w+j]) {
 					tcod_map->setProperties(i,j,true,true);
-					empty_grids.push_back({j,i});
+					empty_grids.push_back({i,j});
 				} else {
 					tcod_map->setProperties(i,j,false,false);
 				}
@@ -389,8 +420,8 @@ namespace Roguelike {
 		init_rd();
 		init_ld();
 
-		Automatize();
-		wh = 4; AddWall();
+		Automatize(); wh = 4; AddWall(); Automatize2();
+
 		explored.clear();
 		explored.resize(h);
 		for (int i=0;i<h;++i) {

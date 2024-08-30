@@ -1772,7 +1772,6 @@ void Game_Map::Gen(int c0, int c1) {
 	auto w = GetTilesX();
 
 	Roguelike::Gen2(c0, c1);
-	//auto &_A = Roguelike::get__A();
 	auto &A = Roguelike::get_A();
 	auto &empty_grids = Roguelike::get_empty_grids();
 
