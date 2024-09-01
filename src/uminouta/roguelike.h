@@ -2,10 +2,9 @@
 #define ROGUELIKE_H
 
 #include "libtcod.h"
+//#include "../game_map.h"
 
 namespace Roguelike {
-
-
 
 	struct Creature {
 		int str, dex, con;
@@ -177,8 +176,8 @@ namespace Roguelike {
 	};
 
 	Creature& get_Player();
-	std::vector<int>& get__A();
 	std::vector<int>& get_A();
+	std::vector<int>& get_B();
 	std::vector<std::pair<int, int>>& get_empty_grids();
 	int get_c0();
 	int get_c1();
@@ -198,7 +197,7 @@ namespace Roguelike {
 	bool isExplored(int x, int y);
 	void Gen(int c0, int c1);
 	void Gen2(int c0, int c1);
-
+	//   void load_map(std::unique_ptr<lcf::rpg::Map> map);
 	void init();
 	bool isCmd(std::string cmd);
 }

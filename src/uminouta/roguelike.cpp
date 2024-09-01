@@ -8,6 +8,7 @@
 #include "../game_variables.h"
 #include "cavegen/cavegen.hpp"
 
+
 namespace Roguelike {
 
 
@@ -21,7 +22,7 @@ namespace Roguelike {
 	static const int ROOM_MIN_SIZE = 12;
 	static const int dx[4] = {1,0,-1,0};
 	static const int dy[4] = {0,1,0,-1};
-	std::vector<int> A, _A; int w, h, wh, c0, c1;
+	std::vector<int> A, _A, B; int w, h, wh, c0, c1;
 	int lu_x = 0, lu_y = 0, ld_x = 0, ld_y = 0;
 	int ru_x = 0, ru_y = 0, rd_x = 0, rd_y = 0;
 	std::vector<std::pair<int, int>> empty_grids;
@@ -83,9 +84,8 @@ namespace Roguelike {
 	std::vector<int>& get_A() {
 		return A;
 	}
-
-	std::vector<int>& get__A() {
-		return _A;
+	std::vector<int>& get_B() {
+		return B;
 	}
 
 	void dig(int x1, int y1, int x2, int y2) {
@@ -278,6 +278,18 @@ namespace Roguelike {
 		return 1;
 	}
 
+	void AddWall2() {
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) if (!_A[i*w+j]){
+				if ((i==h-1 || !_A[(i+1)*w+j]) && (!i || _A[(i-1)*w+j])) {
+					if (j  && _A[i*w+j-1]) B[i*w+j] = 10001;
+					else if (j != (w-1)  && _A[i*w+j+1]) B[i*w+j] = 10003;
+					else B[i*w+j] = 10002;
+				}
+			}
+		}
+	}
+
 	void AddWall() {
 		//return;
 		for (int i=wh+1;i<h;++i) {
@@ -380,6 +392,15 @@ namespace Roguelike {
 			TCODRandom::instance =
 		} */
 	}
+/*
+	void load_map(std::unique_ptr<lcf::rpg::Map> map) {
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) {
+				map->lower_layer[i*w+j] = A[i*w+j];
+				if (B[i*w+j] >= 10000) map->upper_layer[i*w+j] = B[i*w+j];
+			}
+		}
+	}*/
 
 	void Gen2(int _c0, int _c1) {
 		auto current_info = &Game_Map::GetMapInfo();
@@ -394,7 +415,9 @@ namespace Roguelike {
 
 		c0 = _c0; c1 = _c1;
 		empty_grids.clear();
-		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX(); A.clear(); A.resize(w*h);
+		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX();
+		A.clear(); A.resize(w*h);
+		B.clear(); B.resize(w*h);
 
 
 
@@ -420,7 +443,7 @@ namespace Roguelike {
 		init_rd();
 		init_ld();
 
-		Automatize(); wh = 4; AddWall(); Automatize2();
+		Automatize(); wh = 4; AddWall(); AddWall2(); Automatize2();
 
 		explored.clear();
 		explored.resize(h);

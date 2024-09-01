@@ -1773,13 +1773,16 @@ void Game_Map::Gen(int c0, int c1) {
 
 	Roguelike::Gen2(c0, c1);
 	auto &A = Roguelike::get_A();
+	auto &B = Roguelike::get_B();
 	auto &empty_grids = Roguelike::get_empty_grids();
 
 	for (int i=0;i<h;++i) {
 		for (int j=0;j<w;++j) {
 			map->lower_layer[i*w+j] = A[i*w+j];
+			if (B[i*w+j] >= 10000) map->upper_layer[i*w+j] = B[i*w+j];
 		}
 	}
+	//Roguelike::load_map(map);
 
 	// Randomize All Map Event
 	for (auto& ev : events) {
