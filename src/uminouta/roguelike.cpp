@@ -280,11 +280,44 @@ namespace Roguelike {
 
 	void AddWall2() {
 		for (int i=0;i<h;++i) {
-			for (int j=0;j<w;++j) if (!_A[i*w+j]){
-				if ((i==h-1 || !_A[(i+1)*w+j]) && (!i || _A[(i-1)*w+j])) {
-					if (j  && _A[i*w+j-1]) B[i*w+j] = 10001;
-					else if (j != (w-1)  && _A[i*w+j+1]) B[i*w+j] = 10003;
+			for (int j=0;j<w;++j) if (_A[i*w+j]) {
+
+				bool up = !check(i-1, j);
+				bool dn = !check(i+1, j);
+
+
+				if (up && !dn) { // 上边缘
+					bool rd = !check(i+1, j+1);
+					bool ld = !check(i+1, j-1);
+					if (ld) B[i*w+j] = 10001;
+					else if (rd) B[i*w+j] = 10003;
 					else B[i*w+j] = 10002;
+				} else if (!up && dn) { // 下边缘
+					/*bool ru = !check(i-1, j+1);
+					bool lu = !check(i-1, j-1);
+					if (lu) A[i*w+j] = 5000;
+					else if (ru) A[i*w+j] = 5003;
+					else A[i*w+j] = 5001;*/
+				}
+			}
+		}
+		for (int i=0;i<h;++i) {
+			for (int j=0;j<w;++j) if (!_A[i*w+j]) {
+
+				bool up = !check(i-1, j);
+				bool dn = !check(i+1, j);
+				bool lf = !check(i, j-1);
+				bool rt = !check(i, j+1);
+
+				if ((j && !B[i*w+j-1]) && (j!=w-1 && !B[i*w+j+1])) {
+
+					if (lf && !rt) A[i*w+j] = dn ? 5024 : 5004;
+					else if (!lf && rt) A[i*w+j] = dn ? 5027 : 5005;
+					else {
+						if (!up && dn) {
+							A[i*w+j] = 5025 + (j&1);
+						}
+					}
 				}
 			}
 		}
@@ -443,7 +476,8 @@ namespace Roguelike {
 		init_rd();
 		init_ld();
 
-		Automatize(); wh = 4; AddWall(); AddWall2(); Automatize2();
+		Automatize(); wh = 4; //AddWall();
+		AddWall2(); Automatize2();
 
 		explored.clear();
 		explored.resize(h);
