@@ -436,6 +436,13 @@ namespace Roguelike {
 	}*/
 
 	void Gen2(int _c0, int _c1) {
+
+		c0 = _c0; c1 = _c1;
+		empty_grids.clear();
+		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX();
+		A.clear(); A.resize(w*h);
+		B.clear(); B.resize(w*h);
+
 		auto current_info = &Game_Map::GetMapInfo();
 		std::ostringstream ss;
 		ss << current_info->name;
@@ -446,11 +453,7 @@ namespace Roguelike {
 			return;
 		}
 
-		c0 = _c0; c1 = _c1;
-		empty_grids.clear();
-		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX();
-		A.clear(); A.resize(w*h);
-		B.clear(); B.resize(w*h);
+
 
 
 
@@ -487,9 +490,6 @@ namespace Roguelike {
 	}
 
 	void Gen(int _c0, int _c1) {
-		c0 = _c0; c1 = _c1;
-		empty_grids.clear();
-		h = Game_Map::GetTilesY(); w = Game_Map::GetTilesX(); A.clear(); A.resize(w*h);
 		TCODBsp bsp(0,0,w,h);
 		bsp.splitRecursive(NULL,12,ROOM_MAX_SIZE,ROOM_MAX_SIZE,1.5f,1.5f);
     	BspListener listener;
