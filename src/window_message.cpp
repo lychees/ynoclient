@@ -778,7 +778,8 @@ void Window_Message::UpdateCursorRect() {
 
 void Window_Message::WaitForInput() {
 	if (Input::IsTriggered(Input::DECISION) ||
-			Input::IsTriggered(Input::CANCEL)) {
+			Input::IsTriggered(Input::CANCEL) ||
+			Input::IsRawKeyPressed(Input::Keys::LCTRL)) {
 		SetPause(false);
 	}
 }

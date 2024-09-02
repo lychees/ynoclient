@@ -936,17 +936,21 @@ bool Game_Interpreter::CommandShowMessage(lcf::rpg::EventCommand const& com) { /
 	pm.SetIsEventMessage(true);
 
 	// Set first line
-	pm.PushLine(ToString(com.string));
-
+	std::string msg = ToString(com.string);
+	if (ToString(com.string).size() <= 47) {
+		pm.PushLine(msg); msg.clear();
+	}
 	++index;
-
 	// Check for continued lines via ShowMessage_2
 	while (index < static_cast<int>(list.size()) && static_cast<Cmd>(list[index].code) == Cmd::ShowMessage_2) {
 		// Add second (another) line
-		pm.PushLine(ToString(list[index].string));
+		msg += ToString(list[index].string);
+		if (ToString(list[index].string).size() <= 47) {
+			pm.PushLine(msg); msg.clear();
+		}
 		++index;
 	}
-
+	if (!msg.empty()) pm.PushLine(msg);
 	// Handle Choices or number
 	if (index < static_cast<int>(list.size())) {
 		// If next event command is show choices

@@ -203,7 +203,7 @@ bool Platform::Directory::Read() {
 
 	valid_entry = ::sceIoDread(dir_handle, &entry) > 0;
 #elif defined(_WIN32)
-	assert(dir_handle != INVALID_HANDLE_VALUE);
+	//assert(dir_handle != INVALID_HANDLE_VALUE);
 
 	if (!first_entry) {
 		valid_entry = FindNextFile(dir_handle, &entry) != 0;
