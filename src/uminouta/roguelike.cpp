@@ -1,13 +1,14 @@
 #include "roguelike.h"
 #include "scene_quirks.h"
 #include "scene_courses.h"
+#include "cavegen/cavegen.hpp"
+#include "openai/openai.hpp"
+#include "../game_message.h"
 #include "../game_map.h"
 #include "../main_data.h"
 #include "../output.h"
 #include "../game_actors.h"
 #include "../game_variables.h"
-#include "cavegen/cavegen.hpp"
-
 
 namespace Roguelike {
 
@@ -580,9 +581,40 @@ namespace Roguelike {
 		Main_Data::game_variables->Set(3, k);
 	}
 
+	void chat_with_llm(std::string prompt) {
+		Output::Debug("chat {}", prompt);
+		openai::start(
+			"KEY",
+			"", // organization id
+			true, // throw exception
+			"https://api.moonshot.cn/v1/"  // base url
+		);
+
+		nlohmann::json msg = R"(
+			{
+				"model": "moonshot-v1-8k",
+				"messages":[{"role":"user", "content":""}]
+			}
+		)"_json;
+
+		msg["messages"][0]["content"] = prompt;
+		auto chat = openai::chat().create(msg);
+		Output::Debug("Response is: {}\n", chat.dump(2));
+		PendingMessage pm(Game_Message::CommandCodeInserter);
+		pm.SetIsEventMessage(true); pm.PushLine(chat.dump(2));
+		Game_Message::SetPendingMessage(std::move(pm));
+	}
+
 	bool isCmd(std::string msg) {
 		msg.resize(100);
 		std::string cmd;
+
+		cmd = ".chat_with_llm";
+		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
+			std::string prompt = msg.erase(0, cmd.size() + 1);
+			chat_with_llm(prompt);
+			return true;
+		}
 
 		cmd = ".doStudy";
 		if (std::equal(cmd.begin(), cmd.end(), msg.begin())) {
